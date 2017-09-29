@@ -1,0 +1,9 @@
+Date: 09/05 21:21:51
+ex_yukari rebel 5 human win
+ex_yukari rebel 6 robot win
+aya rebel 7 robot win
+tewi loyalist 8 robot lose
+momiji lord 1 human lose
+aya renegade 2 human lose
+hatate rebel 3 human win
+suwako loyalist 4 human lose

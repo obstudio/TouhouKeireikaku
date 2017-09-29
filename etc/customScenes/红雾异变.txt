@@ -1,0 +1,7 @@
+
+general:select role:rebel 
+general:select role:rebel 
+general:flandre role:loyalist maxhp:3 hp:3 equip:143 
+general:remilia role:lord starter:true maxhp:4 hp:4 equip:54 
+general:pachouli role:loyalist maxhp:3 hp:3 equip:56,118 
+general:select role:rebel 

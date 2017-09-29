@@ -1,0 +1,4 @@
+
+setPile:102,99,47,0
+general:pachouli role:rebel starter:true maxhp:3 hp:1 singleTurn:lord+loyalist draw:0 hand:86,63,74,43,69 
+general:reimu role:lord maxhp:5 hp:5 draw:0 equip:62,118 

@@ -1,0 +1,17 @@
+_	cirno	12:23:31	10	_
+_	pachouli	_	30	_
+_	koishi	_	11:32	_
+_	tewi	10:20:32	_	_
+_	utsuho	13:23	10:20:32	_
+_	komachi	_	12:22:31	_
+_	ex_scarlets	_	10:20:32	_
+_	ex_iku	_	12:22:30	_
+_	daiyousei	13:23:30	10:20:32	12:23:31
+_	ex_kanako	13:20:32	10:23:31	12:22:30
+_	sakuya	_	12:22:31	_
+_	momiji	23	23:31	23:30
+_	sekibanki	_	12:22:31	_
+_	ex_parsee	12	_	12
+_	kogasa	_	11:21	_
+_	ex_yuyuko	13:23	10:21:32	13:23
+_	ex_seiga	_	12:23:30	_
