@@ -900,6 +900,7 @@ public:
 		recover.reason = objectName();
 		room->recover(yoshika, recover);
 		room->detachSkillFromPlayer(yoshika, "jiangqu");
+		return false;
 	}
 };
 

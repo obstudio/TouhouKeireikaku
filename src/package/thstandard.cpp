@@ -143,7 +143,7 @@ GuayuCard::GuayuCard()
 
 bool GuayuCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
 {
-	return targets.isEmpty() and to_select->hasLordSkill("guayu");
+	return targets.isEmpty() && to_select->hasLordSkill("guayu");
 }
 
 void GuayuCard::onEffect(const CardEffectStruct &effect) const
@@ -1494,6 +1494,7 @@ public:
 		int id = room->askForAG(letty, snow, false, "xuebeng");
 		room->obtainCard(letty, id, false);
 		room->clearAG(letty);
+		return false;
 	}
 };
 

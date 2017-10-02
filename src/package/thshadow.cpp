@@ -1106,6 +1106,7 @@ public:
 		ServerPlayer *player = invoke->preferredTarget;
 		JudgeStruct *judge = data.value<JudgeStruct *>();
 		player->obtainCard(judge->card, true);
+		return false;
 	}
 };
 

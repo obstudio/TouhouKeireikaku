@@ -17,7 +17,6 @@
 //#include "boss-mode-scenario.h"
 //#include "zombie-scenario.h"
 //#include "fancheng-scenario.h"
-#include "redfog-scenario.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -59,7 +58,6 @@ void Engine::_loadModScenarios()
     //addScenario(new FanchengScenario());
     //addScenario(new ZombieScenario());
     //addScenario(new ImpasseScenario());
-	addScenario(new RedfogScenario());
 }
 
 void Engine::addPackage(const QString &name)
