@@ -74,7 +74,7 @@ Engine::Engine()
     Sanguosha = this;
 
     lua = CreateLuaState();
-    DoLuaScript(lua, "lua/config.lua");
+    DoLuaScript(lua, "E:/Desktop/Projects/TouhouKeireikaku/lua/config.lua");
 
     QStringList package_names = GetConfigFromLuaState(lua, "package_names").toStringList();
     foreach(QString name, package_names)
