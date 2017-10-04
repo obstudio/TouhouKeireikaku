@@ -9707,6 +9707,38 @@ function SmartAI:getEnemiesList(player)
 	return players
 end
 
+function SmartAI:canMaoyouSelf(player)
+	player = player or self.player
+	if not player:hasSkill("maoyou") then return false end
+	local n = 0
+	for _, p in sgs.qlist(self.room:getAllPlayers(true)) do
+		if p:isDead() then
+			n = n + 1
+		end
+	end
+	if n > 3 and player:getMark("@spirit") == 0 then
+		n = 3
+	end
+	if player:objectName() ~= self.player:objectName() then
+		if (n <= 2 and player:getCards("he"):length() >= n) or player:getCards("he"):length() >= n + 2 then
+			return true
+		end
+	else
+		local t = 0
+		local cards = sgs.QList2Table(self.player:getCards("he"))
+		self:sortByUseValue(cards)
+		for _, c in ipairs(cards) do
+			if not c:isKindOf("Peach") and not (c:isKindOf("Jink") and self:getCards("Jink") == 1) and not c:isKindOf("Analeptic") then
+				t = t + 1
+			end
+		end
+		if t >= n then
+			return true
+		end
+	end
+	return false
+end
+
 --开始添加ai文件
 dofile "lua/ai/debug-ai.lua"
 dofile "lua/ai/imagine-ai.lua"

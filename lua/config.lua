@@ -6,39 +6,11 @@ config = {
 	},
 
 	kingdoms = {
-		--[["zhu",
-		"pc98",
-		"hmx",
-		"yym",
-		"yyc",
-		"zhan",
-		"fsl",
-		"dld",
-		"xlc",
-		"slm",
-		"hzc",
-		"wai",
-		"touhougod",
-		"gzz",]]--
 		"hakurei",
 		"moriya",
 		"god",
 	},
 	kingdom_colors = {
-		pc98 = "#a699cc";
-		zhu ="#853dcc",
-		hmx = "#cc1414",
-		yym = "#3d3dcc",
-		yyc = "#999999",
-		zhan = "#3dcc3d",
-		fsl = "#cc9c3d",
-		dld = "#cc3d85",
-		xlc = "#3dcccc",
-		slm ="#66cc99",
-		hzc ="#aacc66",
-		gzz = "#202020" ,
-		wai = "#cc7014",
-		touhougod = "#96943D",
 		god = "#96943D",
 		hakurei = "#CC6311",
 		moriya = "#30A048",
@@ -50,36 +22,14 @@ config = {
 		"StandardExCard",
 		"Maneuvering",
 		"THInferno",
-		"THSoul",
-		"THGlimpse",
 		--"New1v1Card",
 
 		"touhoucard",
 
 		--武将包
 		"THStandard",
-		"THWeave",
-		"THShadow",
-		"THFaith",
-		"THVenus",
-		"THLuna",
 		--"Special1v1",
 		
-		--[["Protagonist",
-		"TH0105",
-		"TH06",
-		"TH07",
-		"TH08",
-		"TH09",
-		"TH10",
-		"TH11",
-		"TH12",
-		"TH13",
-		"TH14",
-		--"TH15", --0.8不对应
-		"TH99",
-		"THNDJ",
-		"TouhouGod",]]--
 		"Standard", --此包内带pattern的定义 不能屏蔽。。。
 		"Test",
 
