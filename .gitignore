@@ -16,7 +16,7 @@ liblua5.1.dylib
 font/font.ttf
 QSanguosha.pro.user*
 etc/customScenes/custom_scenario.txt
-QSanguosha.exe
+QSanguosha*.exe
 QSanguosha
 debugQSanguosha
 lib/jsoncpp.lib
@@ -84,3 +84,7 @@ lib/oggvorbis.lib
 /imageformats
 d3dcompiler_47.dll
 *.VC.db
+/THKRK.exe
+/QSanguosha.pdb
+/QSanguosha.lib
+/QSanguosha.exp
