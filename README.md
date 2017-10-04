@@ -13,7 +13,15 @@ Email: kouchyakun@gmail.com
 
 *************************************
 
-Current version: 1.0.0
+Current version: 0.0.1 alpha
+
+*************************************
+
+For developers:
+
+To build this project, a QT Library (5.5.1 and 5.6.1 tested, 4.x does not work) and a QT Creator (3.5.1 tested) are both needed.
+Swig may be necessary as well in order to generate swig/sanguosha_wrap.cxx.
+Make sure that swig/sanguosha_wrap.cxx exists, and then open the .pro file in QT Creator and build it.
 
 *************************************
 

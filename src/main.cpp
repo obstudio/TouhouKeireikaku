@@ -79,10 +79,11 @@ int main(int argc, char *argv[])
 
     Sanguosha = new Engine;
     Config.init();
-
+    //qApp->setFont(Config.AppFont);
     BanPair::loadBanPairs();
 
     if (qApp->arguments().contains("-server")) {
+		//printf("Server will start in a few seconds...\n");
         Server *server = new Server(qApp);
         printf("Server is starting on port %u\n", Config.ServerPort);
 
@@ -92,9 +93,7 @@ int main(int argc, char *argv[])
             printf("Starting failed!\n");
 
         return qApp->exec();
-	}
-	else
-	{
+    } else {
 		qApp->setFont(Config.AppFont);
 	}
 
