@@ -51,16 +51,8 @@ SOURCES += \
     src/package/standard-cards.cpp \
     src/package/standard.cpp \
     src/package/thstandard.cpp \
-    src/package/thweave.cpp \
-    src/package/thshadow.cpp \
-    src/package/thfaith.cpp \
-    src/package/thvenus.cpp \
-    src/package/thluna.cpp \
     src/package/thinferno.cpp \
-    src/package/thsoul.cpp \
-    src/package/thglimpse.cpp \
     src/package/special1v1.cpp \
-    src/scenario/redfog-scenario.cpp \
     src/scenario/miniscenarios.cpp \
     src/scenario/scenario.cpp \
     src/scenario/scenerule.cpp \
@@ -153,16 +145,8 @@ HEADERS += \
     src/package/standard-equips.h \
     src/package/standard.h \
     src/package/thstandard.h \
-    src/package/thweave.h \
-    src/package/thshadow.h \
-    src/package/thfaith.h \
-    src/package/thvenus.h \
-    src/package/thluna.h \
     src/package/thinferno.h \
-    src/package/thsoul.h \
-    src/package/thglimpse.h \
     src/package/special1v1.h \
-    src/scenario/redfog-scenario.h \
     src/scenario/miniscenarios.h \
     src/scenario/scenario.h \
     src/scenario/scenerule.h \
