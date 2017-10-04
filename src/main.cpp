@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     Sanguosha = new Engine;
     Config.init();
-    qApp->setFont(Config.AppFont);
+
     BanPair::loadBanPairs();
 
     if (qApp->arguments().contains("-server")) {
@@ -92,7 +92,11 @@ int main(int argc, char *argv[])
             printf("Starting failed!\n");
 
         return qApp->exec();
-    }
+	}
+	else
+	{
+		qApp->setFont(Config.AppFont);
+	}
 
     QFile file("sanguosha.qss");
     if (file.open(QIODevice::ReadOnly)) {

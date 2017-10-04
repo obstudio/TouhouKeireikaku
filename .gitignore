@@ -88,3 +88,6 @@ d3dcompiler_47.dll
 /QSanguosha.pdb
 /QSanguosha.lib
 /QSanguosha.exp
+/builds/vs2015/server
+/libwinpthread-1.dll
+/QSanguosha.ilk

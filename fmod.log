@@ -31,38 +31,13 @@ FMOD: Thread::callback               : * FMOD stream thread started
 FMOD: Thread::initThread             : done.
 FMOD: SystemI::init                  : done
 
-FMOD: SystemI::createSoundInternal   : filename = audio/title/main.ogg : mode 00000080
 FMOD: SystemI::createSoundInternal   : filename =  : mode 00000080
+FMOD: SystemI::createSoundInternal   : filename = audio/title/main.ogg : mode 00000080
 FMOD: SystemI::createSoundInternal   : filename = audio/system/button-hover.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/system/button-down.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename =  : mode 00000080
-FMOD: SystemI::createSoundInternal   : filename = audio/system/add-player.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/system/choose-item.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/title/main.ogg : mode 00000080
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/iron_chain.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/system/chained.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/common/weapon.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/fire_attack.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/system/injure1.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/slash.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/common/horse.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/mind_reading.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/icy_fog.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/ex_nihilo.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/snatch.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/common/armor.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/thunder_slash.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/amazing_grace.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/haze.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/nullification.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/system/maxhplost.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/dismantlement.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/peach.ogg : mode 00000000
-FMOD: SystemI::createSoundInternal   : filename = audio/card/female/fire_slash.ogg : mode 00000000
 FMOD: SystemI::close                 : 
 FMOD: SystemI::close                 : Stop all sounds
 FMOD: Thread::callback               : * FMOD stream thread finished
+FMOD: OutputWASAPI::feederUpdate     : Starvation detected in WASAPI output buffer!
 FMOD: Thread::close                  : FMOD stream thread thread destroyed
 FMOD: SystemI::close                 : Stream thread destroyed
 FMOD: Global::decRef                 : Shut down streamer and FMOD_NONBLOCKING and FileSystem thread.
