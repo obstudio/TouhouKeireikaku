@@ -24,7 +24,7 @@ config = {
 		"THInferno",
 		--"New1v1Card",
 
-		"touhoucard",
+		--"touhoucard",
 
 		--武将包
 		"THStandard",
