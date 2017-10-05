@@ -808,7 +808,7 @@ function SmartAI:useCardSlash(card, use)
 	self:sort(self.enemies, "defenseSlash")
 	for _, enemy in ipairs(self.enemies) do
 		if not self:slashProhibit(card, enemy) and sgs.isGoodTarget(enemy, self.enemies, self, true) then
-			--if self:slashEightDiagram(enemey) then
+			--if self:slashEightDiagram(enemy) then
 				if not self:getDamagedEffects(enemy, self.player, true) and not self:touhouCardAttackWaste(card,self.player,enemy) then
 					table.insert(targets, enemy)
 				else
@@ -2554,16 +2554,16 @@ function SmartAI:useCardDuel(duel, use)
 		local duel_to_flandre = true
 		if enemy:hasSkill("wosui") and self.player:getHp() >= enemy:getHp() then
 			if getKnownCard(enemy, self.player, "Slash", true) > 0 then duel_to_flandre = false end
-			if not enemey:isKongcheng() or enemey:getPile("wooden_ox"):length() > 0 then
-				local all_num = enemey:getHandcardNum() + enemey:getPile("wooden_ox"):length()
+			if not enemy:isKongcheng() or enemy:getPile("wooden_ox"):length() > 0 then
+				local all_num = enemy:getHandcardNum() + enemy:getPile("wooden_ox"):length()
 				local visible_num = 0
-				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), enemey:objectName())
-				for _, c in sgs.qlist(enemey:getHandcards()) do
+				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), enemy:objectName())
+				for _, c in sgs.qlist(enemy:getHandcards()) do
 					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
 						visible_num = visible_num + 1
 					end
 				end
-				for _, id in sgs.qlist(enemey:getPile("wooden_ox")) do
+				for _, id in sgs.qlist(enemy:getPile("wooden_ox")) do
 					local c = sgs.Sanguosha:getCard(id)
 					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
 						visible_num = visible_num + 1
@@ -3588,18 +3588,18 @@ function SmartAI:useCardCollateral(card, use)
 	local final_enemy = nil
 	for _, enemy in ipairs(fromList) do
 		local collateral_to_flandre_as_first_target = true
-		if enemey:hasSkill("wosui") and self.player:getHp() >= enemey:getHp() then
-			if getKnownCard(enemey, self.player, "Slash", true) > 0 then collateral_to_flandre_as_first_target = false end
-			if not enemey:isKongcheng() or enemey:getPile("wooden_ox"):length() > 0 then
-				local all_num = enemey:getHandcardNum() + enemey:getPile("wooden_ox"):length()
+		if enemy:hasSkill("wosui") and self.player:getHp() >= enemy:getHp() then
+			if getKnownCard(enemy, self.player, "Slash", true) > 0 then collateral_to_flandre_as_first_target = false end
+			if not enemy:isKongcheng() or enemy:getPile("wooden_ox"):length() > 0 then
+				local all_num = enemy:getHandcardNum() + enemy:getPile("wooden_ox"):length()
 				local visible_num = 0
-				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), enemey:objectName())
-				for _, c in sgs.qlist(enemey:getHandcards()) do
+				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), enemy:objectName())
+				for _, c in sgs.qlist(enemy:getHandcards()) do
 					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
 						visible_num = visible_num + 1
 					end
 				end
-				for _, id in sgs.qlist(enemey:getPile("wooden_ox")) do
+				for _, id in sgs.qlist(enemy:getPile("wooden_ox")) do
 					local c = sgs.Sanguosha:getCard(id)
 					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
 						visible_num = visible_num + 1

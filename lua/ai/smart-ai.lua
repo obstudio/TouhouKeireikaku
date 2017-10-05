@@ -348,7 +348,7 @@ function sgs.getDefense(player, gameProcess)
 
 	local attacker = global_room:getCurrent()
 	local hasEightDiagram = false
-	if player:hasArmorEffect("EightDiagram") or player:hasArmorEffect("bazhen") or self:hasJiahuEffect(player) then
+	if player:hasArmorEffect("EightDiagram") or player:hasArmorEffect("bazhen") then
 		hasEightDiagram = true
 	end
 
