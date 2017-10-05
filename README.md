@@ -13,7 +13,7 @@ Email: kouchyakun@gmail.com
 
 *************************************
 
-Current version: 0.0.1 alpha
+Current version: 0.1.1 alpha
 
 *************************************
 
