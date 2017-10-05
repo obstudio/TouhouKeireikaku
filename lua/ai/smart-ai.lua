@@ -348,7 +348,7 @@ function sgs.getDefense(player, gameProcess)
 
 	local attacker = global_room:getCurrent()
 	local hasEightDiagram = false
-	if player:hasArmorEffect("EightDiagram") or player:hasArmorEffect("bazhen") then
+	if player:hasArmorEffect("EightDiagram") or player:hasArmorEffect("bazhen") or self:hasJiahuEffect(player) then
 		hasEightDiagram = true
 	end
 
@@ -759,6 +759,7 @@ function SmartAI:adjustUsePriority(card, v)
 		if card:isKindOf("NatureSlash") then v = v - 0.1 end
 		if card:getSkillName() == "fuhun" then v = v + (self.player:getPhase() == sgs.Player_Play and 0.21 or -0.1) end
 		if self.player:hasSkill("jiang") and card:isRed() then v = v + 0.21 end
+		if self.player:hasSkill("sheyue") and not card:isRed() then v = v + 0.21 end
 		--if self.player:hasSkill("guaili") and card:isRed() then v = v + 0.21 end
 		if self.player:hasSkill("wushen") and card:getSuit() == sgs.Card_Heart then v = v + 0.11 end
 		if self.player:hasSkill("jinjiu") and card:getEffectiveId() >= 0 and sgs.Sanguosha:getEngineCard(card:getEffectiveId()):isKindOf("Analeptic") then v = v + 0.11 end
@@ -1046,6 +1047,7 @@ function SmartAI:sortByKeepValue(cards, inverse, kept, Write)
 			if card:isRed() then v = v + 0.02 end
 			if card:isKindOf("NatureSlash") then v = v + 0.03 end
 			if self.player:hasSkill("jiang") and card:isRed() then v = v + 0.04 end
+			if self.player:hasSkill("sheyue") and not card:isRed() then v = v + 0.04 end
 			--if self.player:hasSkill("guaili") and card:isRed() then v = v + 0.04 end
 			if self.player:hasSkill("wushen") and card:getSuit() == sgs.Card_Heart then v = v + 0.03 end
 			if self.player:hasSkill("jinjiu") and card:getEffectiveId() >= 0 and

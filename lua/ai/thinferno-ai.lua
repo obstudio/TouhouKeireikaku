@@ -6,10 +6,31 @@ function SmartAI:findPhoenixFlameTargets(phoenix_flame, skill_name)
 		self:sort(self.enemies, "handcard")
 		local jinks = self:getCardsNum("Jink")
 		for _, p in ipairs(self.enemies) do
+			local phoenix_flame_to_flandre = true
+			if p:hasSkill("wosui") and self.player:getHp() >= p:getHp() then
+				if getKnownCard(p, self.player, "Slash", true) > 0 then phoenix_flame_to_flandre = false end
+				if not p:isKongcheng() or p:getPile("wooden_ox"):length() > 0 then
+					local all_num = p:getHandcardNum() + p:getPile("wooden_ox"):length()
+					local visible_num = 0
+					local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), p:objectName())
+					for _, c in sgs.qlist(p:getHandcards()) do
+						if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
+							visible_num = visible_num + 1
+						end
+					end
+					for _, id in sgs.qlist(p:getPile("wooden_ox")) do
+						local c = sgs.Sanguosha:getCard(id)
+						if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
+							visible_num = visible_num + 1
+						end
+					end
+					if visible_num < all_num then phoenix_flame_to_flandre = false end
+				end
+			end
 			if (jinks - #targets > 0 or ((p:getHandcardNum() <= 2 or (p:getHandcardNum() <= 2 + self.player:getLostHp() and skill_name == "youwang")) and not self:isWeak()))
 					and not (jinks - #targets == 1 and ((p:getHandcardNum() > 2 and skill_name ~= "youwang") or p:getHandcardNum() > 2 + self.player:getLostHp())
 					and self.player:getHp() <= 3) and not self.room:isProhibited(self.player, p, phoenix_flame) and phoenix_flame:targetFilter(sgs.PlayerList(), p, self.player)
-					and not self:needDeath(p) and not self:cantbeHurt(p, self.player) then
+					and not self:needDeath(p) and not self:cantbeHurt(p, self.player) and phoenix_flame_to_flandre then
 				table.insert(targets, p)
 			end
 		end

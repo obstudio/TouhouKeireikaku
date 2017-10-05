@@ -134,6 +134,33 @@ function sgs.isGoodTarget(player, targets, self, isSlash)
 		return false
 	end
 	
+	if isSlash and player:hasSkill("wosui") and self then
+		local current = self.room:getCurrent()
+		if self:isFriend(current) and not self:isFriend(player, current) and player:getHp() <= current:getHp() then
+			if getKnownCard(player, self.player, "Jink", true) > 0 then return false end
+			if not (player:isKongcheng() and not player:hasArmorEffect("EightDiagram") and player:getPile("wooden_ox"):isEmpty()) then
+				local all_num = player:getHandcardNum() + player:getPile("wooden_ox"):length()
+				local visible_num = 0
+				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), player:objectName())
+				for _, c in sgs.qlist(player:getHandcards()) do
+					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Jink") then
+						visible_num = visible_num + 1
+					end
+				end
+				for _, id in sgs.qlist(player:getPile("wooden_ox")) do
+					local c = sgs.Sanguosha:getCard(id)
+					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Jink") then
+						visible_num = visible_num + 1
+					end
+				end
+				if (visible_num < all_num or player:hasArmorEffect("EightDiagram")) and current:getCards("he"):length() <= 4
+						and (current:getHandcardNum() <= 3 or self:isWeak(current) or self:hasKeyEquip(current)) then
+					return false
+				end
+			end
+		end
+	end
+	
 	if isSlash and self and (self:hasCrossbowEffect() or self:getCardsNum("Crossbow") > 0) and self:getCardsNum("Slash") > player:getHp() then
 		return true
 	end
@@ -2523,9 +2550,32 @@ function SmartAI:useCardDuel(duel, use)
 		useduel = n1 >= n2 or self:needToLoseHp(self.player, nil, nil, true)
 					or self:getDamagedEffects(self.player, enemy) or (n2 < 1 and sgs.isGoodHp(self.player))
 					or ((self:hasSkill("jianxiong") or self.player:getMark("shuangxiong") > 0) and sgs.isGoodHp(self.player))
+		
+		local duel_to_flandre = true
+		if enemy:hasSkill("wosui") and self.player:getHp() >= enemy:getHp() then
+			if getKnownCard(enemy, self.player, "Slash", true) > 0 then duel_to_flandre = false end
+			if not enemey:isKongcheng() or enemey:getPile("wooden_ox"):length() > 0 then
+				local all_num = enemey:getHandcardNum() + enemey:getPile("wooden_ox"):length()
+				local visible_num = 0
+				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), enemey:objectName())
+				for _, c in sgs.qlist(enemey:getHandcards()) do
+					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
+						visible_num = visible_num + 1
+					end
+				end
+				for _, id in sgs.qlist(enemey:getPile("wooden_ox")) do
+					local c = sgs.Sanguosha:getCard(id)
+					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
+						visible_num = visible_num + 1
+					end
+				end
+				if visible_num < all_num then duel_to_flandre = false end
+			end
+		end
 
 		if (not use.current_targets or not table.contains(use.current_targets, enemy:objectName()))
-			and self:objectiveLevel(enemy) > 3 and canUseDuelTo(enemy) and not self:cantbeHurt(enemy) and useduel and sgs.isGoodTarget(enemy, enemies, self) then
+				and self:objectiveLevel(enemy) > 3 and canUseDuelTo(enemy) and not self:cantbeHurt(enemy) and useduel
+				and duel_to_flandre and sgs.isGoodTarget(enemy, enemies, self) then
 			if not table.contains(targets, enemy) then table.insert(targets, enemy) end
 		end
 	end
@@ -2594,6 +2644,9 @@ sgs.dynamic_value.damage_card.Duel = true
 sgs.ai_skill_cardask["duel-slash"] = function(self, data, pattern, target)
 	if self.player:getPhase()==sgs.Player_Play then return self:getCardId("Slash") end
 	if self:hasSkills("zhanyi|chaoren") and not self:isFriend(target) then
+		return self:getCardId("Slash")
+	end
+	if self.player:hasSkill("wosui") and not self:isFriend(target) and target:getHp() >= self.player:getHp() then
 		return self:getCardId("Slash")
 	end
 	if target:hasSkill("souji") and target:isAlive() and self.room:getCurrent():objectName()==target:objectName()  then
@@ -3534,6 +3587,28 @@ function SmartAI:useCardCollateral(card, use)
 	local n = nil
 	local final_enemy = nil
 	for _, enemy in ipairs(fromList) do
+		local collateral_to_flandre_as_first_target = true
+		if enemey:hasSkill("wosui") and self.player:getHp() >= enemey:getHp() then
+			if getKnownCard(enemey, self.player, "Slash", true) > 0 then collateral_to_flandre_as_first_target = false end
+			if not enemey:isKongcheng() or enemey:getPile("wooden_ox"):length() > 0 then
+				local all_num = enemey:getHandcardNum() + enemey:getPile("wooden_ox"):length()
+				local visible_num = 0
+				local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), enemey:objectName())
+				for _, c in sgs.qlist(enemey:getHandcards()) do
+					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
+						visible_num = visible_num + 1
+					end
+				end
+				for _, id in sgs.qlist(enemey:getPile("wooden_ox")) do
+					local c = sgs.Sanguosha:getCard(id)
+					if (c:hasFlag("visible") or c:hasFlag(flag)) and not c:isKindOf("Slash") then
+						visible_num = visible_num + 1
+					end
+				end
+				if visible_num < all_num then collateral_to_flandre_as_first_target = false end
+			end
+		end
+		if not collateral_to_flandre_as_first_target then continue end
 		if (not use.current_targets or not table.contains(use.current_targets, enemy:objectName()))
 			and self:hasTrickEffective(card, enemy)
 			and not self:hasSkills(sgs.lose_equip_skill, enemy)
