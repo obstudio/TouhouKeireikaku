@@ -38,7 +38,6 @@ tags
 platforms/
 /src/package/blackhistory.*
 /extensions
-/audio/bgm/*
 bgms/*
 *~
 *.kdev4
