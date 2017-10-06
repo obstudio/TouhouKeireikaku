@@ -13,7 +13,7 @@ Email: kouchyakun@gmail.com
 
 *************************************
 
-Current version: 0.1.2 alpha
+Current version: 0.1.3 alpha
 
 *************************************
 
@@ -41,7 +41,10 @@ Acknowledgements:
 		czb0598
 		doublebit
 
-	Finally, I shall express my gratitude and apology to the illustrators of the raw images of the generals and cards, whose names are presented in another document. Due to the lack of illustrators in my team, I had to pick the pictures from Pixiv without their authors' permission. I would like to apologize again for arbitrarily using your works in my program, and I would like to claim again that this program will never be used for commercial purpose.
+	Finally, I shall express my gratitude and apology to the illustrators of the raw images of the generals and cards, whose names are
+	presented in illustrators.xlsx. Due to the lack of illustrators in my team, I had to pick the pictures from Pixiv without their authors'
+	permission. I would like to apologize again for arbitrarily using your works in my program, and I would like to claim again that this
+	program will never be used for commercial purpose.
 
 
 
