@@ -21,10 +21,10 @@
 #include "choosetriggerorderbox.h"
 #include "engine.h"
 #include "button.h"
-#include "skinbank.h"
+#include "SkinBank.h"
 #include "client.h"
 #include "clientplayer.h"
-#include "timedprogressbar.h"
+#include "TimedProgressBar.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPropertyAnimation>
