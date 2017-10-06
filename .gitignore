@@ -38,7 +38,6 @@ tags
 platforms/
 /src/package/blackhistory.*
 /extensions
-/audio/bgm/*
 bgms/*
 *~
 *.kdev4
@@ -93,3 +92,4 @@ d3dcompiler_47.dll
 /QSanguosha.ilk
 /THKRK
 /.qmake.*
+/todo.txt
