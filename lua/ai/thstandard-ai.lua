@@ -1783,7 +1783,7 @@ sgs.ai_skill_use_func.CitanCard = function(card, use, self)
 	if not self:isWeak() then
 		self:sort(self.enemies, "handcard", true)
 		for _, p in ipairs(self.enemies) do
-			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), from, to)
+			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), self.player, p)
 			if damage.damage == 0 then continue end
 			if p:getHandcardNum() <= self.player:getHandcardNum() and math.abs(self.player:getHandcardNum() - p:getHandcardNum()) <= self.player:getLostHp()
 					and getKnownCard(p, self.player, "Peach", true) >= self:getCardsNum("Peach") and not self:cantbeHurt(p) and not self:needToLoseHp(p) then
@@ -1796,7 +1796,7 @@ sgs.ai_skill_use_func.CitanCard = function(card, use, self)
 			end
 		end
 		for _, p in ipairs(self.enemies) do
-			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), from, to)
+			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), self.player, p)
 			if damage.damage == 0 then continue end
 			if p:getHandcardNum() > self.player:getHandcardNum() and math.abs(self.player:getHandcardNum() - p:getHandcardNum()) <= self.player:getLostHp()
 					and getKnownCard(p, self.player, "Peach", true) >= self:getCardsNum("Peach") and not self:cantbeHurt(p) and not self:needToLoseHp(p) then
@@ -1809,7 +1809,7 @@ sgs.ai_skill_use_func.CitanCard = function(card, use, self)
 			end
 		end
 		for _, p in ipairs(self.friends) do
-			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), from, to)
+			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), self.player, p)
 			if damage.damage == 0 then continue end
 			if p:getHandcardNum() <= self.player:getHandcardNum() and math.abs(self.player:getHandcardNum() - p:getHandcardNum()) <= self.player:getLostHp()
 					and self:needToLoseHp(p) then
