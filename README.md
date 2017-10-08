@@ -17,6 +17,16 @@ Current version: 0.1.5 alpha
 
 *************************************
 
+For players:
+
+To make the program function properly, the following dll files may be needed (apart from the files
+that are already included in the root directory):
+	icudt54.dll    icuin54.dll    icuuc54.dll    libwinpthread-1.dll
+	Qt5Declarative.dll    Qt5Qml.dll    Qt5Script.dll    Qt5Sql.dll
+	Qt5XmlPatterns.dll
+
+*************************************
+
 For developers:
 
 To build this project, a QT Library (5.5.1 and 5.6.1 tested, 4.x does not work) and a QT Creator (3.5.1 tested) are both needed.
