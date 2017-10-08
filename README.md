@@ -1,6 +1,6 @@
-TouhouKeireikaku V1    README.md
+TouhouKeireikaku Alpha
 
-*************************************
+=====================================
 
 TouhouKeireikaku is an open source game based on QSanguosha and Touhou Project. It will never be
 used for commercial purpose.
