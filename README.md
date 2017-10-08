@@ -19,10 +19,16 @@ Current version: 0.1.5 alpha
 For players:
 
 To make the program function properly, the following dll files may be needed (apart from the files
-that are already included in the root directory):
-	icudt54.dll    icuin54.dll    icuuc54.dll    libwinpthread-1.dll
-	Qt5Declarative.dll    Qt5Qml.dll    Qt5Script.dll    Qt5Sql.dll
-	Qt5XmlPatterns.dll
+that are already included in the root directory):<br>
+	icudt54.dll<br>
+	icuin54.dll<br>
+	icuuc54.dll<br>
+	libwinpthread-1.dll<br>
+	Qt5Declarative.dll<br>
+	Qt5Qml.dll<br>
+	Qt5Script.dll<br>
+	Qt5Sql.dll<br>
+	Qt5XmlPatterns.dll<br>
 
 *************************************
 
