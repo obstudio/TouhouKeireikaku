@@ -1,5 +1,4 @@
 TouhouKeireikaku Alpha
-
 =====================================
 
 TouhouKeireikaku is an open source game based on QSanguosha and Touhou Project. It will never be
