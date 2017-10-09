@@ -1,6 +1,5 @@
-TouhouKeireikaku V1    README.md
-
-*************************************
+TouhouKeireikaku Alpha
+=====================================
 
 TouhouKeireikaku is an open source game based on QSanguosha and Touhou Project. It will never be
 used for commercial purpose.
@@ -14,6 +13,22 @@ Email: kouchyakun@gmail.com
 *************************************
 
 Current version: 0.1.5 alpha
+
+*************************************
+
+For players:
+
+To make the program function properly, the following dll files may be needed (apart from the files
+that are already included in the root directory):<br>
+	icudt54.dll<br>
+	icuin54.dll<br>
+	icuuc54.dll<br>
+	libwinpthread-1.dll<br>
+	Qt5Declarative.dll<br>
+	Qt5Qml.dll<br>
+	Qt5Script.dll<br>
+	Qt5Sql.dll<br>
+	Qt5XmlPatterns.dll<br>
 
 *************************************
 
