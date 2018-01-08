@@ -1862,6 +1862,84 @@ void WoodenOx::onUninstall(ServerPlayer *player) const
     Treasure::onUninstall(player);
 }
 
+Haze::Haze(Suit suit, int number)
+    : SingleTargetTrick(suit, number)
+{
+    setObjectName("haze");
+}
+
+bool Haze::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
+{
+    int total_num = 1 + Sanguosha->correctCardTarget(TargetModSkill::ExtraTarget, Self, this);
+    return targets.length() < total_num && to_select != Self && !to_select->isAllNude();
+}
+
+void Haze::onEffect(const CardEffectStruct &effect) const
+{
+    Room *room = effect.to->getRoom();
+    room->setTag("HazeTarget", QVariant::fromValue(effect.to));
+    QString suit_str = room->askForChoice(effect.from, objectName(), "heart+diamond+spade+club");
+    QString pattern = ".|" + suit_str;
+    QString prompt = QString("@haze:%1::%2").arg(effect.from->objectName()).arg(suit_str);
+    
+    LogMessage log;
+    log.type = "#Haze";
+    log.from = effect.from;
+    log.arg = suit_str;
+    room->sendLog(log);
+    
+    const Card *card = room->askForCard(effect.to, pattern, prompt);
+    if (!card && !effect.to->isAllNude()) {
+        int card_id = room->askForCardChosen(effect.from, effect.to, "hej", objectName());
+        CardMoveReason reason(CardMoveReason::S_REASON_EXTRACTION, effect.from->objectName());
+        room->obtainCard(effect.from, Sanguosha->getCard(card_id), reason, room->getCardPlace(card_id) != Player::PlaceHand);
+    }
+    room->removeTag("HazeTarget");
+}
+
+MindReading::MindReading(Card::Suit suit, int number)
+    : SingleTargetTrick(suit, number)
+{
+    setObjectName("mind_reading");
+}
+
+bool MindReading::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
+{
+    int total_num = 1 + Sanguosha->correctCardTarget(TargetModSkill::ExtraTarget, Self, this);
+    return targets.length() < total_num && to_select != Self && !to_select->isKongcheng();
+}
+
+void MindReading::onEffect(const CardEffectStruct &effect) const
+{
+    Room *room = effect.to->getRoom();
+    room->showAllCards(effect.to, effect.from);
+    effect.from->drawCards(1, objectName());
+}
+
+IcyFog::IcyFog(Card::Suit suit, int number)
+    : SingleTargetTrick(suit, number)
+{
+    setObjectName("icy_fog");
+}
+
+bool IcyFog::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
+{
+    int total_num = 1 + Sanguosha->correctCardTarget(TargetModSkill::ExtraTarget, Self, this);
+    return targets.length() < total_num && !to_select->getEquips().isEmpty() && to_select != Self;
+}
+
+void IcyFog::onEffect(const CardEffectStruct &effect) const
+{
+    if (effect.to->getEquips().isEmpty())
+        return;
+    Room *room = effect.to->getRoom();
+    if (!room->askForUseCard(effect.to, "EquipCard|.|.|hand", "@icy_fog-equipping")) {
+        int card_id = room->askForCardChosen(effect.from, effect.to, "e", objectName());
+        CardMoveReason reason(CardMoveReason::S_REASON_EXTRACTION, effect.from->objectName());
+        room->obtainCard(effect.from, Sanguosha->getCard(card_id), reason, room->getCardPlace(card_id) != Player::PlaceHand);
+    }
+}
+
 StandardCardPackage::StandardCardPackage()
     : Package("standard_cards", Package::CardPack)
 {
@@ -1995,6 +2073,14 @@ StandardCardPackage::StandardCardPackage()
           << new Dismantlement(Card::Heart, 12)
           << new Collateral(Card::Club, 12)
           << new Collateral(Card::Club, 13)
+          << new Haze(Card::Spade, 2)
+          << new Haze(Card::Spade, 3)
+          << new Haze(Card::Club, 10)
+          << new IcyFog(Card::Spade, 5)
+          << new IcyFog(Card::Club, 1)
+          << new IcyFog(Card::Club, 2)
+          << new MindReading(Card::Heart, 6)
+          << new MindReading(Card::Heart, 7)
           << new Nullification(Card::Spade, 11)
           << new Nullification(Card::Club, 12)
           << new Nullification(Card::Club, 13)
