@@ -10,7 +10,6 @@
 #include "ai.h"
 #include "settings.h"
 #include "maneuvering.h"
-#include "thinferno.h"
 #include "util.h"
 #include "roomthread.h"
 
@@ -91,7 +90,6 @@ New1v1CardPackage::New1v1CardPackage()
         << new IceSword(Card::Spade, 9)
 		<< new Analeptic(Card::Spade, 9)
         << new Slash(Card::Spade, 10)
-		<< new AzraelScythe(Card::Spade, 10)
         << new Snatch(Card::Spade, 11)
         << new ThunderSlash(Card::Spade, 11)
         << new Spear(Card::Spade, 12)
@@ -110,7 +108,6 @@ New1v1CardPackage::New1v1CardPackage()
         << new Jink(Card::Heart, 5)
 		<< new Jink(Card::Heart, 5)
         << new Indulgence(Card::Heart, 6)
-		<< new PhoenixFlame(Card::Heart, 6)
         << new ExNihilo(Card::Heart, 7)
 		<< new Jink(Card::Heart, 7)
         << new ExNihilo(Card::Heart, 8)
@@ -168,7 +165,6 @@ New1v1CardPackage::New1v1CardPackage()
         << new Jink(Card::Diamond, 7)
 		<< new Jink(Card::Diamond, 7)
         << new Jink(Card::Diamond, 8)
-		<< new PhoenixFlame(Card::Diamond, 8)
         << new Slash(Card::Diamond, 9)
 		<< new Slash(Card::Diamond, 9)
         << new Jink(Card::Diamond, 10)
