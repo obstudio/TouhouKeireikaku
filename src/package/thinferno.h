@@ -16,39 +16,6 @@ public:
     void onEffect(const CardEffectStruct &effect) const;
 };
 
-class Haze : public SingleTargetTrick
-{
-	Q_OBJECT
-
-public:
-	Q_INVOKABLE Haze(Card::Suit suit, int number);
-	
-	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
-	void onEffect(const CardEffectStruct &effect) const;
-};
-
-class MindReading : public SingleTargetTrick
-{
-	Q_OBJECT
-
-public:
-	Q_INVOKABLE MindReading(Card::Suit suit, int number);
-	
-	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
-	void onEffect(const CardEffectStruct &effect) const;
-};
-
-class IcyFog : public SingleTargetTrick
-{
-	Q_OBJECT
-
-public:
-	Q_INVOKABLE IcyFog(Card::Suit suit, int number);
-	
-	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
-	void onEffect(const CardEffectStruct &effect) const;
-};
-
 class AzraelScythe : public Weapon
 {
     Q_OBJECT
