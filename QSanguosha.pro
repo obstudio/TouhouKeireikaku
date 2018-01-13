@@ -51,7 +51,6 @@ SOURCES += \
     src/package/standard-cards.cpp \
     src/package/standard.cpp \
     src/package/thstandard.cpp \
-    src/package/thinferno.cpp \
     src/package/special1v1.cpp \
     src/scenario/miniscenarios.cpp \
     src/scenario/scenario.cpp \
@@ -145,7 +144,6 @@ HEADERS += \
     src/package/standard-equips.h \
     src/package/standard.h \
     src/package/thstandard.h \
-    src/package/thinferno.h \
     src/package/special1v1.h \
     src/scenario/miniscenarios.h \
     src/scenario/scenario.h \

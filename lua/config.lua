@@ -21,7 +21,6 @@ config = {
 		"StandardCard",
 		"StandardExCard",
 		"Maneuvering",
-		"THInferno",
 		--"New1v1Card",
 
 		--"touhoucard",
