@@ -1,9 +1,10 @@
 TouhouKeireikaku Alpha
 =====================================
 
-TouhouKeireikaku is an open source game based on QSanguosha and Touhou Project. It is never to be
-used for any commercial purposes.
-The whole project is written in C++, along with QT for GUI framework, and Lua for AI scripts.	by Kouchya
+TouhouKeireikaku is an open source game, which derives from Touhoukill by Iwtmusou and is originally
+based on QSanguosha and Touhou Project. It is never to be used for any commercial purposes.<br>
+The whole project is written in C++, along with QT for GUI framework, and Lua for AI scripts.<br>
+by Kouchya
 
 GitHub: https://github.com/Kouchya/TouhouKeireikaku
 
@@ -11,7 +12,7 @@ Email: kouchyakun@gmail.com
 
 *************************************
 
-Current version: 0.1.5 alpha
+Current version: 0.1.7 alpha
 
 *************************************
 
@@ -42,8 +43,8 @@ Make sure that swig/sanguosha_wrap.cxx exists, and then open the .pro file in QT
 Acknowledgements:
 
 The persons listed below are appreciated who have made considerable and significant contributions to this project:<br>
-	Mogara - The author of QSanguosha. The world was activated due to his effort.<br>
-	Iwtmusou - The author of TouhouKill, on which this program is based.<br>
+	Mogara - The author of QSanguosha.<br>
+	Iwtmusou - The author of TouhouKill.<br>
 	jjyyxx - This program would never be completed but for his technical support.<br>
 
 The persons listed below are appreciated who have helped me a lot with my coding problems in Tieba:<br>
