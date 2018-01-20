@@ -20,15 +20,18 @@ For players:
 
 To make the program function properly, the following dll files may be needed (apart from the files
 that are already included in the root directory):<br>
-	icudt54.dll<br>
-	icuin54.dll<br>
-	icuuc54.dll<br>
-	libwinpthread-1.dll<br>
-	Qt5Declarative.dll<br>
-	Qt5Qml.dll<br>
-	Qt5Script.dll<br>
-	Qt5Sql.dll<br>
-	Qt5XmlPatterns.dll<br>
+　　bin/icudt54.dll<br>
+　　bin/icuin54.dll<br>
+　　bin/icuuc54.dll<br>
+　　bin/Qt5Declarative.dll<br>
+　　bin/Qt5Qml.dll<br>
+　　bin/Qt5Script.dll<br>
+　　bin/Qt5Sql.dll<br>
+　　bin/libgcc_s_dw2-1.dl<br>
+　　bin/libstdc++-6.dll<br>
+　　bin/libwinpthread-1.dll<br>
+　　bin/Qt5XmlPatterns.dll<br>
+　　plugins/imageformats<br>
 
 *************************************
 
