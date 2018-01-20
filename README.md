@@ -6,9 +6,9 @@ based on QSanguosha and Touhou Project. It is never to be used for any commercia
 The whole project is written in C++, along with QT for GUI framework, and Lua for AI scripts.<br>
 by Kouchya
 
-GitHub: https://github.com/Kouchya/TouhouKeireikaku
+GitHub: https://github.com/obstudio/TouhouKeireikaku
 
-Email: kouchyakun@gmail.com
+Email: kouchyakun@outlook.com
 
 *************************************
 
