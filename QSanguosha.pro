@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2010-06-13T04:26:52
 # -------------------------------------------------
-TARGET = THKRK
+TARGET = TouhouKeireikaku
 QT += network widgets
 TEMPLATE = app
 CONFIG += audio
