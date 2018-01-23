@@ -84,14 +84,14 @@ vcruntime140.dll
 lib/oggvorbis.lib
 d3dcompiler_47.dll
 *.VC.db
-/THKRK.exe
+/TouhouKeireikaku.exe
 /QSanguosha.pdb
 /QSanguosha.lib
 /QSanguosha.exp
 /builds/vs2015/server
 /libwinpthread-1.dll
 /QSanguosha.ilk
-/THKRK
+/TouhouKeireikaku
 /.qmake.*
 /todo.txt
 /design_organize.txt
