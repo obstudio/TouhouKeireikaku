@@ -11,7 +11,7 @@ math.randomseed(os.time())
 SmartAI = (require "middleclass").class("SmartAI")
 
 --original_version = "QSanguosha AI 20140901 (V1.414213562 Alpha)"
-version = "TouhouSatsu AI 20160724"
+version = "TouhouKeireikaku AI 20180126"
 
 
 
@@ -926,7 +926,7 @@ function SmartAI:cardNeed(card)
 	if card:isKindOf("Crossbow") and  self:hasSkills("luoshen|yongsi|kurou|keji|wusheng|wushen|sheyue|zhusi",self.player) then return 20 end
 	if card:isKindOf("Axe") and  self:hasSkills("luoyi|jiushi|jiuchi|pojun|zhangqi",self.player) then return 15 end
 	if card:isKindOf("Weapon") and (not self.player:getWeapon()) and (self:getCardsNum("Slash") > 1) then return 6 end
-	if not card:isKindOf("BasicCard") and self.player:hasSkill("jingyue") and getKnownCard(self.player, self.player, "Jink", true) <= 2 then
+	if not card:isKindOf("BasicCard") and self.player:hasSkill("jingyue") and getKnownCard(self.player, self.player, "Jink", true) <= 1 then
 		return 15
 	end
 	if card:isKindOf("Nullification") and self:getCardsNum("Nullification") == 0 then
