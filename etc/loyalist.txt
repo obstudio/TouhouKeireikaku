@@ -2,7 +2,7 @@ _		daiyousei	0.3
 _		chen	0.2
 _		hina	0.3
 _		lily	0.3
-reimu	aya		0.4
+reimu	aya		0.2
 reimu	kyouko	0.6
 reimu	yukari	0.2
 reimu	chen	0.2

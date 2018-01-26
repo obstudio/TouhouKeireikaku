@@ -993,7 +993,7 @@ public:
 				suit_list << c->getSuitString();
 		}
 		QString suits = suit_list.join(",");
-		return room->askForCard(kyouko, ".|" + suits, "@huiyin-discard", data);
+		return room->askForCard(kyouko, ".|" + suits, "@huiyin-discard", data, objectName());
 	}
 	
     bool effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
@@ -1757,12 +1757,12 @@ public:
 	Jinlun() : TriggerSkill("jinlun")
 	{
 		frequency = Compulsory;
-		events << ConfirmDamage << BeforeCardsMove;
+		events << DamageInflicted << BeforeCardsMove;
 	}
 	
 	QList<SkillInvokeDetail> triggerable(TriggerEvent event, const Room *room, const QVariant &data) const
 	{
-		if (event == ConfirmDamage) {
+		if (event == DamageInflicted) {
 			DamageStruct damage = data.value<DamageStruct>();
 			if (damage.to && damage.to->hasSkill(this) && !damage.to->getArmor() && damage.damage > 1)
 				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, damage.to, damage.to, NULL, true);
@@ -1786,7 +1786,7 @@ public:
 	{
 		ServerPlayer *suwako = invoke->invoker;
 		room->sendCompulsoryTriggerLog(suwako, objectName());
-		if (event == ConfirmDamage) {
+		if (event == DamageInflicted) {
 			DamageStruct damage = data.value<DamageStruct>();
 			damage.damage = 1;
 			data = QVariant::fromValue(damage);

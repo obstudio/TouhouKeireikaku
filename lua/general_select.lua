@@ -159,29 +159,6 @@ selectFirst = function(player, candidates) -- string
 		"suwako",
 		"mystia",
 		"minoriko",
-		"ran",
-		"erin",
-		"ex_iku",
-		"daiyousei",
-		"wriggle",
-		"lily",
-		"ex_kanako",
-		"sakuya",
-		"nue",
-		"ex_lily",
-		"seijya",
-		"momiji",
-		"sekibanki",
-		"seiga",
-		"shikieiki",
-		"yatsuhashi",
-		"kosuzu",
-		"clownpiece",
-		"ringo",
-		"seiran",
-		"sumireko",
-		"ex_yuyuko",
-		"ex_seiga",
 	}
 	
 	local seat_place
@@ -216,13 +193,13 @@ selectFirst = function(player, candidates) -- string
 		if (seat_str ~= "_") then
 			local seat_strs = string.split(seat_str, ":")
 			if (table.contains(seat_strs, seat_place .. "0")) then
-				value = value * 1.5
+				value = value * 1.12
 			elseif (table.contains(seat_strs, seat_place .. "1")) then
-				value = value * 1.2
+				value = value * 1.06
 			elseif (table.contains(seat_strs, seat_place .. "2")) then
-				value = value * 0.8
+				value = value * 0.94
 			elseif (table.contains(seat_strs, seat_place .. "3")) then
-				value = value * 0.6
+				value = value * 0.88
 			end
 		end
 		local seat_key2 = lord:getGeneralName() .. ":" .. candidate .. ":" .. role
@@ -230,9 +207,13 @@ selectFirst = function(player, candidates) -- string
 		if (seat_str2 ~= "_") then
 			local seat_strs2 = string.split(seat_str2, ":")
 			if (table.contains(seat_strs2, seat_place .. "0")) then
-				value = value * 1.2
+				value = value * 1.12
 			elseif (table.contains(seat_strs2, seat_place .. "1")) then
-				value = value * 0.8
+				value = value * 1.06
+			elseif (table.contains(seat_strs2, seat_place .. "2")) then
+				value = value * 0.94
+			elseif (table.contains(seat_strs2, seat_place .. "3")) then
+				value = value * 0.88
 			end
 		end
 
