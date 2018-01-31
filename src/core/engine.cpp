@@ -1235,17 +1235,28 @@ int Engine::correctMaxCards(const Player *target, bool fixed, const QString &exc
     return extra;
 }
 
+bool Engine::cardNoLimit(const Player *from, const Card *card) const
+{
+    foreach (const TargetModSkill *skill, targetmod_skills) {
+        ExpPattern p(skill->getPattern());
+        if (p.match(from, card)) {
+            if (skill->noLimit(from, card))
+                return true;
+        }
+    }
+    return false;
+}
+
 int Engine::correctCardTarget(const TargetModSkill::ModType type, const Player *from, const Card *card) const
 {
     int x = 0;
 
-    if (type == TargetModSkill::Residue) {
+    if (type == TargetModSkill::NoLimit) {
         foreach (const TargetModSkill *skill, targetmod_skills) {
             ExpPattern p(skill->getPattern());
             if (p.match(from, card)) {
-                int residue = skill->getResidueNum(from, card);
-                if (residue >= 998) return residue;
-                x += residue;
+                if (skill->noLimit(from, card))
+                    x += 999;
             }
         }
     } else if (type == TargetModSkill::DistanceLimit) {

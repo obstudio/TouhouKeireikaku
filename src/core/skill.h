@@ -253,7 +253,7 @@ class TargetModSkill : public Skill
 public:
     enum ModType
     {
-        Residue,
+        NoLimit,
         DistanceLimit,
         ExtraTarget
     };
@@ -261,7 +261,7 @@ public:
     TargetModSkill(const QString &name);
     virtual QString getPattern() const;
 
-    virtual int getResidueNum(const Player *from, const Card *card) const;
+    virtual bool noLimit(const Player *from, const Card *card) const;
     virtual int getDistanceLimit(const Player *from, const Card *card) const;
     virtual int getExtraTargetNum(const Player *from, const Card *card) const;
 

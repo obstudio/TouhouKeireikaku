@@ -112,12 +112,12 @@ end
 
 function sgs.CreateTargetModSkill(spec)
 	assert(type(spec.name) == "string")
-	assert(type(spec.residue_func) == "function" or type(spec.distance_limit_func) == "function" or type(spec.extra_target_func) == "function")
+	assert(type(spec.no_limit_func) == "function" or type(spec.distance_limit_func) == "function" or type(spec.extra_target_func) == "function")
 	if spec.pattern then assert(type(spec.pattern) == "string") end
 
 	local skill = sgs.LuaTargetModSkill(spec.name, spec.pattern or "Slash")
-	if spec.residue_func then
-		skill.residue_func = spec.residue_func
+	if spec.no_limit_func then
+		skill.no_limit_func = spec.no_limit_func
 	end
 	if spec.distance_limit_func then
 		skill.distance_limit_func = spec.distance_limit_func
