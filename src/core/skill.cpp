@@ -460,9 +460,9 @@ QString TargetModSkill::getPattern() const
     return pattern;
 }
 
-int TargetModSkill::getResidueNum(const Player *, const Card *) const
+bool TargetModSkill::noLimit(const Player *, const Card *) const
 {
-    return 0;
+    return false;
 }
 
 int TargetModSkill::getDistanceLimit(const Player *, const Card *) const

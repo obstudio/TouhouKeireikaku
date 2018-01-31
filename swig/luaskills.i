@@ -134,7 +134,7 @@ public:
 class TargetModSkill: public Skill {
 public:
     enum ModType {
-        Residue,
+        NoLimit,
         DistanceLimit,
         ExtraTarget
     };
@@ -142,7 +142,7 @@ public:
     TargetModSkill(const char *name);
     virtual QString getPattern() const;
 
-    virtual int getResidueNum(const Player *from, const Card *card) const;
+    virtual bool noLimit(const Player *from, const Card *card) const;
     virtual int getDistanceLimit(const Player *from, const Card *card) const;
     virtual int getExtraTargetNum(const Player *from, const Card *card) const;
 
@@ -154,11 +154,11 @@ class LuaTargetModSkill: public TargetModSkill {
 public:
     LuaTargetModSkill(const char *name, const char *pattern);
 
-    virtual int getResidueNum(const Player *from, const Card *card) const;
+    virtual bool noLimit(const Player *from, const Card *card) const;
     virtual int getDistanceLimit(const Player *from, const Card *card) const;
     virtual int getExtraTargetNum(const Player *from, const Card *card) const;
 
-    LuaFunction residue_func;
+    LuaFunction no_limit_func;
     LuaFunction distance_limit_func;
     LuaFunction extra_target_func;
 };
@@ -552,14 +552,14 @@ int LuaMaxCardsSkill::getFixed(const Player *target) const
     return extra;
 }
 
-int LuaTargetModSkill::getResidueNum(const Player *from, const Card *card) const
+bool LuaTargetModSkill::noLimit(const Player *from, const Card *card) const
 {
-    if (residue_func == 0)
-        return 0;
+    if (no_limit_func == 0)
+        return false;
 
     lua_State *L = Sanguosha->getLuaState();
 
-    lua_rawgeti(L, LUA_REGISTRYINDEX, residue_func);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, no_limit_func);
 
     SWIG_NewPointerObj(L, this, SWIGTYPE_p_LuaTargetModSkill, 0);
     SWIG_NewPointerObj(L, from, SWIGTYPE_p_Player, 0);
@@ -571,10 +571,10 @@ int LuaTargetModSkill::getResidueNum(const Player *from, const Card *card) const
         return 0;
     }
 
-    int residue = lua_tointeger(L, -1);
+    bool no_limit = lua_toboolean(L, -1);
     lua_pop(L, 1);
 
-    return residue;
+    return no_limit;
 }
 
 int LuaTargetModSkill::getDistanceLimit(const Player *from, const Card *card) const

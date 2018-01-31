@@ -9,7 +9,7 @@ Player::Player(QObject *parent)
     : QObject(parent), owner(false), general(NULL), general2(NULL),
       m_gender(General::Sexless), hp(-1), max_hp(-1), renhp(-1), linghp(-1), chaoren(-1), role_shown(false), state("online"), seat(0), initialSeat(0), alive(true),
       phase(NotActive), weapon(NULL), armor(NULL), defensive_horse(NULL), offensive_horse(NULL), treasure(NULL),
-      face_up(true), chained(false)
+      face_up(true), chained(false), initspell(1), neednospell(false)
 {
 }
 
@@ -127,6 +127,28 @@ void Player::setChaoren(int chaoren)
         this->chaoren = chaoren;
         emit chaoren_changed();
     }
+}
+
+int Player::getInitSpell() const
+{
+    return initspell;
+}
+
+void Player::setInitSpell(int initspell)
+{
+    if (this->initspell != initspell)
+        this->initspell = initspell;
+}
+
+bool Player::needNoSpell() const
+{
+    return neednospell;
+}
+
+void Player::setNeedNoSpell(bool neednospell)
+{
+    if (this->neednospell != neednospell)
+        this->neednospell = neednospell;
 }
 
 QList<int> Player::getShownHandcards() const
@@ -1283,13 +1305,39 @@ bool Player::isProhibited(const Player *to, const Card *card, const QList<const 
 
 bool Player::canSlashWithoutCrossbow(const Card *slash) const
 {
+    if (needNoSpell())
+        return true;
+
     Slash *newslash = new Slash(Card::NoSuit, 0);
     newslash->deleteLater();
 #define THIS_SLASH (slash == NULL ? newslash : slash)
-    int slash_count = getSlashCount();
-    int valid_slash_count = 1;
-    valid_slash_count += Sanguosha->correctCardTarget(TargetModSkill::Residue, this, THIS_SLASH);
-    return slash_count < valid_slash_count;
+    return Sanguosha->cardNoLimit(this, THIS_SLASH);
+#undef THIS_SLASH
+}
+
+bool Player::needNoSpell(const Card *slash) const
+{
+    if (needNoSpell())
+        return true;
+    
+    Slash *newslash = new Slash(Card::NoSuit, 0);
+    newslash->deleteLater();
+#define THIS_SLASH (slash == NULL ? newslash : slash)
+    if (slash && slash->isKindOf("SoulSlash") && hasSkill("yaodao"))
+        return true;
+    QList<int> ids;
+    if (slash) {
+        if (slash->isVirtualCard()) {
+            if (slash->subcardsLength() > 0)
+                ids = slash->getSubcards();
+        } else {
+            ids << slash->getEffectiveId();
+        }
+    }
+    bool has_weapon = (hasWeapon("Crossbow", true) || hasWeapon("VSCrossbow", true)) && ids.contains(getWeapon()->getEffectiveId());
+    if ((!has_weapon && hasWeapon("Crossbow")) || canSlashWithoutCrossbow(THIS_SLASH))
+        return true;
+    return false;
 #undef THIS_SLASH
 }
 

@@ -2177,12 +2177,9 @@ public:
 		pattern = "Slash";
 	}
 	
-	int getResidueNum(const Player *koishi, const Card *) const
+	bool noLimit(const Player *koishi, const Card *) const
 	{
-		if (koishi->hasFlag("CannotDuannian"))
-			return 1000;
-		else
-			return 0;
+		return koishi->hasFlag("CannotDuannian");
 	}
 	
 	int getExtraTargetNum(const Player *koishi, const Card *) const

@@ -47,7 +47,6 @@ SOURCES += \
     src/package/exppattern.cpp \
     src/package/maneuvering.cpp \
     src/package/package.cpp \
-    src/package/protagonist.cpp \
     src/package/standard-cards.cpp \
     src/package/standard.cpp \
     src/package/thstandard.cpp \
@@ -140,7 +139,6 @@ HEADERS += \
     src/package/exppattern.h \
     src/package/maneuvering.h \
     src/package/package.h \
-    src/package/protagonist.h \
     src/package/standard-equips.h \
     src/package/standard.h \
     src/package/thstandard.h \
