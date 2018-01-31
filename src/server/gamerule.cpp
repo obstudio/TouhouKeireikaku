@@ -239,13 +239,14 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
                     log.arg = new_kingdom;
                     room->sendLog(log);
                 }
+                if (Config.SAMode)
+					getRandomSkill(player);
                 foreach (const Skill *skill, player->getVisibleSkillList()) {
                     if (skill->getFrequency() == Skill::Limited && !skill->getLimitMark().isEmpty() && (!skill->isLordSkill() || player->hasLordSkill(skill->objectName())))
                         //room->addPlayerMark(player, skill->getLimitMark());
                         room->setPlayerMark(player, skill->getLimitMark(), 1);
                 }
-				if (Config.SAMode)
-					getRandomSkill(player);
+                room->setPlayerMark(player, "@spell", player->getInitSpell());
             }
             room->setTag("FirstRound", true);
             bool kof_mode = room->getMode() == "02_1v1" && Config.value("1v1/Rule", "2013").toString() != "Classical";
@@ -289,6 +290,15 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
         room->sendLog(log);
         room->addPlayerMark(player, "Global_TurnCount");
 
+        if (player->getMark("drank") > 0) {
+            LogMessage log;
+            log.type = "#UnsetDrankStartOfTurn";
+            log.from = player;
+            room->sendLog(log);
+
+            room->setPlayerMark(player, "drank", 0);
+        }
+
         //clear extraTurn infomation
         QList<Player::Phase> set_phases;
         ExtraTurnStruct extra = room->getTag("ExtraTurnStruct").value<ExtraTurnStruct>();
@@ -318,16 +328,6 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
     }
     case EventPhaseEnd:
     {
-        foreach (ServerPlayer *p, room->getAllPlayers()) {
-            if (p->getMark("drank") > 0) {
-                LogMessage log;
-                log.type = "#UnsetDrankEndOfTurn";
-                log.from = p;
-                room->sendLog(log);
-
-                room->setPlayerMark(p, "drank", 0);
-            }
-        }
         ServerPlayer *player = data.value<ServerPlayer *>();
         if (player->getPhase() == Player::Play)
             room->addPlayerHistory(player, ".");
@@ -341,6 +341,8 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
             room->setPlayerFlag(player, ".");
             room->clearPlayerCardLimitation(player, true);
             room->setPlayerMark(player, "touhou-extra", 0);
+            if (player->getMark("@spell") > player->getInitSpell())
+                room->setPlayerMark(player, "@spell", player->getInitSpell());
             foreach (ServerPlayer *p, room->getAlivePlayers()) {
                 foreach (QString flag, p->getFlagList()) {
                     if (flag.endsWith("Animate"))
@@ -349,6 +351,9 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
             }
         } else if (change.to == Player::Play) {
             room->addPlayerHistory(player, ".");
+        } else if (change.to == Player::RoundStart) {
+            if (player->getMark("@spell") < player->getInitSpell())
+                room->setPlayerMark(player, "@spell", player->getInitSpell());
         }
 
         break;
@@ -525,9 +530,30 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
             log.arg2 = QString::number(damage.damage);
 
             room->sendLog(log);
-
-            data = QVariant::fromValue(damage);
         }
+        
+        if (damage.to->getMark("drank") > 0) {
+            LogMessage log;
+            log.type = "#GetSober";
+            log.from = damage.to;
+
+            room->setPlayerMark(damage.to, "drank", 0);
+            room->sendLog(log);
+
+            if (damage.damage >= damage.to->getHp()) {
+                LogMessage log2;
+                log2.type = "#AnalepticProtect";
+                log2.from = damage.to;
+                log2.arg = QString::number(damage.damage);
+                
+                damage.damage--;
+
+                log2.arg2 = QString::number(damage.damage);
+                room->sendLog(log2);
+            }
+        }
+
+        data = QVariant::fromValue(damage);
 
         break;
     }

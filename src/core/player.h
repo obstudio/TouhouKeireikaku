@@ -24,6 +24,7 @@ class Player : public QObject
     Q_PROPERTY(int renhp READ getRenHp WRITE setRenHp)
     Q_PROPERTY(int linghp READ getLingHp WRITE setLingHp)
     Q_PROPERTY(int maxhp READ getMaxHp WRITE setMaxHp)
+    Q_PROPERTY(int initspell READ getInitSpell WRITE setInitSpell) // TouhouKeireikaku new property
     Q_PROPERTY(int chaoren READ getChaoren WRITE setChaoren)
     //Q_PROPERTY(QList<int> shown_handcards READ getShownHandcards WRITE setShownHandcards)
     Q_PROPERTY(QString kingdom READ getKingdom WRITE setKingdom)
@@ -45,6 +46,8 @@ class Player : public QObject
     Q_PROPERTY(bool kongcheng READ isKongcheng)
     Q_PROPERTY(bool nude READ isNude)
     Q_PROPERTY(bool all_nude READ isAllNude)
+    
+    Q_PROPERTY(bool neednospell READ needNoSpell WRITE setNeedNoSpell)  // TouhouKeireikaku new property
 
     Q_ENUMS(Phase)
     Q_ENUMS(Place)
@@ -89,6 +92,11 @@ public:
     int getLostHp() const;
     bool isWounded() const;
     int dyingThreshold() const;
+    int getInitSpell() const;
+    void setInitSpell(int initspell);
+    bool needNoSpell() const;
+    void setNeedNoSpell(bool neednospell);
+    bool needNoSpell(const Card *slash) const;
     General::Gender getGender() const;
     virtual void setGender(General::Gender gender);
     bool isMale() const;
@@ -296,6 +304,8 @@ private:
     General::Gender m_gender;
     int hp, max_hp;
     int renhp, linghp;//for banling
+    int initspell;
+    bool neednospell;
     int chaoren;
     QString kingdom;
     QString role;

@@ -178,11 +178,11 @@ class LuaTargetModSkill : public TargetModSkill
 public:
     LuaTargetModSkill(const char *name, const char *pattern);
 
-    virtual int getResidueNum(const Player *from, const Card *card) const;
+    virtual bool noLimit(const Player *from, const Card *card) const;
     virtual int getDistanceLimit(const Player *from, const Card *card) const;
     virtual int getExtraTargetNum(const Player *from, const Card *card) const;
 
-    LuaFunction residue_func;
+    LuaFunction no_limit_func;
     LuaFunction distance_limit_func;
     LuaFunction extra_target_func;
 };

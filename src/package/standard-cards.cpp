@@ -37,7 +37,7 @@ bool Slash::IsAvailable(const Player *player, const Card *slash, bool considerSp
         return false;
 
     if (Sanguosha->getCurrentCardUseReason() == CardUseStruct::CARD_USE_REASON_PLAY) {
-        QList<int> ids;
+        /* QList<int> ids;
         if (slash) {
             if (slash->isVirtualCard()) {
                 if (slash->subcardsLength() > 0)
@@ -55,6 +55,12 @@ bool Slash::IsAvailable(const Player *player, const Card *slash, bool considerSp
 
         int valid = 1 + Sanguosha->correctCardTarget(TargetModSkill::Residue, player, THIS_SLASH);
         if ((!has_weapon && player->hasWeapon("VSCrossbow")) && used < valid + 3)
+            return true; */
+        
+        if (player->needNoSpell(THIS_SLASH))
+            return true;
+
+        if (player->getMark("@spell") > 0)
             return true;
         
         if (considerSpecificAssignee) {
@@ -201,6 +207,10 @@ void Slash::onUse(Room *room, const CardUseStruct &card_use) const
             rangefix += 1;
 
     }
+
+    if (!player->needNoSpell(use.card) && player->getMark("@spell") > 0 && player->getPhase() == Player::Play
+        && Sanguosha->getCurrentCardUseReason() == CardUseStruct::CARD_USE_REASON_PLAY) // TouhouKeireikaku: drop 1 spell when using slash
+        room->removePlayerMark(player, "@spell", 1);
 
     if (use.from->hasFlag("BladeUse")) {
         use.from->setFlags("-BladeUse");

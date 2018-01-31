@@ -842,7 +842,7 @@ function SmartAI:getDynamicUsePriority(card)
 		if self:hasCrossbowEffect()
 			or self.player:hasFlag("XianzhenSuccess")
 			or self.player:canSlashWithoutCrossbow()
-			or sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_Residue, self.player, sgs.cloneCard("slash")) > 0
+			or sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_NoLimit, self.player, sgs.cloneCard("slash")) > 0
 			or self.player:hasUsed("FenxunCard") then
 			return sgs.ai_use_priority.Slash - 0.1
 		end
@@ -4680,7 +4680,7 @@ function SmartAI:getTurnUse()
 
 	local turnUse = {}
 	local slash = sgs.cloneCard("slash")
-	local slashAvail = 1 + sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_Residue, self.player, slash)
+	local slashAvail = self.player:getMark("@spell") + sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_NoLimit, self.player, slash)
 	self.slashAvail = slashAvail
 	self.predictedRange = self.player:getAttackRange()
 	self.slash_distance_limit = (1 + sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_DistanceLimit, self.player, slash) > 50)

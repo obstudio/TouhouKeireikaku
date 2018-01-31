@@ -3484,7 +3484,7 @@ bool Room::useCard(const CardUseStruct &use, bool add_history)
     bool slash_not_record = key.contains("Slash")
             && slash_count > 0
             && (card_use.from->hasWeapon("Crossbow")
-                || Sanguosha->correctCardTarget(TargetModSkill::Residue, card_use.from, card) > 500);
+                || Sanguosha->correctCardTarget(TargetModSkill::NoLimit, card_use.from, card) > 990);
     if (card->isKindOf("Slash")) {
         if (card->isKindOf("IceSlash") && card_use.from->hasSkill("aoyi"))
             slash_not_record = true;
