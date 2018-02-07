@@ -112,6 +112,7 @@ public:
     void setDashboardShadow(const QVariant &player_arg);
     void warn(const QVariant &);
     void setMark(const QVariant &mark_str);
+    void setSpell(const QVariant &spell_str);
     void showCard(const QVariant &show_str);
     void log(const QVariant &log_str);
     void speak(const QVariant &speak_data);

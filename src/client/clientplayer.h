@@ -30,6 +30,7 @@ public:
     virtual void addKnownHandCard(const Card *card);
     virtual bool isLastHandCard(const Card *card, bool contain = false) const;
     virtual void setMark(const QString &mark, int value);
+    virtual void setSpell(int value);
 
 private:
     int handcard_num;

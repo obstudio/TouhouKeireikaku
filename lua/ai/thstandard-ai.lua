@@ -1,94 +1,239 @@
 local fengmo_skill = {name = "fengmo"}
 table.insert(sgs.ai_skills, fengmo_skill)
 fengmo_skill.getTurnUseCard = function(self)
-	local cards = self.player:getHandcards()
-	cards = sgs.QList2Table(cards)
-	self:sortByUseValue(cards)
-	for _, c1 in ipairs(cards) do
-		for _, c2 in ipairs(cards) do
-			if c1:getTypeId() ~= c2:getTypeId() and self:getUseValue(c1) <= 5 and self:getUseValue(c2) <= 5 then
-				return sgs.Card_Parse(("@FengmoCard=%d+%d"):format(c1:getEffectiveId(), c2:getEffectiveId()))
+	local reimu = self.player
+	if reimu:getHandcardNum() < 2 and reimu:getMark("@spell") <= 0 then return nil end
+	if reimu:hasFlag("FengmoProhibited") then return nil end
+	local all_used = true
+	for _, p in sgs.qlist(self.room:getOtherPlayers(reimu)) do
+		if not p:hasFlag("FengmoTargeted") and (p:getHandcardNum() >= 2 or p:getMark("@spell") > 0) then
+			all_used = false
+			break
+		end
+	end
+	if all_used then return nil end
+	if #self.enemies == 0 then return nil end
+
+	local decide = "none"
+
+	local cards = sgs.QList2Table(reimu:getHandcards())
+	self:sortByKeepValue(cards)
+	local card_str = "."
+	self:sort(self.enemies, "defense")
+	for _, p in ipairs(self.enemies) do
+		if p:hasFlag("FengmoTargeted") or (p:getHandcardNum() < 2 and p:getMark("@spell") <= 0) then
+			continue
+		end
+		if p:getHandcardNum() < 4 and p:getHp() < 4 then
+			local slash
+			for _, c in sgs.qlist(reimu:getHandcards()) do
+				if c:isKindOf("Slash") then
+					slash = c
+					break
+				end
 			end
+			if (slash and reimu:needNoSpell(slash)) or not reimu:inMyAttackRange(p)
+				or slash == nil or reimu:getMark("@spell") > 1 then
+				card_str = "@FengmoCard=."
+				break
+			end
+		end
+		if p:getMark("@spell") <= 0 then
+			local card1 = -1
+			local card2 = -1
+			local peaches = self:getCardsNum("Peach")
+			local jinks = self:getCardsNum("Jink")
+			local anas = self:getCardsNum("Analeptic")
+			for _, c in ipairs(cards) do
+				if not (c:isKindOf("Peach") and ((peaches <= 3 and self:hasWeakFriend()) or peaches <= 2))
+					and not (c:isKindOf("Jink") and jinks <= 1)
+					and not (c:isKindOf("Analeptic") and self:isWeak() and peaches + anas <= 2)
+					and not (c:objectName():match("ex_nihilo|mind_reading|iron_chain|dismantlement|snatch|haze")) then
+					if (card1 < 0) then
+						card1 = c:getEffectiveId()
+						if c:isKindOf("Peach") then
+							peaches = peaches - 1
+						elseif c:isKindOf("Jink") then
+							jinks = jinks - 1
+						elseif c:isKindOf("Analeptic") then
+							anas = anas - 1
+						end
+					elseif (card1 > 0) then
+						card2 = c:getEffectiveId()
+						break
+					end
+				end
+			end
+			if card1 > 0 and card2 > 0 then
+				card_str = ("@FengmoCard=%d+%d"):format(card1, card2)
+				break
+			end
+		end
+		if self:isWeak(p) and p:getHandcardNum() >= 2 then
+			if reimu:getMark("@spell") > 0 then
+				card_str = "@FengmoCard=."
+				break
+			end
+		end
+		if reimu:getMark("@spell") > self:getCardsNum("Slash") or not self:canAttack(p, reimu) or not reimu:inMyAttackRange(p) then
+			card_str = "@FengmoCard=."
+			break
+		end
+	end
+	if card_str ~= "." then
+		return sgs.Card_Parse(card_str)
+	end
+	return nil
+end
+
+sgs.ai_skill_use_func.FengmoCard = function(card, use, self)
+	local reimu = self.player
+	self:sort(self.enemies, "defense")
+	for _, p in ipairs(self.enemies) do
+		if p:hasFlag("FengmoTargeted") or (p:getHandcardNum() < 2 and p:getMark("@spell") <= 0) then
+			continue
+		end
+		if p:getHandcardNum() < 4 and p:getHp() < 4 then
+			local slash
+			for _, c in sgs.qlist(reimu:getHandcards()) do
+				if c:isKindOf("Slash") then
+					slash = c
+					break
+				end
+			end
+			if (slash and reimu:needNoSpell(slash)) or not reimu:inMyAttackRange(p)
+				or slash == nil or reimu:getMark("@spell") > 1 then
+				use.card = card
+				if use.to then use.to:append(p) end
+				return
+			end
+		end
+		if p:getMark("@spell") <= 0 and card:getSubcards():length() == 2 then
+			use.card = card
+			if use.to then use.to:append(p) end
+			return
+		end
+		if self:isWeak(p) and p:getHandcardNum() >= 2 then
+			if reimu:getMark("@spell") > 0 then
+				use.card = card
+				if use.to then use.to:append(p) end
+				return
+			end
+		end
+		if reimu:getMark("@spell") > self:getCardsNum("Slash") or not self:canAttack(p, reimu) or not reimu:inMyAttackRange(p) then
+			use.card = card
+			if use.to then use.to:append(p) end
+			return
 		end
 	end
 end
 
-sgs.ai_skill_use_func.FengmoCard = function(card, use, self)
-	use.card = card
-	return
+sgs.ai_card_intention.FengmoCard = 80
+sgs.ai_use_priority.FengmoCard = 4.2
+sgs.ai_use_value.FengmoCard = 6.7
+sgs.dynamic_value.control_card.FengmoCard = true
+
+sgs.ai_skill_discard.fengmo2 = function(self, discard_num, optional, include_equip)
+	if self.player:getHandcardNum() < 2 then return {} end
+	local discards = {}
+	local reimu_choice = self.player:getTag("FengmoReimuChoice"):toString()
+	local cards = sgs.QList2Table(self.player:getHandcards())
+	self:sortByKeepValue(cards)
+	if reimu_choice == "LoseSpell" then
+		local peaches = self:getCardsNum("Peach")
+		local jinks = self:getCardsNum("Jink")
+		local anas = self:getCardsNum("Analeptic")
+		for _, c in ipairs(cards) do
+			if not (c:isKindOf("Peach") and ((peaches <= 3 and self:hasWeakFriend()) or peaches <= 2))
+				and not (c:isKindOf("Jink") and jinks <= 1)
+				and not (c:isKindOf("Analeptic") and self:isWeak() and peaches + anas <= 2) then
+				table.insert(discards, c:getEffectiveId())
+				if (#discards == 1) then
+					if c:isKindOf("Peach") then
+						peaches = peaches - 1
+					elseif c:isKindOf("Jink") then
+						jinks = jinks - 1
+					elseif c:isKindOf("Analeptic") then
+						anas = anas - 1
+					end
+				elseif (#discards == 2) then
+					break
+				end
+			end
+		end
+		if #discards == 2 then return discards end
+		return {}
+	elseif reimu_choice == "Discard" then
+		if self.player:getMark("@spell") > 1 then return {} end
+		self:sort(self.friends_noself, "defense")
+		for _, p in ipairs(self.friends_noself) do
+			if self:isWeak(p) and not p:hasFlag("FengmoTargeted") then
+				return {}
+			end
+		end
+		if self:isWeak() then return {} end
+		local peaches = self:getCardsNum("Peach")
+		local jinks = self:getCardsNum("Jink")
+		local anas = self:getCardsNum("Analeptic")
+		for _, c in ipairs(cards) do
+			if not (c:isKindOf("Peach") and ((peaches <= 3 and self:hasWeakFriend()) or peaches <= 2))
+				and not (c:isKindOf("Jink") and jinks <= 1)
+				and not (c:isKindOf("Analeptic") and self:isWeak() and peaches + anas <= 2)
+				and not (c:isKindOf("ExNihilo"))
+				and not (c:isKindOf("Haze"))
+				and not (c:isKindOf("Snatch"))
+				and not (c:isKindOf("Indulgence")) then
+				table.insert(discards, c:getEffectiveId())
+				if (#discards == 1) then
+					if c:isKindOf("Peach") then
+						peaches = peaches - 1
+					elseif c:isKindOf("Jink") then
+						jinks = jinks - 1
+					elseif c:isKindOf("Analeptic") then
+						anas = anas - 1
+					end
+				elseif (#discards == 2) then
+					break
+				end
+			end
+		end
+		if #discards == 2 then return discards end
+		return {}
+	end
+	return {}
 end
 
-sgs.ai_use_priority.FengmoCard = 4.4
-sgs.ai_use_value.FengmoCard = 9.2
-sgs.dynamic_value.benefit.FengmoCard = true
-
-sgs.ai_skill_invoke.fengmo = function(self, data)
-	self:sort(self.enemies, "chaofeng")
-	for _, p in ipairs(self.enemies) do
-		if not p:isKongcheng() then
-			return true
+sgs.ai_skill_invoke.guayu = function(self, data)
+	local reimu = self.room:getLord()
+	if self:isFriend(reimu) then return true end
+	local slash
+	for _, c in sgs.qlist(self.player:getHandcards()) do
+		if c:isKindOf("Slash") then
+			slash = c
+			break
 		end
+	end
+	if self.player:getMark("@spell") > 0 and (self:getCardsNum("Slash") <= 0 or (slash and self.player:needNoSpell(slash))
+		or (slash and not self:hasSlashTarget(slash))) then
+		return true
 	end
 	return false
 end
 
-sgs.ai_skill_playerchosen.fengmo = function(self, targets)
-	self:sort(self.enemies, "chaofeng")
-	for _, p in ipairs(self.enemies) do
-		if not p:isKongcheng() then
-			sgs.updateIntention(self.player, p, 80)
-			return p
+sgs.ai_skill_choice.guayu = function(self, choices)
+	if #self.enemies == 0 then return "GYGive" end
+	local slash
+	for _, c in sgs.qlist(self.player:getHandcards()) do
+		if c:isKindOf("Slash") then
+			slash = c
+			break
 		end
 	end
-end
-
-sgs.ai_skill_use["@@guayu"] = function(self, prompt)
-	local cards = self.player:getHandcards()
-	cards = sgs.QList2Table(cards)
-	cards_rev = cards
-	self:sortByKeepValue(cards)
-	self:sortByKeepValue(cards_rev, true)
-	local room = self.room
-	local reimu = room:getLord()
-	if not self:isFriend(reimu) then
-		return "."
+	if self.player:getMark("@spell") > 0 and (self:getCardsNum("Slash") <= 0 or (slash and self.player:needNoSpell(slash))
+		or (slash and not self:hasSlashTarget(slash))) then
+		return "GYGive"
 	end
-	local id = -1
-	if self:isWeak() then
-		if self.player:getHp() < 1 then
-			id = cards_rev[1]:getEffectiveId()
-		elseif self.player:getHp() == 1 then
-			if self:isWeak(reimu) and reimu:getHandcardNum() <= 1 then
-				if self:getCardsNum("Jink") > 0 or self:getCardsNum("Analeptic") > 0 then
-					for _, c in ipairs(cards) do
-						if c:isKindOf("Jink") then
-							id = c:getEffectiveId()
-							break
-						end
-					end
-					for _, c in ipairs(cards) do
-						if c:isKindOf("Analeptic") then
-							id = c:getEffectiveId()
-							break
-						end
-					end
-				end
-			end
-		else
-			id = cards[1]:getEffectiveId()
-		end
-	else
-		if self:isWeak(reimu) then
-			id = cards_rev[1]:getEffectiveId()
-		else
-			id = cards[1]:getEffectiveId()
-		end
-	end
-	if (id > 0) then
-		sgs.updateIntention(self.player, reimu, -80)
-		return ("@GuayuCard=%d->%s"):format(id, reimu:objectName())
-	end
-	return "."
+	return "GYAdd"
 end
 
 sgs.ai_skill_invoke.xingchen = function(self, data)

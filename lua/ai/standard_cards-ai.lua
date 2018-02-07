@@ -983,6 +983,232 @@ function SmartAI:useCardSlash(card, use)
 	end
 end
 
+function SmartAI:hasSlashTarget(card)
+	if not self:slashIsAvailable(self.player, card) then return false end
+	--if card:isKindOf("Slash") and self.player:hasSkill("here") then
+	--  card= self:copyHereSlash(card)
+	--end
+
+	local basicnum = 0
+	local blacknum = 0
+	local cards = self.player:getCards("hes")
+	cards = sgs.QList2Table(cards)
+	for _, acard in ipairs(cards) do
+		if acard:getTypeId() == sgs.Card_TypeBasic and not acard:isKindOf("Peach") then basicnum = basicnum + 1 end
+	end
+	local blacknum =self:getSuitNum("black", true)
+	local no_distance = sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_DistanceLimit, self.player, card) > 50
+						or self.player:hasFlag("slashNoDistanceLimit")
+						or card:getSkillName() == "qiaoshui"
+	self.slash_targets = 1 + sgs.Sanguosha:correctCardTarget(sgs.TargetModSkill_ExtraTarget, self.player, card)
+	if self.player:hasSkill("duanbing") then self.slash_targets = self.slash_targets + 1 end
+
+	local rangefix = 0
+	if card:isVirtualCard() then
+		if self.player:getWeapon() and card:getSubcards():contains(self.player:getWeapon():getEffectiveId()) then
+			if self.player:getWeapon():getClassName() ~= "Weapon" then
+				rangefix = sgs.weapon_range[self.player:getWeapon():getClassName()] - self.player:getAttackRange(false)
+			end
+		end
+		if self.player:getOffensiveHorse() and card:getSubcards():contains(self.player:getOffensiveHorse():getEffectiveId()) then
+			rangefix = rangefix + 1
+		end
+	end
+
+	--for shikong
+	--¼òµ¥´Ö±©
+	if  self.player:hasSkill("shikong") and self.player:getPhase()==sgs.Player_Play
+	and not self.player:hasFlag("slashTargetFixToOne") then
+		--[[for _,p in sgs.qlist(self.player:getAliveSiblings()) {
+			if (card:IsSpecificAssignee(p, self.player, this)) {
+				return !targets.isEmpty();
+			}
+		}]]
+		local shikong_f = 0
+		local shikong_e = 0
+		local shikongTargets = sgs.SPlayerList()
+		for _,p in sgs.qlist(self.room:getOtherPlayers(self.player)) do
+			if (self.player:canSlash(p, card, not no_distance, rangefix)
+						or ((self.player:distanceTo(p, rangefix) <= self.predictedRange))) then
+				--if  use.to and self.player:inMyAttackRange(p) and canAppendTarget(p)
+					shikongTargets:append(p)
+					if self:isFriend(p) then
+						shikong_f=shikong_f+1
+					else
+						shikong_e=shikong_e+1
+					end
+				--end
+			end
+		end
+		if shikong_f > shikong_e then return false end
+		
+		--²»¿¼ÂÇË«½«¿ÉÒÔÌí¼ÓÆäËûÄ¿±ê£¬Ö±½Óreturn
+		return true
+	end
+
+
+
+	if self.player:hasSkill("qingnang") and self:isWeak() and self:getOverflow() == 0 then return false end
+	for _, friend in ipairs(self.friends_noself) do
+		local slash_prohibit = false
+		slash_prohibit = self:slashProhibit(card, friend)
+		if self:isPriorFriendOfSlash(friend, card) then
+			if not slash_prohibit then
+				if (self.player:canSlash(friend, card, not no_distance, rangefix)
+						or ((self.player:distanceTo(friend, rangefix) <= self.predictedRange)))
+					and self:slashIsEffective(card, friend) then
+					return true
+				end
+			end
+		end
+	end
+
+
+
+
+	local targets = {}
+	local forbidden = {}
+	self:sort(self.enemies, "defenseSlash")
+	for _, enemy in ipairs(self.enemies) do
+		if not self:slashProhibit(card, enemy) and sgs.isGoodTarget(enemy, self.enemies, self, true) then
+			--if self:slashEightDiagram(enemy) then
+				if not self:getDamagedEffects(enemy, self.player, true) and not self:touhouCardAttackWaste(card,self.player,enemy) then
+					table.insert(targets, enemy)
+				else
+					table.insert(forbidden, enemy)
+				end
+			--end
+		end
+	end
+	if #targets == 0 and #forbidden > 0 then targets = forbidden end
+
+	if #targets == 1 and card:getSkillName() == "lihuo" and not targets[1]:hasArmorEffect("Vine") then return false end
+	--[[if self.player:hasSkill("guaili")  then
+		for _,c in pairs (self:getCards("Slash")) do
+			if c:isRed() and not card:isRed() then
+				use.card = c
+				break
+			end
+		end
+	end]]
+
+
+	for _, target in ipairs(targets) do
+		local canliuli = false
+		for _, friend in ipairs(self.friends_noself) do
+			if self:canLiuli(target, friend) and self:slashIsEffective(card, friend) and #targets > 1 and friend:getHp() < 3 then canliuli = true end
+		end
+		if (self.player:canSlash(target, card, not no_distance, rangefix)
+				or (self.predictedRange and self.player:distanceTo(target, rangefix) <= self.predictedRange))
+			and self:objectiveLevel(target) > 3
+			and self:slashIsEffective(card, target)
+			and not (target:hasSkill("xiangle") and basicnum < 2) and not canliuli
+			and not (target:hasSkill("junwei") and target:getKingdom()~=self.player:getKingdom() and blacknum < 2)
+			and not (not self:isWeak(target) and #self.enemies > 1 and #self.friends > 1 and self.player:hasSkill("keji")
+			and self:getOverflow() > 0 and not self:hasCrossbowEffect()) then
+			-- fill the card use struct
+			
+			-- if not use.to or use.to:isEmpty() then
+				if self.player:hasWeapon("Spear") and card:getSkillName() == "Spear" then
+				elseif self.player:hasWeapon("Crossbow") and self:getCardsNum("Slash") > 1 then
+				else
+					local Weapons = {}
+					for _, acard in sgs.qlist(self.player:getHandcards()) do
+						if acard:isKindOf("Weapon") then
+							local callback = sgs.ai_slash_weaponfilter[acard:objectName()]
+							if callback and type(callback) == "function" and callback(self, target, self.player) -- @todo: param of weapon_filter
+								and self.player:distanceTo(target) <= (sgs.weapon_range[acard:getClassName()] or 1) then
+								return false
+							end
+						end
+					end
+					if #Weapons > 0 then
+						local cmp = function(a, b)
+							return self:evaluateWeapon(a) > self:evaluateWeapon(b)
+						end
+						table.sort(Weapons, cmp)
+						return false
+					end
+				end
+				if target:isChained() and self:isGoodChainTarget(target, nil, nil, nil, card) then
+					local here=false
+					if self.player:hasSkill("here") or target:hasSkill("here") then
+						here=true
+					end
+					--Á¬åóµÄ»° ÏÈÓÃÆÕÉ±£¿
+					if here then
+						--ÓÐusecard ²»»áÊ¹·µ»Øuse.cardÎª ¿Õ£¿
+					else
+						if  card:isKindOf("NatureSlash")   then
+							if self:hasCrossbowEffect() and sgs.card_lack[target:objectName()]["Jink"] == 0 then
+								local slashes = self:getCards("Slash")
+									for _, slash in ipairs(slashes) do
+									if not slash:isKindOf("NatureSlash") and self:slashIsEffective(slash, target)
+										and not self:slashProhibit(slash, target) then
+										usecard = slash
+										break
+									end
+								end
+							end
+						elseif  not card:isKindOf("NatureSlash")  then
+							if not self:hasCrossbowEffect() or  sgs.card_lack[target:objectName()]["Jink"] > 0 then
+								local slash = self:getCard("NatureSlash")
+								if slash and self:slashIsEffective(slash, target) and not self:slashProhibit(slash, target) then usecard = slash end
+							end
+						end
+					end
+				end
+				local godsalvation = self:getCard("GodSalvation")
+				if godsalvation and godsalvation:getId() ~= card:getId() and self:willUseGodSalvation(godsalvation) and
+					(not target:isWounded() or not self:hasTrickEffective(godsalvation, target, self.player)) then
+					return true
+				end
+			-- end
+
+
+			
+			-- if not use.isDummy then
+				--almostly for Skill "bllmwuyu"
+				
+				if self.player:hasSkill("jilve") and self.player:getMark("@bear") > 0 and not self.player:hasFlag("JilveWansha") and target:getHp() == 1 and not self.room:getCurrent():hasSkill("wansha")
+					and (target:isKongcheng() or getCardsNum("Jink", target, self.player) < 1 or sgs.card_lack[target:objectName()]["Jink"] == 1) then
+					return true
+				end
+			-- end
+			return true
+		end
+	end
+
+
+
+
+	for _, friend in ipairs(self.friends_noself) do
+		local slash_prohibit = self:slashProhibit(card, friend)
+		if not self:hasHeavySlashDamage(self.player, card, friend) and card:getSkillName() ~= "lihuo"
+			and (self.player:hasSkill("pojun") and friend:getHp() > 4 and getCardsNum("Jink", friend, self.player) == 0 and friend:getHandcardNum() < 3)
+			or (self:getDamagedEffects(friend, self.player) and not (friend:isLord() and #self.enemies < 1))
+			or (self:needToLoseHp(friend, self.player, true, true) and not (friend:isLord() and #self.enemies < 1)) then
+
+			if not slash_prohibit then
+				if ((self.player:canSlash(friend, card, not no_distance, rangefix)))
+					and self:slashIsEffective(card, friend) then
+					return true
+				end
+			end
+		end
+	end
+	--for RedundantSlash
+	-- do not consider slash is effective
+	for _, friend in ipairs(self.friends_noself) do
+		-- if (not use.to or not use.to:contains(friend)) then
+			if (self.player:canSlash(friend, card, not no_distance, rangefix)
+			or ((self.player:distanceTo(friend, rangefix) <= self.predictedRange))) then
+				return true
+			end
+		-- end
+	end
+end
+
 function countRangeFix(slash, from)
 	local range_fix = 0
 	if (slash:isVirtualCard()) then
