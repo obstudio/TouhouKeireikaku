@@ -14,15 +14,45 @@
 
 FengmoCard::FengmoCard()
 {
-	target_fixed = true;
+	target_fixed = false;
 }
 
-void FengmoCard::use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &) const
+bool FengmoCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
 {
-	if (source->isAlive())
-	{
-		room->drawCards(source, 2, "fengmo");
-		room->addPlayerMark(source, "@seal", 1);
+    return targets.isEmpty() && to_select != Self && !to_select->hasFlag("FengmoTargeted")
+        && (to_select->getHandcardNum() >= 2 || to_select->getMark("@spell") > 0);
+}
+
+void FengmoCard::onEffect(const CardEffectStruct &effect) const
+{
+	ServerPlayer *from = effect.from;
+	ServerPlayer *to = effect.to;
+	Room *room = from->getRoom();
+	room->setPlayerFlag(to, "FengmoTargeted");
+
+	QString self_choice;
+	if (getSubcards().isEmpty()) {
+		room->removePlayerMark(from, "@spell", 1);
+		self_choice = "LoseSpell";
+	} else {
+		self_choice = "Discard";
+	}
+
+	to->tag["FengmoReimuChoice"] = QVariant(self_choice);
+
+	QString choice;
+	if (to->getMark("@spell") <= 0) {
+		choice = "Discard";
+		room->askForDiscard(to, "fengmo1", 2, 2, false, false, "@fengmo-compulsory-discard");
+	} else if (!room->askForDiscard(to, "fengmo2", 2, 2, true, false, "@fengmo-optional-discard")) {
+		choice = "LoseSpell";
+		room->removePlayerMark(to, "@spell", 1);
+	} else {
+		choice = "Discard";
+	}
+
+	if (self_choice != choice) {
+		room->setPlayerFlag(from, "FengmoProhibited");
 	}
 }
 
@@ -35,27 +65,36 @@ public:
 	
 	bool isEnabledAtPlay(const Player *player) const
 	{
-		return player->getHandcardNum() >= 2;
+		if (player->getHandcardNum() < 2 && player->getMark("@spell") <= 0)
+			return false;
+		
+		if (player->hasFlag("FengmoProhibited"))
+			return false;
+		
+		foreach (const Player *p, player->getAliveSiblings()) {
+			if (!p->hasFlag("FengmoTargeted") && (p->getHandcardNum() >= 2 || p->getMark("@spell") > 0)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	bool viewFilter(const QList<const Card *> &selected, const Card *to_select) const
 	{
-		if (selected.length() == 0) return !to_select->isEquipped();
-		else if (selected.length() == 1)
-		{
-			const Card *card = selected.first();
-			return !to_select->isEquipped() && to_select->getTypeId() != card->getTypeId();
-		}
-		else return false;
+		return selected.length() < 2 && !to_select->isEquipped();
 	}
 	
 	const Card *viewAs(const QList<const Card *> &cards) const
 	{
-		if (cards.length() != 2)
+		if (cards.length() != 0 && cards.length() != 2)
+			return NULL;
+		
+		if (cards.isEmpty() && Self->getMark("@spell") == 0)
 			return NULL;
 		
 		FengmoCard *card = new FengmoCard();
-		card->addSubcards(cards);
+		if (cards.length() > 0)
+			card->addSubcards(cards);
 		card->setSkillName(objectName());
 		return card;
 	}
@@ -66,77 +105,27 @@ class FengmoAdd : public TriggerSkill
 public:
 	FengmoAdd() : TriggerSkill("#fengmoadd")
 	{
-		events << EventPhaseStart;
+		events << EventPhaseChanging;
 	}
 	
-	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &) const
+	void record(TriggerEvent event, Room *room, QVariant &data) const
 	{
-		ServerPlayer *reimu = room->getCurrent();
-		if (reimu->hasSkill("fengmo") && reimu->getPhase() == Player::Finish && reimu->getMark("@seal") >= 3) {
-			QList<ServerPlayer *> targets;
-			foreach (ServerPlayer *target, room->getOtherPlayers(reimu)) {
-				if (reimu->canDiscard(target, "h"))
-					targets << target;
+		if (event == EventPhaseChanging) {
+			PhaseChangeStruct change = data.value<PhaseChangeStruct>();
+			ServerPlayer *reimu = change.player;
+			if (reimu && reimu->isAlive() && reimu->hasSkill("fengmo") && change.to == Player::NotActive) {
+				if (reimu->hasFlag("FengmoProhibited"))
+					room->setPlayerFlag(reimu, "-FengmoProhibited");
+				foreach (ServerPlayer *p, room->getOtherPlayers(reimu)) {
+					if (p->hasFlag("FengmoTargeted"))
+						room->setPlayerFlag(p, "-FengmoTargeted");
+				}
 			}
-			if (!targets.isEmpty())
-				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, reimu, reimu, NULL, false);
 		}
-		return QList<SkillInvokeDetail>();
-	}
-	
-    bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail>, QVariant &data) const
-	{
-		ServerPlayer *reimu = room->getCurrent();
-		return room->askForSkillInvoke(reimu, "fengmo", data);
-	}
-	
-	bool effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail>, QVariant &) const
-	{
-		ServerPlayer *reimu = room->getCurrent();
-		
-		QList<ServerPlayer *> targets;
-		foreach (ServerPlayer *target, room->getOtherPlayers(reimu)) {
-			if (reimu->canDiscard(target, "h"))
-				targets << target;
-		}
-		
-		//room->broadcastSkillInvoke("fengmo");
-		ServerPlayer *target = room->askForPlayerChosen(reimu, targets, "fengmo");
-		int id = room->askForCardChosen(reimu, target, "h", "fengmo", false, Card::MethodDiscard);
-		room->throwCard(id, target, reimu);
-		
-		return false;
 	}
 };
 
-class FengmoClear : public TriggerSkill
-{
-public:
-	FengmoClear() : TriggerSkill("#fengmo-clear")
-	{
-		events << EventPhaseEnd;
-		frequency = Compulsory;
-	}
-	
-    QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *, const QVariant &data) const
-	{
-		ServerPlayer *player = data.value<ServerPlayer *>();
-		if (player->hasSkill(this) && player->getPhase() == Player::Finish && player->getMark("@seal") > 0) {
-			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, player, player, NULL, true);
-		}
-		return QList<SkillInvokeDetail>();
-	}
-	
-	bool effect(TriggerEvent triggerevent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
-	{
-		ServerPlayer *reimu = data.value<ServerPlayer *>();
-		room->removePlayerMark(reimu, "@seal", reimu->getMark("@seal"));
-		
-		return false;
-	}
-};
-
-GuayuCard::GuayuCard()
+/* GuayuCard::GuayuCard()
 {
 	will_throw = false;
 }
@@ -169,23 +158,23 @@ public:
 		card->addSubcard(originalCard);
 		return card;
 	}
-};
+}; */
 
 class Guayu : public TriggerSkill
 {
 public:
 	Guayu() : TriggerSkill("guayu$")
 	{
-		events << EventPhaseEnd;
-		view_as_skill = new GuayuViewAsSkill;
+		events << EventPhaseStart;
+		// view_as_skill = new GuayuViewAsSkill;
 	}
 	
 	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
 	{
 		ServerPlayer *player = room->getCurrent();
 		ServerPlayer *reimu = room->findPlayerBySkillName(objectName());
-		if (reimu && reimu->isAlive() && reimu->hasLordSkill(objectName()) && player->getPhase() == Player::Draw
-				&& !player->isKongcheng() && player != reimu && player->getKingdom() == "hakurei") {
+		if (reimu && reimu->isAlive() && reimu->hasLordSkill(objectName()) && player->getPhase() == Player::Play
+				&& player != reimu && player->getKingdom() == "hakurei") {
 			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, reimu, player, NULL, false);
 		}
 		return QList<SkillInvokeDetail>();
@@ -193,55 +182,42 @@ public:
 	
 	bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
     {
-        return room->askForUseCard(invoke->invoker, "@@guayu", "@guayu", -1, Card::MethodUse);
+        return room->askForSkillInvoke(invoke->invoker, objectName(), data);
     }
 	
-	bool effect(TriggerEvent triggerevent, Room *room, QSharedPointer<SkillInvokeDetail>, QVariant &data) const
+	bool effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
 	{
-        ServerPlayer *reimu = room->findPlayerBySkillName(objectName());
+        ServerPlayer *reimu = invoke->owner;
+		ServerPlayer *player = invoke->invoker;
 		room->notifySkillInvoked(reimu, objectName());
-		
-		return false;
-	}
-};
-
-class GuayuAdd : public MaxCardsSkill
-{
-public:
-	GuayuAdd() : MaxCardsSkill("#guayu-add")
-	{
-	}
-	
-	int getExtra(const Player *target) const
-	{
-		if (target->hasFlag("guayu")) {
-			return -1;
-		} else
-			return 0;
-	}
-};
-
-class GuayuClear : public TriggerSkill
-{
-public:
-	GuayuClear() : TriggerSkill("#guayu-clear")
-	{
-		events << EventPhaseEnd;
-		frequency = Compulsory;
-	}
-	
-	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &) const
-	{
-		ServerPlayer *player = room->getCurrent();
-		if (player->hasFlag("guayu") && player->getPhase() == Player::Discard)
-			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, player, player, NULL, true);
-		return QList<SkillInvokeDetail>();
-	}
-	
-	bool effect(TriggerEvent triggerevent, Room *room, QSharedPointer<SkillInvokeDetail>, QVariant &data) const
-	{
-        ServerPlayer *player = room->getCurrent();
-		room->setPlayerFlag(player, "-guayu");
+		QList<ServerPlayer *> to;
+		to << reimu;
+		room->touhouLogmessage("#InvokeOthersSkill", player, objectName(), to);
+		QString choice;
+		if (player->getMark("@spell") <= 0) {
+			choice = "GYAdd";
+		} else {
+			choice = room->askForChoice(player, objectName(), "GYAdd+GYGive");
+		}
+		if (choice == "GYAdd") {
+			LogMessage log;
+			log.type = "#GuayuAddSpell";
+			log.from = player;
+			log.to << reimu;
+			log.arg = QString::number(1);
+			room->addPlayerMark(reimu, "@spell", 1);
+			room->sendLog(log);
+		} else if (choice == "GYGive") {
+			LogMessage log;
+			log.type = "#GuayuGiveSpell";
+			log.from = player;
+			log.to << reimu;
+			log.arg = QString::number(1);
+			room->removePlayerMark(player, "@spell", 1);
+			room->addPlayerMark(reimu, "@spell", 1);
+			room->sendLog(log);
+			player->drawCards(1);
+		}
 		
 		return false;
 	}
@@ -1306,21 +1282,16 @@ class Diaoou : public TriggerSkill
 public:
 	Diaoou() : TriggerSkill("diaoou")
 	{
-		events << EventPhaseStart << Damaged << Death;
+		events << EventPhaseStart << Damaged;
 		view_as_skill = new DiaoouViewAsSkill;
 	}
 
 	void record(TriggerEvent event, Room *room, QVariant &data) const
 	{
-		if (event == EventPhaseStart || event == Death) {
+		if (event == EventPhaseStart) {
 			ServerPlayer *alice;
-			if (event == EventPhaseStart)
-				alice = data.value<ServerPlayer *>();
-			else if (event == Death) {
-				DeathStruct death = data.value<DeathStruct>();
-				ServerPlayer *alice = death.who;
-			}
-			if (alice && alice->hasSkill(this) && (alice->getPhase() == Player::RoundStart || alice->isDead())) {
+			alice = data.value<ServerPlayer *>();
+			if (alice && alice->isAlive() && alice->hasSkill(this) && alice->getPhase() == Player::RoundStart) {
 				foreach (ServerPlayer *p, room->getOtherPlayers(alice)) {
 					if (p->getMark("@ningyou") > 0)
 						room->setPlayerMark(p, "@ningyou", 0);
@@ -2898,14 +2869,8 @@ THStandardPackage::THStandardPackage()
 	General *reimu = new General(this, "reimu$", "hakurei", 4, false);
 	reimu->addSkill(new Fengmo);
 	reimu->addSkill(new FengmoAdd);
-	reimu->addSkill(new FengmoClear);
 	reimu->addSkill(new Guayu);
-	reimu->addSkill(new GuayuAdd);
-	reimu->addSkill(new GuayuClear);
 	related_skills.insertMulti("fengmo", "#fengmoadd");
-	related_skills.insertMulti("fengmo", "#fengmo-clear");
-	related_skills.insertMulti("guayu$", "#guayu-add");
-	related_skills.insertMulti("guayu$", "#guayu-clear");
 	
 	General *marisa = new General(this, "marisa", "hakurei", 3, false);
 	marisa->addSkill(new Xingchen);
@@ -3012,7 +2977,6 @@ THStandardPackage::THStandardPackage()
 	iku->addSkill(new Citan);
 	
 	addMetaObject<FengmoCard>();
-	addMetaObject<GuayuCard>();
 	addMetaObject<ShantouCard>();
 	addMetaObject<DaosheCard>();
 	addMetaObject<HeiyanCard>();

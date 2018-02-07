@@ -175,6 +175,7 @@ CommonTranslationTable = {
 	["#AnalepticBuff"] = "%from 使用【<font color=\"yellow\"><b>酒</b></font>】，对 %to 造成的伤害从 %arg 点增加至 %arg2 点",
 	["#GetMark"] = "%from 得到了 %arg2 枚 %arg 标记",
 	["#LoseMark"] = "%from 失去了 %arg2 枚 %arg 标记",
+	["#SetSpellEndOfPlay"] = "%from 的出牌阶段结束，符卡数量还原为 %arg 张",
 	["$AddToPile"] = "%card 被作为 %arg 牌移出游戏",
 	["#RemoveFromGame"] = "%arg2 张牌被作为 %arg 牌移出游戏",
 	["$GotCardFromPile"] = "%from 从 %arg 牌中获得 %card",

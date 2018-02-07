@@ -140,6 +140,26 @@ void Player::setInitSpell(int initspell)
         this->initspell = initspell;
 }
 
+int Player::getSpell() const
+{
+    return getMark("@spell");
+}
+
+void Player::addSpell(int spell)
+{
+    addMark("@spell", spell);
+}
+
+void Player::removeSpell(int spell)
+{
+    removeMark("@spell", qMin(getMark("@spell"), spell));
+}
+
+void Player::setSpell(int spell)
+{
+    setMark("@spell", spell);
+}
+
 bool Player::needNoSpell() const
 {
     return neednospell;

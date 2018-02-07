@@ -329,8 +329,17 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
     case EventPhaseEnd:
     {
         ServerPlayer *player = data.value<ServerPlayer *>();
-        if (player->getPhase() == Player::Play)
+        if (player->getPhase() == Player::Play) {
             room->addPlayerHistory(player, ".");
+            if (player->getSpell() != player->getInitSpell()) {
+                LogMessage log;
+                log.type = "#SetSpellEndOfPlay";
+                log.from = player;
+                log.arg = QString::number(player->getInitSpell());
+                room->setPlayerSpell(player, player->getInitSpell());
+                room->sendLog(log);
+            }
+        }
         break;
     }
     case EventPhaseChanging:
@@ -341,8 +350,6 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
             room->setPlayerFlag(player, ".");
             room->clearPlayerCardLimitation(player, true);
             room->setPlayerMark(player, "touhou-extra", 0);
-            if (player->getMark("@spell") > player->getInitSpell())
-                room->setPlayerMark(player, "@spell", player->getInitSpell());
             foreach (ServerPlayer *p, room->getAlivePlayers()) {
                 foreach (QString flag, p->getFlagList()) {
                     if (flag.endsWith("Animate"))
@@ -351,9 +358,6 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
             }
         } else if (change.to == Player::Play) {
             room->addPlayerHistory(player, ".");
-        } else if (change.to == Player::RoundStart) {
-            if (player->getMark("@spell") < player->getInitSpell())
-                room->setPlayerMark(player, "@spell", player->getInitSpell());
         }
 
         break;

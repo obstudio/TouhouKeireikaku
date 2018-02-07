@@ -94,6 +94,10 @@ public:
     int dyingThreshold() const;
     int getInitSpell() const;
     void setInitSpell(int initspell);
+    int getSpell() const;
+    void addSpell(int spell);
+    void removeSpell(int spell);
+    void setSpell(int spell);
     bool needNoSpell() const;
     void setNeedNoSpell(bool neednospell);
     bool needNoSpell(const Card *slash) const;

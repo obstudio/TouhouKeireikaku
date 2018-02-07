@@ -16,18 +16,8 @@ class FengmoCard : public SkillCard
 public:
 	Q_INVOKABLE FengmoCard();
 	
-	void use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &targets) const;
-};
-
-class GuayuCard : public SkillCard
-{
-	Q_OBJECT
-	
-public:
-	Q_INVOKABLE GuayuCard();
-	
 	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
-    void onEffect(const CardEffectStruct &effect) const;
+	void onEffect(const CardEffectStruct &effect) const;
 };
 
 class ShantouCard : public SkillCard
