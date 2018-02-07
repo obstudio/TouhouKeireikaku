@@ -258,3 +258,8 @@ void ClientPlayer::setMark(const QString &mark, int value)
     mark_doc->setHtml(text);
 }
 
+void ClientPlayer::setSpell(int value)
+{
+    setMark("@spell", value);
+}
+

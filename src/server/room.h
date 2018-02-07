@@ -86,6 +86,9 @@ public:
     void setPlayerMark(ServerPlayer *player, const QString &mark, int value);
     void addPlayerMark(ServerPlayer *player, const QString &mark, int add_num = 1);
     void removePlayerMark(ServerPlayer *player, const QString &mark, int remove_num = 1);
+    void setPlayerSpell(ServerPlayer *player, int value);
+    void addPlayerSpell(ServerPlayer *player, int add_num = 1);
+    void removePlayerSpell(ServerPlayer *player, int remove_num = 1);
     void setPlayerCardLimitation(ServerPlayer *player, const QString &limit_list,
                                  const QString &pattern, bool single_turn);
     void removePlayerCardLimitation(ServerPlayer *player, const QString &limit_list,

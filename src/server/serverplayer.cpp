@@ -1232,6 +1232,14 @@ void ServerPlayer::marshal(ServerPlayer *player) const
         }
     }
 
+    int value = getSpell();
+    if (value > 0) {
+        JsonArray arg_spell;
+        arg_spell << objectName();
+        arg_spell << value;
+        room->doNotify(player, S_COMMAND_SET_SPELL, arg_spell);
+    }
+
     foreach (const Skill *skill, getVisibleSkillList(true)) {
         //should not nofity the lord skill
         if (skill->isLordSkill() && !hasLordSkill(skill->objectName()))

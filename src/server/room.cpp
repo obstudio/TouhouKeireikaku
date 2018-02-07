@@ -1012,10 +1012,15 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
         if (data.type() == QVariant::String)
             skillCommand << skill_name << data.toString();
         else {
-            ServerPlayer * player = data.value<ServerPlayer *>();
+            ServerPlayer * player2 = data.value<ServerPlayer *>();
             QString data_str;
-            if (player != NULL)
-                data_str = "playerdata:" + player->objectName();
+            if (player2 != NULL && player2 != player)
+                data_str = "playerdata:" + player2->objectName();
+            else {
+                ServerPlayer *owner = findPlayerBySkillName(skill_name);
+                if (owner != NULL && owner != player)
+                    data_str = "playerdata:" + owner->objectName();
+            }
             skillCommand << skill_name << data_str;
         }
 
@@ -2014,6 +2019,33 @@ void Room::removePlayerMark(ServerPlayer *player, const QString &mark, int remov
     value -= remove_num;
     value = qMax(0, value);
     setPlayerMark(player, mark, value);
+}
+
+void Room::setPlayerSpell(ServerPlayer *player, int value)
+{
+    player->setSpell(value);
+
+    JsonArray arg;
+    arg << player->objectName();
+    arg << QString("@spell");
+    arg << value;
+    doBroadcastNotify(S_COMMAND_SET_MARK, arg);
+}
+
+void Room::addPlayerSpell(ServerPlayer *player, int add_num)
+{
+    int value = player->getMark("@spell");
+    value += add_num;
+    setPlayerSpell(player, value);
+}
+
+void Room::removePlayerSpell(ServerPlayer *player, int remove_num)
+{
+    int value = player->getMark("@spell");
+    if (value == 0) return;
+    value -= remove_num;
+    value = qMax(0, value);
+    setPlayerSpell(player, value);
 }
 
 void Room::setPlayerCardLimitation(ServerPlayer *player, const QString &limit_list,

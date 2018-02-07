@@ -52,6 +52,7 @@ Client::Client(QObject *parent, const QString &filename)
     m_callbacks[S_COMMAND_SHOW_CARD] = &Client::showCard;
     m_callbacks[S_COMMAND_UPDATE_CARD] = &Client::updateCard;
     m_callbacks[S_COMMAND_SET_MARK] = &Client::setMark;
+    m_callbacks[S_COMMAND_SET_SPELL] = &Client::setSpell;
     m_callbacks[S_COMMAND_LOG_SKILL] = &Client::log;
     m_callbacks[S_COMMAND_ATTACH_SKILL] = &Client::attachSkill;
     m_callbacks[S_COMMAND_MOVE_FOCUS] = &Client::moveFocus;
@@ -1523,6 +1524,19 @@ void Client::setMark(const QVariant &mark_var)
 
     ClientPlayer *player = getPlayer(who);
     player->setMark(mark, value);
+}
+
+void Client::setSpell(const QVariant &spell_var)
+{
+    JsonArray spell_str = spell_var.value<JsonArray>();
+    if (spell_str.size() != 2) return;
+    if (!JsonUtils::isString(spell_str[0]) || !JsonUtils::isNumber(spell_str[1])) return;
+
+    QString who = spell_str[0].toString();
+    int value = spell_str[2].toInt();
+
+    ClientPlayer *player = getPlayer(who);
+    player->setSpell(value);
 }
 
 void Client::onPlayerChooseSuit()

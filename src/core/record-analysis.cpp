@@ -153,6 +153,17 @@ void RecAnalysis::initialize(QString dir)
             continue;
         }
 
+        if (packet.getCommandType() == S_COMMAND_SET_SPELL) {
+            JsonArray args = packet.getMessageBody().value<JsonArray>();
+            if (args.size() != 2)
+                continue;
+
+            QString who = args.at(0).toString();
+            int num = args.at(1).toInt();
+
+            continue;
+        }
+
         if (packet.getCommandType() == S_COMMAND_SPEAK) {
             JsonArray body = packet.getMessageBody().value<JsonArray>();
             if (body.size() < 2) {

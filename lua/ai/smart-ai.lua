@@ -1015,6 +1015,10 @@ sgs.ai_compare_funcs = {
 	equip = function(a, b)
 		return a:getEquips():length() < b:getEquips():length()
 	end,
+
+	spell = function(a, b)
+		return a:getMark("@spell") < b:getMark("@spell")
+	end,
 }
 
 function SmartAI:sort(players, key)
