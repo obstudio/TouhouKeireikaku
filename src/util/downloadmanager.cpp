@@ -32,8 +32,9 @@ void DownloadManager::append(const QUrl &url)
 
 void DownloadManager::append(const QString &url_str)
 {
-    QString url_head("http://thkrk.ob-studio.cn/assets/");
-    append(QUrl::fromEncoded(url_head + url_str, QUrl::StrictMode));
+    QString url("http://thkrk.ob-studio.cn/assets/");
+    url += url_str;
+    append(QUrl::fromEncoded(url.toLocal8Bit()));
 }
 
 QString DownloadManager::saveFileName(const QUrl &url)
@@ -52,9 +53,10 @@ QString DownloadManager::saveFileName(const QUrl &url)
     QString basename = user_dir + "/" + file_name; */
 
     QString basename = user_dir + path;
-    QDir dir(user_dir);
+    QString real_dir = basename.section("/", 0, -2);
+    QDir dir(real_dir);
     if (!dir.exists()) {
-        dir.mkpath(user_dir);
+        dir.mkpath(real_dir);
     }
 
     /* if (QFile::exists(basename)) {
@@ -89,10 +91,10 @@ void DownloadManager::startNextDownload()
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
             hash_dir += QString("/assets/hash.json");
-            QFile file;
-            file.setFileName(hash_dir);
+            QFile file(hash_dir);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
-            QJsonObject hash_obj = QJsonDocument::fromJson(file.readAll().toUtf8()).object();
+            QString val = file.readAll();
+            QJsonObject hash_obj = QJsonDocument::fromJson(val.toUtf8()).object();
             file.close();
             QStringList path_tree = filename.split('/');
             QString key("");
