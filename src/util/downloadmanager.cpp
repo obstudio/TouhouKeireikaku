@@ -13,16 +13,16 @@ DownloadManager::DownloadManager(QObject *parent)
 {
 }
 
-void DownloadManager::append(const QStringList &urls)
+void DownloadManager::append(const QStringList &urls, QString loc)
 {
     for (const QString &urlAsString : urls)
-        append(QUrl::fromEncoded(urlAsString.toLocal8Bit()));
+        append(QUrl::fromEncoded(urlAsString.toLocal8Bit()), loc);
 
     if (downloadQueue.isEmpty())
         QTimer::singleShot(0, this, SIGNAL(finished()));
 }
 
-void DownloadManager::append(const QUrl &url)
+void DownloadManager::append(const QUrl &url, QString loc)
 {
     /*QString filename = saveFileName(url);
     if (QFile::exists(filename)) {
@@ -57,10 +57,11 @@ void DownloadManager::append(const QUrl &url)
         QTimer::singleShot(0, this, SLOT(startNextDownload()));
 
     downloadQueue.enqueue(url);
+    locationQueue.enqueue(loc);
     ++totalCount;
 }
 
-void DownloadManager::append(const QString &url_str)
+void DownloadManager::append(const QString &url_str, QString loc)
 {
     QString url_full_str("http://thkrk.ob-studio.cn/assets/");
     url_full_str += url_str;
@@ -129,14 +130,14 @@ void DownloadManager::append(const QString &url_str)
             }
         }
     }
-    append(url);
+    append(url, loc);
 }
 
-QString DownloadManager::saveFileName(const QUrl &url)
+QString DownloadManager::saveFileName(const QUrl &url, QString loc)
 {
-    QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-
     QString path = url.path();
+
+    //QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 
     /* if (path.startsWith("/assets")) {
         path = path.right(path.length() - 7);
@@ -147,7 +148,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 
     QString basename = user_dir + "/" + file_name; */
 
-    QString basename = user_dir + path;
+    QString basename = loc + path;
     QString real_dir = basename.section("/", 0, -2);
     QDir dir(real_dir);
     if (!dir.exists()) {
@@ -178,7 +179,8 @@ void DownloadManager::startNextDownload()
     QUrl url = downloadQueue.dequeue();
     QString path = url.path();
 
-    QString filename = saveFileName(url);
+    QString loc = locationQueue.dequeue();
+    QString filename = saveFileName(url, loc);
     /*if (QFile::exists(filename)) {
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);

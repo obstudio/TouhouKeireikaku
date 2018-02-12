@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 #include <QtCore>
+#include <QStandardPaths>
 
 #include "textprogressbar.h"
 
@@ -12,10 +13,10 @@ class DownloadManager: public QObject
 public:
     explicit DownloadManager(QObject *parent = nullptr);
 
-    void append(const QUrl &url);
-    void append(const QStringList &urls);
-    void append(const QString &url_str);
-    static QString saveFileName(const QUrl &url);
+    void append(const QUrl &url, QString loc = QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    void append(const QStringList &urls, QString loc = QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    void append(const QString &url_str, QString loc = QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    static QString saveFileName(const QUrl &url, QString loc = QStandardPaths::writableLocation(QStandardPaths::DataLocation));
 
 signals:
     void finished();
@@ -32,10 +33,12 @@ private:
 
     QNetworkAccessManager manager;
     QQueue<QUrl> downloadQueue;
+    QQueue<QString> locationQueue;
     QNetworkReply *currentDownload = nullptr;
     QFile output;
     QTime downloadTime;
     TextProgressBar progressBar;
+    QString location;
 
     int downloadedCount = 0;
     int totalCount = 0;

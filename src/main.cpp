@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QStandardPaths>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "settings.h"
@@ -56,17 +57,12 @@ int main(int argc, char *argv[])
         new QApplication(argc, argv);
         QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() + "/plugins");
 
-        DownloadManager manager;
-        manager.append("hash.json");
-        manager.append("download.json");
-
-        QString general_card_path, general_avatar_path, general_fullskin_path;
-        QString big_card_path, card_path;
-        QString equip_path, small_equip_path;
-
         QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-        //Q_ASSERT(QFile::exists(user_dir + "/assets/download.json"));
-        //Q_ASSERT(QFile::exists(user_dir + "/assets/hash.json"));
+
+        DownloadManager manager;
+        manager.append("download.json");
+        manager.append("hash.json");
+
         QFile file;
         file.setFileName(user_dir + "/assets/download.json");
         file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -77,42 +73,108 @@ int main(int argc, char *argv[])
         QJsonObject dl_obj = doc.object();
         QJsonObject images = dl_obj.value(QString("images")).toObject();
 
-        QJsonArray generals = images["generals"].toArray();
-        for (int i = 0; i < generals.size(); i++) {
-            QJsonValue name = generals.at(i);
-            if (name.isString()) {
-                general_card_path = QString("image/generals/card/") + name.toString() + QString(".jpg");
-                general_avatar_path = QString("image/generals/avatar/") + name.toString() + QString(".png");
-                general_fullskin_path = QString("image/fullskin/generals/full/") + name.toString() + QString(".png");
+        QString general_card_path, general_avatar_path, general_fullskin_path;
+        QString big_card_path, card_path;
+        QString equip_path, small_equip_path;
+        
+        //Q_ASSERT(QFile::exists(user_dir + "/assets/download.json"));
+        //Q_ASSERT(QFile::exists(user_dir + "/assets/hash.json"));
+
+        QString pro_dir("C:/ProgramData/TouhouKeireikaku");
+        if (QFile::exists(pro_dir + "/assets/download.json")) {
+            QFile pro_dl(pro_dir + "/assets/download.json");
+            pro_dl.open(QIODevice::ReadOnly | QIODevice::Text);
+            QString val2 = pro_dl.readAll();
+            pro_dl.close();
+
+            QJsonDocument doc2 = QJsonDocument::fromJson(val2.toUtf8());
+            QJsonObject dl_obj2 = doc2.object();
+            QJsonObject images2 = dl_obj2.value(QString("images")).toObject();
+
+            QJsonArray generals = images["generals"].toArray();
+            QJsonArray generals2 = images2["generals"].toArray();
+            for (int i = 0; i < generals.size(); i++) {
+                QString version = generals.at(i).toString().section(":", -1, -1);
+                QString version2 = generals2.at(i).toString().section(":", -1, -1);
+                if (version != version2) {
+                    QString name = generals.at(i).toString().section(":", 0, -2);
+                    general_card_path = QString("image/generals/card/") + name + QString(".jpg");
+                    general_avatar_path = QString("image/generals/avatar/") + name + QString(".png");
+                    general_fullskin_path = QString("image/fullskin/generals/full/") + name + QString(".png");
+                    manager.append(general_card_path);
+                    manager.append(general_avatar_path);
+                    manager.append(general_fullskin_path);
+                }
+            }
+
+            QJsonArray cards = images["cards"].toArray();
+            QJsonArray cards2 = images2["cards"].toArray();
+            for (int i = 0; i < cards.size(); i++) {
+                QString version = cards.at(i).toString().section(":", -1, -1);
+                QString version2 = cards2.at(i).toString().section(":", -1, -1);
+                if (version != version2) {
+                    QString name = cards.at(i).toString().section(":", 0, -2);
+                    big_card_path = QString("image/big-card/") + name + QString(".png");
+                    card_path = QString("image/card/") + name + QString(".png");
+                    manager.append(big_card_path);
+                    manager.append(card_path);
+                }
+            }
+
+            QJsonArray equips = images["equips"].toArray();
+            QJsonArray equips2 = images2["equips"].toArray();
+            for (int i = 0; i < equips.size(); i++) {
+                QJsonObject trio = equips.at(i).toObject();
+                QJsonObject trio2 = equips2.at(i).toObject();
+                QString version = trio["version"].toString();
+                QString version2 = trio2["version"].toString();
+                if (version != version2) {
+                    big_card_path = QString("image/big-card/") + trio["big"].toString() + QString(".png");
+                    card_path = QString("image/card/") + trio["other"].toString() + QString(".png");
+                    equip_path = QString("image/equips/") + trio["other"].toString() + QString(".png");
+                    small_equip_path = QString("image/fullskin/small-equips/") + trio["other"].toString() + QString(".png");
+                    manager.append(big_card_path);
+                    manager.append(card_path);
+                    manager.append(equip_path);
+                    manager.append(small_equip_path);
+                }
+            }
+        } else {
+            QJsonArray generals = images["generals"].toArray();
+            for (int i = 0; i < generals.size(); i++) {
+                QString name = generals.at(i).toString().section(":", 0, -2);
+                general_card_path = QString("image/generals/card/") + name + QString(".jpg");
+                general_avatar_path = QString("image/generals/avatar/") + name + QString(".png");
+                general_fullskin_path = QString("image/fullskin/generals/full/") + name + QString(".png");
                 manager.append(general_card_path);
                 manager.append(general_avatar_path);
                 manager.append(general_fullskin_path);
             }
-        }
 
-        QJsonArray cards = images["cards"].toArray();
-        for (int i = 0; i < cards.size(); i++) {
-            QJsonValue name = cards.at(i);
-            if (name.isString()) {
-                big_card_path = QString("image/big-card/") + name.toString() + QString(".png");
-                card_path = QString("image/card/") + name.toString() + QString(".png");
+            QJsonArray cards = images["cards"].toArray();
+            for (int i = 0; i < cards.size(); i++) {
+                QString name = cards.at(i).toString().section(":", 0, -2);
+                big_card_path = QString("image/big-card/") + name + QString(".png");
+                card_path = QString("image/card/") + name + QString(".png");
                 manager.append(big_card_path);
                 manager.append(card_path);
             }
+
+            QJsonArray equips = images["equips"].toArray();
+            for (int i = 0; i < equips.size(); i++) {
+                QJsonObject trio = equips.at(i).toObject();
+                big_card_path = QString("image/big-card/") + trio["big"].toString() + QString(".png");
+                card_path = QString("image/card/") + trio["other"].toString() + QString(".png");
+                equip_path = QString("image/equips/") + trio["other"].toString() + QString(".png");
+                small_equip_path = QString("image/fullskin/small-equips/") + trio["other"].toString() + QString(".png");
+                manager.append(big_card_path);
+                manager.append(card_path);
+                manager.append(equip_path);
+                manager.append(small_equip_path);
+            }
         }
 
-        QJsonArray equips = images["equips"].toArray();
-        for (int i = 0; i < equips.size(); i++) {
-            QJsonObject pair = equips.at(i).toObject();
-            big_card_path = QString("image/big-card/") + pair["big"].toString() + QString(".png");
-            card_path = QString("image/card/") + pair["other"].toString() + QString(".png");
-            equip_path = QString("image/equips/") + pair["other"].toString() + QString(".png");
-            small_equip_path = QString("image/fullskin/small-equips/") + pair["other"].toString() + QString(".png");
-            manager.append(big_card_path);
-            manager.append(card_path);
-            manager.append(equip_path);
-            manager.append(small_equip_path);
-        }
+        manager.append("download.json", pro_dir);
 
         QObject::connect(&manager, SIGNAL(finished()), qApp, SLOT(quit()));
         qApp->exec();
