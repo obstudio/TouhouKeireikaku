@@ -2,6 +2,7 @@
 
 #include <QTextStream>
 #include <QStandardPaths>
+#include <QMessageBox>
 
 #include <cstdio>
 
@@ -23,6 +24,35 @@ void DownloadManager::append(const QStringList &urls)
 
 void DownloadManager::append(const QUrl &url)
 {
+    /*QString filename = saveFileName(url);
+    if (QFile::exists(filename)) {
+        if (!filename.endsWith(".json")) {
+            QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+            hash_dir += QString("/assets/hash.json");
+            QFile file(hash_dir);
+            file.open(QIODevice::ReadOnly | QIODevice::Text);
+            QString val = file.readAll();
+            QJsonObject hash_obj = QJsonDocument::fromJson(val.toUtf8()).object();
+            file.close();
+            QStringList path_tree = filename.split('/');
+            QString key("");
+            for (int i = path_tree.lastIndexOf("assets") + 1; i < path_tree.size() - 1; i++) {
+                key += path_tree.at(i) + "/";
+            }
+            QJsonObject dir_obj = hash_obj.value(key).toObject();
+            QString hash = dir_obj.value(path_tree.at(path_tree.size() - 1)).toString();
+            QFile local_file(filename);
+            QByteArray bArray = QCryptographicHash::hash(local_file.readAll(), QCryptographicHash::Md5);
+            QString local_hash(bArray.toHex());
+            local_file.close();
+            if (hash == local_hash) {
+                // fprintf(stderr, "File already exists.");
+                // startNextDownload();
+                return;
+            }
+        }
+    }*/
+
     if (downloadQueue.isEmpty())
         QTimer::singleShot(0, this, SLOT(startNextDownload()));
 
@@ -32,9 +62,74 @@ void DownloadManager::append(const QUrl &url)
 
 void DownloadManager::append(const QString &url_str)
 {
-    QString url("http://thkrk.ob-studio.cn/assets/");
-    url += url_str;
-    append(QUrl::fromEncoded(url.toLocal8Bit()));
+    QString url_full_str("http://thkrk.ob-studio.cn/assets/");
+    url_full_str += url_str;
+    QUrl url = QUrl::fromEncoded(url_full_str.toLocal8Bit());
+    QString filename = saveFileName(url);
+    if (QFile::exists(filename)) {
+        if (!filename.endsWith(".json")) {
+            QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+            hash_dir += QString("/assets/hash.json");
+            QFile file(hash_dir);
+            file.open(QIODevice::ReadOnly | QIODevice::Text);
+            QString val = file.readAll();
+            QJsonObject hash_obj = QJsonDocument::fromJson(val.toUtf8()).object();
+            file.close();
+            QStringList path_tree = filename.split('/');
+            QString key("");
+            for (int i = path_tree.lastIndexOf("assets") + 1; i < path_tree.size() - 1; i++) {
+                key += path_tree.at(i) + "/";
+            }
+            QJsonObject dir_obj = hash_obj.value(key).toObject();
+            QString hash = dir_obj.value(path_tree.at(path_tree.size() - 1)).toString();
+
+            QFile local_file(filename);
+            if (!local_file.open(QFile::ReadOnly)) {
+                QMessageBox::about(NULL, "About", "Can't open file " + filename.section("/", -1, -1) + " !!");
+                return;
+            }
+            QCryptographicHash hash_method(QCryptographicHash::Md5);
+            quint64 totalBytes = local_file.size();
+            quint64 bytesWritten = 0;
+            quint64 bytesToWrite = totalBytes;
+            quint64 loadSize = 2097152;
+            QByteArray buf;
+
+            while (1) {
+                if (bytesToWrite > 0) {
+                    quint64 minReadSize = qMin(bytesToWrite, loadSize);
+                    //QMessageBox::about(NULL, "About", filename.section("/", -1, -1) + ":\n" + QString::number(minReadSize));
+                    buf = local_file.read(minReadSize);
+                    hash_method.addData(buf);
+                    bytesWritten += buf.length();
+                    bytesToWrite -= buf.length();
+                    //QMessageBox::about(NULL, "About", filename.section("/", -1, -1) + ":\n" + QString::number(bytesWritten) + "\n" + QString::number(bytesToWrite));
+                    buf.resize(0);
+                } else {
+                    break;
+                }
+
+                if (bytesWritten >= totalBytes) {
+                    break;
+                }
+            }
+            local_file.close();
+
+            //hash_method.addData(&local_file);
+            QString local_hash = hash_method.result().toHex();
+            //QByteArray bArray = QCryptographicHash::hash(local_file.readAll(), QCryptographicHash::Md5);
+            //QString local_hash(bArray.toHex());
+
+            //QMessageBox::about(NULL, "About", filename.section("/", -1, -1) + ":\n" + hash + "\n" + local_hash);
+            
+            if (hash == local_hash) {
+                // fprintf(stderr, "File already exists.");
+                // startNextDownload();
+                return;
+            }
+        }
+    }
+    append(url);
 }
 
 QString DownloadManager::saveFileName(const QUrl &url)
@@ -84,10 +179,7 @@ void DownloadManager::startNextDownload()
     QString path = url.path();
 
     QString filename = saveFileName(url);
-    if (QFile::exists(filename)) {
-        /* fprintf(stderr, "File already exists.");
-        startNextDownload();
-        return; */
+    /*if (QFile::exists(filename)) {
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
             hash_dir += QString("/assets/hash.json");
@@ -104,16 +196,16 @@ void DownloadManager::startNextDownload()
             QJsonObject dir_obj = hash_obj.value(key).toObject();
             QString hash = dir_obj.value(path_tree.at(path_tree.size() - 1)).toString();
             QFile local_file(filename);
-            QByteArray bArray = QCryptographicHash::hash(file.readAll(), QCryptographicHash::Md5);
+            QByteArray bArray = QCryptographicHash::hash(local_file.readAll(), QCryptographicHash::Md5);
             QString local_hash(bArray.toHex());
             local_file.close();
             if (hash == local_hash) {
-                fprintf(stderr, "File already exists.");
+                // fprintf(stderr, "File already exists.");
                 startNextDownload();
                 return;
             }
         }
-    }
+    } */
     output.setFileName(filename);
     if (!output.open(QIODevice::WriteOnly)) {
         fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",

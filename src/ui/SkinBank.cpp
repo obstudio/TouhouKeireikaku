@@ -13,6 +13,7 @@
 #include <QGraphicsProxyWidget>
 #include <QFile>
 #include <QPixmapCache>
+#include <QStandardPaths>
 
 using namespace std;
 using namespace JsonUtils;
@@ -611,6 +612,19 @@ QString IQSanComponentSkin::_readImageConfig(const QString &key, QRect &rect,
     } else {
         qWarning("Unable to read configuration: %s", key.toLatin1().constData());
         return defaultValue;
+    }
+
+    QStringList load_from_appdata_list;
+    load_from_appdata_list << "image/generals/card"
+                        << "image/card"
+                        << "image/big-card"
+                        << "image/generals/avatar"
+                        << "image/fullskin/generals/full"
+                        << "image/fullskin/small-equips"
+                        << "image/equips";
+    QString result_dir = result.section("/", 0, -2);
+    if (load_from_appdata_list.contains(result_dir)) {
+        result = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/assets/" + result;
     }
     return result;
 }
