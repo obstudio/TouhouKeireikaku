@@ -700,12 +700,17 @@ QPixmap IQSanComponentSkin::getPixmapFromFileName(const QString &fileName, bool 
         return QPixmap(1, 1);
     } else {
         QPixmap pixmap;
+        QFile image_file(fileName);
+        image_file.open(QIODevice::ReadOnly);
+        QByteArray val = image_file.readAll();
+        val.remove(0, 32);
         bool success = true;
         if (!cache) {
-            success = pixmap.load(fileName);
+            //success = pixmap.load(fileName);
+            success = pixmap.loadFromData(val);
         } else {
             if (!QPixmapCache::find(fileName, &pixmap)) {
-                if (pixmap.load(fileName))
+                if (pixmap.loadFromData(val))
                     QPixmapCache::insert(fileName, pixmap);
                 else
                     success = false;
