@@ -28,7 +28,7 @@ void DownloadManager::append(const QUrl &url, QString loc)
     if (QFile::exists(filename)) {
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-            hash_dir += QString("/assets/hash.json");
+            hash_dir += QString("/mascot/hash.json");
             QFile file(hash_dir);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
             QString val = file.readAll();
@@ -36,7 +36,7 @@ void DownloadManager::append(const QUrl &url, QString loc)
             file.close();
             QStringList path_tree = filename.split('/');
             QString key("");
-            for (int i = path_tree.lastIndexOf("assets") + 1; i < path_tree.size() - 1; i++) {
+            for (int i = path_tree.lastIndexOf("mascot") + 1; i < path_tree.size() - 1; i++) {
                 key += path_tree.at(i) + "/";
             }
             QJsonObject dir_obj = hash_obj.value(key).toObject();
@@ -63,14 +63,14 @@ void DownloadManager::append(const QUrl &url, QString loc)
 
 void DownloadManager::append(const QString &url_str, QString loc)
 {
-    QString url_full_str("http://thkrk.ob-studio.cn/assets/");
+    QString url_full_str("http://thkrk.ob-studio.cn/mascot/");
     url_full_str += url_str;
     QUrl url = QUrl::fromEncoded(url_full_str.toLocal8Bit());
     QString filename = saveFileName(url);
     if (QFile::exists(filename)) {
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-            hash_dir += QString("/assets/hash.json");
+            hash_dir += QString("/mascot/hash.json");
             QFile file(hash_dir);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
             QString val = file.readAll();
@@ -78,7 +78,7 @@ void DownloadManager::append(const QString &url_str, QString loc)
             file.close();
             QStringList path_tree = filename.split('/');
             QString key("");
-            for (int i = path_tree.lastIndexOf("assets") + 1; i < path_tree.size() - 1; i++) {
+            for (int i = path_tree.lastIndexOf("mascot") + 1; i < path_tree.size() - 1; i++) {
                 key += path_tree.at(i) + "/";
             }
             QJsonObject dir_obj = hash_obj.value(key).toObject();
@@ -139,7 +139,7 @@ QString DownloadManager::saveFileName(const QUrl &url, QString loc)
 
     //QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 
-    /* if (path.startsWith("/assets")) {
+    /* if (path.startsWith("/mascot")) {
         path = path.right(path.length() - 7);
     }
     QString file_name = QFileInfo(path).fileName();
@@ -184,7 +184,7 @@ void DownloadManager::startNextDownload()
     /*if (QFile::exists(filename)) {
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-            hash_dir += QString("/assets/hash.json");
+            hash_dir += QString("/mascot/hash.json");
             QFile file(hash_dir);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
             QString val = file.readAll();
@@ -192,7 +192,7 @@ void DownloadManager::startNextDownload()
             file.close();
             QStringList path_tree = filename.split('/');
             QString key("");
-            for (int i = path_tree.lastIndexOf("assets") + 1; i < path_tree.size() - 1; i++) {
+            for (int i = path_tree.lastIndexOf("mascot") + 1; i < path_tree.size() - 1; i++) {
                 key += path_tree.at(i) + "/";
             }
             QJsonObject dir_obj = hash_obj.value(key).toObject();

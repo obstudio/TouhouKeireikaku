@@ -614,17 +614,17 @@ QString IQSanComponentSkin::_readImageConfig(const QString &key, QRect &rect,
         return defaultValue;
     }
 
-    QStringList load_from_appdata_list;
+    /*QStringList load_from_appdata_list;
     load_from_appdata_list << "image/generals/card"
                         << "image/card"
                         << "image/big-card"
                         << "image/generals/avatar"
                         << "image/fullskin/generals/full"
                         << "image/fullskin/small-equips"
-                        << "image/equips";
+                        << "image/equips";*/
     QString result_dir = result.section("/", 0, -2);
-    if (load_from_appdata_list.contains(result_dir)) {
-        result = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/assets/" + result;
+    if (result_dir.startsWith("diorite")) {
+        result = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/mascot/" + result;
     }
     return result;
 }

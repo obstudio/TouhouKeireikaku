@@ -14,9 +14,9 @@
 "photoFocusFrame2": "image/compact/frame/sos.png",
 "photoFrameWhenSelected": "image/compact/frame/photoSelected.png",
 
-"playerGeneralIcon-default-1": ["image/fullskin/generals/full/%1.png", [0, 0, 250, 291], [129, 150]],
-"playerGeneralIcon-default-4": ["image/fullskin/generals/full/%1.png", [70, 0, 124, 291], [64, 150]], //small avatar for photo
-"playerGeneralIcon-default-6": ["image/fullskin/generals/full/%1.png", [65, 0, 250, 291], [129, 150]],  //primary avatar for photo
+"playerGeneralIcon-default-1": ["diorite/dandelion/bonito/urotopine/%1", [0, 0, 250, 291], [129, 150]],
+"playerGeneralIcon-default-4": ["diorite/dandelion/bonito/urotopine/%1", [70, 0, 124, 291], [64, 150]], //small avatar for photo
+"playerGeneralIcon-default-6": ["diorite/dandelion/bonito/urotopine/%1", [65, 0, 250, 291], [129, 150]],  //primary avatar for photo
 
 "generalCircleImage-0": "image/fullskin/compact/circle-compactphoto.png",
 "generalCircleMask-0": "deprecated",
@@ -48,5 +48,5 @@
 "playerGeneralIcon-chenwudongxi-4": ["image/fullskin/generals/fulldual/chenwudongxi.png", [0, 0, 124, 291], [64, 150]],
 "playerGeneralIcon-chenwudongxi-6": ["image/fullskin/generals/fulldual/chenwudongxi.png", [0, 0, 250, 291], [129, 150]],
 
-"photoEquip-default": ["image/fullskin/small-equips/%1.png", [0, 0, 114, 19]]
+"photoEquip-default": ["diorite/dandelion/gourami/%1", [0, 0, 114, 19]]
 }

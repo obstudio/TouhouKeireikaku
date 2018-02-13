@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         manager.append("hash.json");
 
         QFile file;
-        file.setFileName(user_dir + "/assets/download.json");
+        file.setFileName(user_dir + "/mascot/download.json");
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QString val = file.readAll();
         file.close();
@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
         //Q_ASSERT(QFile::exists(user_dir + "/assets/hash.json"));
 
         QString pro_dir("C:/ProgramData/TouhouKeireikaku");
-        if (QFile::exists(pro_dir + "/assets/download.json")) {
-            QFile pro_dl(pro_dir + "/assets/download.json");
+        if (QFile::exists(pro_dir + "/mascot/download.json")) {
+            QFile pro_dl(pro_dir + "/mascot/download.json");
             pro_dl.open(QIODevice::ReadOnly | QIODevice::Text);
             QString val2 = pro_dl.readAll();
             pro_dl.close();
@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
                 QString version2 = generals2.at(i).toString().section(":", -1, -1);
                 if (version != version2) {
                     QString name = generals.at(i).toString().section(":", 0, -2);
-                    general_card_path = QString("image/generals/card/") + name + QString(".jpg");
-                    general_avatar_path = QString("image/generals/avatar/") + name + QString(".png");
-                    general_fullskin_path = QString("image/fullskin/generals/full/") + name + QString(".png");
+                    general_card_path = QString("diorite/begonia/salmon/") + name;
+                    general_avatar_path = QString("diorite/begonia/bream/") + name;
+                    general_fullskin_path = QString("diorite/dandelion/bonito/urotopine/") + name;
                     manager.append(general_card_path);
                     manager.append(general_avatar_path);
                     manager.append(general_fullskin_path);
@@ -114,8 +114,8 @@ int main(int argc, char *argv[])
                 QString version2 = cards2.at(i).toString().section(":", -1, -1);
                 if (version != version2) {
                     QString name = cards.at(i).toString().section(":", 0, -2);
-                    big_card_path = QString("image/big-card/") + name + QString(".png");
-                    card_path = QString("image/card/") + name + QString(".png");
+                    big_card_path = QString("diorite/sage/") + name;
+                    card_path = QString("diorite/papyrus/") + name;
                     manager.append(big_card_path);
                     manager.append(card_path);
                 }
@@ -129,10 +129,10 @@ int main(int argc, char *argv[])
                 QString version = trio["version"].toString();
                 QString version2 = trio2["version"].toString();
                 if (version != version2) {
-                    big_card_path = QString("image/big-card/") + trio["big"].toString() + QString(".png");
-                    card_path = QString("image/card/") + trio["other"].toString() + QString(".png");
-                    equip_path = QString("image/equips/") + trio["other"].toString() + QString(".png");
-                    small_equip_path = QString("image/fullskin/small-equips/") + trio["other"].toString() + QString(".png");
+                    big_card_path = QString("diorite/sage/") + trio["big"].toString();
+                    card_path = QString("diorite/papyrus/") + trio["other"].toString();
+                    equip_path = QString("diorite/babysbreath/") + trio["other"].toString();
+                    small_equip_path = QString("diorite/dandelion/gourami/") + trio["other"].toString();
                     manager.append(big_card_path);
                     manager.append(card_path);
                     manager.append(equip_path);
@@ -143,9 +143,9 @@ int main(int argc, char *argv[])
             QJsonArray generals = images["generals"].toArray();
             for (int i = 0; i < generals.size(); i++) {
                 QString name = generals.at(i).toString().section(":", 0, -2);
-                general_card_path = QString("image/generals/card/") + name + QString(".jpg");
-                general_avatar_path = QString("image/generals/avatar/") + name + QString(".png");
-                general_fullskin_path = QString("image/fullskin/generals/full/") + name + QString(".png");
+                general_card_path = QString("diorite/begonia/salmon/") + name;
+                general_avatar_path = QString("diorite/begonia/bream/") + name;
+                general_fullskin_path = QString("diorite/dandelion/bonito/urotopine/") + name;
                 manager.append(general_card_path);
                 manager.append(general_avatar_path);
                 manager.append(general_fullskin_path);
@@ -154,8 +154,8 @@ int main(int argc, char *argv[])
             QJsonArray cards = images["cards"].toArray();
             for (int i = 0; i < cards.size(); i++) {
                 QString name = cards.at(i).toString().section(":", 0, -2);
-                big_card_path = QString("image/big-card/") + name + QString(".png");
-                card_path = QString("image/card/") + name + QString(".png");
+                big_card_path = QString("diorite/sage/") + name;
+                card_path = QString("diorite/papyrus/") + name;
                 manager.append(big_card_path);
                 manager.append(card_path);
             }
@@ -163,10 +163,10 @@ int main(int argc, char *argv[])
             QJsonArray equips = images["equips"].toArray();
             for (int i = 0; i < equips.size(); i++) {
                 QJsonObject trio = equips.at(i).toObject();
-                big_card_path = QString("image/big-card/") + trio["big"].toString() + QString(".png");
-                card_path = QString("image/card/") + trio["other"].toString() + QString(".png");
-                equip_path = QString("image/equips/") + trio["other"].toString() + QString(".png");
-                small_equip_path = QString("image/fullskin/small-equips/") + trio["other"].toString() + QString(".png");
+                big_card_path = QString("diorite/sage/") + trio["big"].toString();
+                card_path = QString("diorite/papyrus/") + trio["other"].toString();
+                equip_path = QString("diorite/babysbreath/") + trio["other"].toString();
+                small_equip_path = QString("diorite/dandelion/gourami/") + trio["other"].toString();
                 manager.append(big_card_path);
                 manager.append(card_path);
                 manager.append(equip_path);
