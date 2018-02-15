@@ -703,6 +703,12 @@ QPixmap IQSanComponentSkin::getPixmapFromFileName(const QString &fileName, bool 
         QFile image_file(fileName);
         image_file.open(QIODevice::ReadOnly);
         QByteArray val = image_file.readAll();
+        QString key("");
+        for (int i = 0; i < fileName.section('/', -1, -1).length(); i++) {
+            key += val.at(i);
+        }
+        if (key != fileName.section('/', -1, -1))
+            return QPixmap(1, 1);
         val.remove(0, 32);
         bool success = true;
         if (!cache) {
