@@ -62,6 +62,14 @@ int main(int argc, char *argv[])
         DownloadManager manager;
         manager.append("download.json");
         manager.append("hash.json");
+        QStringList skins;
+        skins << "compactSkin.image.json" << "compactSkin.layout.json" << "compactSkinAlt.layout.json"
+            << "defaultSkin.animation.json" << "defaultSkin.audio.json" << "defaultSkin.image.json"
+            << "defaultSkin.layout.json" << "defaultSkinAlt.layout.json"
+            << "skinList.json" << "skinListAlt.json";
+        for (int i = 0; i < skins.length(); i++) {
+            manager.append("skins/" + skins.at(i));
+        }
 
         QFile file;
         file.setFileName(user_dir + "/mascot/download.json");
