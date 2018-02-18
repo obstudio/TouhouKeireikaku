@@ -5,11 +5,11 @@ TouhouKeireikaku is an open source game, which derives from Touhoukill by lwtmus
 based on QSanguosha and Touhou Project. It is never to be used for any commercial purposes.<br>
 The whole project is written in C++, along with QT for GUI framework, and Lua for AI scripts.<br>
 
-Author: Kouchya
-Contributors: jjyyxx, tusikalanse
-Organization: obstudio
-GitHub: https://github.com/obstudio/TouhouKeireikaku
-Email: kouchyakun@outlook.com
+Author: Kouchya<br>
+Contributors: jjyyxx, tusikalanse<br>
+Organization: obstudio<br>
+GitHub: https://github.com/obstudio/TouhouKeireikaku<br>
+Email: kouchyakun@outlook.com<br>
 
 *************************************
 
