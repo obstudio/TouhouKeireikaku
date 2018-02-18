@@ -1,18 +1,19 @@
-TouhouKeireikaku Alpha
+TouhouKeireikaku 东方启灵阁
 =====================================
 
 TouhouKeireikaku is an open source game, which derives from Touhoukill by lwtmusou and is originally
 based on QSanguosha and Touhou Project. It is never to be used for any commercial purposes.<br>
 The whole project is written in C++, along with QT for GUI framework, and Lua for AI scripts.<br>
-by Kouchya
 
+Author: Kouchya
+Contributors: jjyyxx, tusikalanse
+Organization: obstudio
 GitHub: https://github.com/obstudio/TouhouKeireikaku
-
 Email: kouchyakun@outlook.com
 
 *************************************
 
-Current version: 0.1.7 alpha
+Current version: 0.2.0 Alpha
 
 *************************************
 
@@ -32,6 +33,9 @@ that are already included in the root directory):<br>
 　　bin/libwinpthread-1.dll<br>
 　　bin/Qt5XmlPatterns.dll<br>
 　　plugins/imageformats<br>
+　　plugins/platforms<br>
+
+If it is your first time to run the game, make sure that your device is connected to the Internet in order to download necessary files.
 
 *************************************
 
@@ -48,7 +52,6 @@ Acknowledgements:
 The persons listed below are appreciated who have made considerable and significant contributions to this project:<br>
 	Mogara - The author of QSanguosha.<br>
 	lwtmusou - The author of TouhouKill.<br>
-	jjyyxx - This program would never be completed but for his technical support.<br>
 
 The persons listed below are appreciated who have helped me a lot with my coding problems in Tieba:<br>
 	独孤安河<br>
