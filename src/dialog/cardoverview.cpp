@@ -8,6 +8,7 @@
 
 #include <QMessageBox>
 #include <QFile>
+#include <QStandardPaths>
 
 static CardOverview *Overview;
 
@@ -126,7 +127,8 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
     int row = ui->tableWidget->currentRow();
     int card_id = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toInt();
     const Card *card = Sanguosha->getEngineCard(card_id);
-    QString pixmap_path = QString("image/big-card/%1.png").arg(card->objectName());
+    QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QString pixmap_path = user_dir + QString("/mascot/diorite/sage/%1").arg(card->objectName());
     ui->cardLabel->setPixmap(pixmap_path);
 
     ui->cardDescriptionBox->setText(card->getDescription(false));
