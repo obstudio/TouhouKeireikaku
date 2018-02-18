@@ -13,6 +13,7 @@
 #include <QGraphicsProxyWidget>
 #include <QFile>
 #include <QPixmapCache>
+#include <QStandardPaths>
 
 using namespace std;
 using namespace JsonUtils;
@@ -612,6 +613,19 @@ QString IQSanComponentSkin::_readImageConfig(const QString &key, QRect &rect,
         qWarning("Unable to read configuration: %s", key.toLatin1().constData());
         return defaultValue;
     }
+
+    /*QStringList load_from_appdata_list;
+    load_from_appdata_list << "image/generals/card"
+                        << "image/card"
+                        << "image/big-card"
+                        << "image/generals/avatar"
+                        << "image/fullskin/generals/full"
+                        << "image/fullskin/small-equips"
+                        << "image/equips";*/
+    //QString result_dir = result.section("/", 0, -2);
+    if (result.startsWith("diorite")) {
+        result = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/mascot/" + result;
+    }
     return result;
 }
 
@@ -646,7 +660,11 @@ QPixmap IQSanComponentSkin::getPixmap(const QString &key, const QString &arg, bo
     }
 
     // Hero skin?
-    QString general_name = fileName.split("/").last().split(".").first();
+    QString general_name = fileName.split("/").last();
+    if (general_name.contains(".")) {
+        general_name = general_name.split(".").first();
+    }
+    //QMessageBox::about(NULL, "About", general_name);
     if (Sanguosha->getGeneral(general_name) && heroSkin) {
         int skin_index = Config.value(QString("HeroSkin/%1").arg(general_name), 0).toInt();
         if (skin_index > 0) {
@@ -686,17 +704,67 @@ QPixmap IQSanComponentSkin::getPixmapFromFileName(const QString &fileName, bool 
         return QPixmap(1, 1);
     } else {
         QPixmap pixmap;
+        QFile image_file(fileName);
+        image_file.open(QIODevice::ReadOnly);
+        //QByteArray val = image_file.readAll();
+
+        quint64 totalBytes = image_file.size();
+        quint64 bytesWritten = 0;
+        quint64 bytesToWrite = totalBytes;
+        quint64 loadSize = 65536;
+        QByteArray buf, val;
+
+        while (1) {
+            if (bytesToWrite > 0) {
+                quint64 minReadSize = qMin(bytesToWrite, loadSize);
+                val = image_file.read(minReadSize);
+                buf.append(val);
+                bytesWritten += val.length();
+                bytesToWrite -= val.length();
+                val.resize(0);
+            } else {
+                break;
+            }
+
+            if (bytesWritten >= totalBytes) {
+                break;
+            }
+        }
+        image_file.close();
+
+        /*QString key("");
+        for (int i = 0; i < fileName.section("/", -1, -1).length(); i++) {
+            key += val.at(5 + i);
+        }
+        if (key != fileName.section("/", -1, -1)) {
+            //QMessageBox::about(NULL, "About", key + "\n" + fileName.section("/", -1, -1));
+            return QPixmap(1, 1);
+        }*/
+        if (fileName.contains("/mascot/")) {
+            //QMessageBox::about(NULL, "About", fileName);
+            QString key("");
+            for (int i = 0; i < fileName.section("/", -1, -1).length(); i++) {
+                key += buf.at(5 + i);
+            }
+            if (key != fileName.section("/", -1, -1)) {
+                //QMessageBox::about(NULL, "About", key + "\n" + fileName.section("/", -1, -1));
+                return QPixmap(1, 1);
+            }
+            buf.remove(0, 32);
+        }
         bool success = true;
         if (!cache) {
-            success = pixmap.load(fileName);
+            //success = pixmap.load(fileName, "PNG");
+            success = pixmap.loadFromData(buf);
         } else {
             if (!QPixmapCache::find(fileName, &pixmap)) {
-                if (pixmap.load(fileName))
+                if (pixmap.loadFromData(buf))
                     QPixmapCache::insert(fileName, pixmap);
                 else
                     success = false;
             }
         }
+        //bool success = pixmap.loadFromData(buf);
         if (!success) return QPixmap(1, 1); // make Qt happy
         else return pixmap;
     }
@@ -1017,10 +1085,11 @@ bool QSanSkinScheme::load(const QVariant &configs)
 {
     JsonObject config = configs.value<JsonObject>();
     if (config.isEmpty()) return false;
-    QString layoutFile = config["roomLayoutConfigFile"].toString();
-    QString imageFile = config["roomImageConfigFile"].toString();
-    QString audioFile = config["roomAudioConfigFile"].toString();
-    QString animFile = config["roomAnimationConfigFile"].toString();
+    QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/mascot/";
+    QString layoutFile = user_dir + config["roomLayoutConfigFile"].toString();
+    QString imageFile = user_dir + config["roomImageConfigFile"].toString();
+    QString audioFile = user_dir + config["roomAudioConfigFile"].toString();
+    QString animFile = user_dir + config["roomAnimationConfigFile"].toString();
     return _m_roomSkin.load(layoutFile, imageFile, audioFile, animFile);
 }
 
@@ -1032,11 +1101,16 @@ const QSanRoomSkin &QSanSkinScheme::getRoomSkin() const
 QSanSkinFactory &QSanSkinFactory::getInstance()
 {
     if (_sm_singleton == NULL) {
+        QString dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/mascot/";
 #ifdef Q_OS_WIN
-        _sm_singleton = new QSanSkinFactory("skins/skinList.json");
+        dir += "skins/skinList.json";
+        //_sm_singleton = new QSanSkinFactory(user_dir + "skins/skinList.json");
 #else
-        _sm_singleton = new QSanSkinFactory("skins/skinListAlt.json");
+        dir += "skins/skinListAlt.json";
+        //_sm_singleton = new QSanSkinFactory(user_dir + "skins/skinListAlt.json");
 #endif
+        QByteArray ba = dir.toLatin1();
+        _sm_singleton = new QSanSkinFactory(ba.data());
     }
     return *_sm_singleton;
 }

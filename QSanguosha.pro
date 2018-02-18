@@ -97,6 +97,8 @@ SOURCES += \
     src/util/detector.cpp \
     src/util/nativesocket.cpp \
     src/util/recorder.cpp \
+    src/util/downloadmanager.cpp \
+    src/util/textprogressbar.cpp \
     src/main.cpp \
     src/ui/choosetriggerorderbox.cpp \
     src/ui/graphicsbox.cpp \
@@ -190,6 +192,8 @@ HEADERS += \
     src/util/nativesocket.h \
     src/util/recorder.h \
     src/util/socket.h \
+    src/util/downloadmanager.h \
+    src/util/textprogressbar.h \
     src/ui/choosetriggerorderbox.h \
     src/ui/graphicsbox.h \
     src/ui/lightboxanimation.h \
