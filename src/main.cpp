@@ -102,10 +102,11 @@ int main(int argc, char *argv[])
             QJsonArray generals = images["generals"].toArray();
             QJsonArray generals2 = images2["generals"].toArray();
             for (int i = 0; i < generals.size(); i++) {
-                QString version = generals.at(i).toString().section(":", -1, -1);
-                QString version2 = generals2.at(i).toString().section(":", -1, -1);
-                if (version != version2) {
-                    QString name = generals.at(i).toString().section(":", 0, -2);
+                QJsonValue item = generals.at(i);
+                //QString version = item.section(":", -1, -1);
+                //QString version2 = generals2.at(i).toString().section(":", -1, -1);
+                if (!generals2.contains(item)) {
+                    QString name = item.toString().section(":", 0, -2);
                     general_card_path = QString("diorite/begonia/salmon/") + name;
                     general_avatar_path = QString("diorite/begonia/bream/") + name;
                     general_fullskin_path = QString("diorite/dandelion/bonito/urotopine/") + name;
@@ -118,10 +119,11 @@ int main(int argc, char *argv[])
             QJsonArray cards = images["cards"].toArray();
             QJsonArray cards2 = images2["cards"].toArray();
             for (int i = 0; i < cards.size(); i++) {
-                QString version = cards.at(i).toString().section(":", -1, -1);
-                QString version2 = cards2.at(i).toString().section(":", -1, -1);
-                if (version != version2) {
-                    QString name = cards.at(i).toString().section(":", 0, -2);
+                QJsonValue item = cards.at(i);
+                //QString version = cards.at(i).toString().section(":", -1, -1);
+                //QString version2 = cards2.at(i).toString().section(":", -1, -1);
+                if (!cards2.contains(item)) {
+                    QString name = item.toString().section(":", 0, -2);
                     big_card_path = QString("diorite/sage/") + name;
                     card_path = QString("diorite/papyrus/") + name;
                     manager.append(big_card_path);
@@ -132,11 +134,12 @@ int main(int argc, char *argv[])
             QJsonArray equips = images["equips"].toArray();
             QJsonArray equips2 = images2["equips"].toArray();
             for (int i = 0; i < equips.size(); i++) {
-                QJsonObject trio = equips.at(i).toObject();
-                QJsonObject trio2 = equips2.at(i).toObject();
-                QString version = trio["version"].toString();
-                QString version2 = trio2["version"].toString();
-                if (version != version2) {
+                QJsonValue trio_val = equips.at(i);
+                //QJsonObject trio2 = equips2.at(i).toObject();
+                //QString version = trio["version"].toString();
+                //QString version2 = trio2["version"].toString();
+                if (!equips2.contains(trio_val)) {
+                    QJsonObject trio = trio_val.toObject();
                     big_card_path = QString("diorite/sage/") + trio["big"].toString();
                     card_path = QString("diorite/papyrus/") + trio["other"].toString();
                     equip_path = QString("diorite/babysbreath/") + trio["other"].toString();
