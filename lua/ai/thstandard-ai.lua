@@ -240,7 +240,8 @@ sgs.ai_skill_invoke.xingchen = function(self, data)
 	if #self:getEnemies() == 0 then return false end
 	local damage = data:toDamage()
 	for _, p in ipairs(self:getEnemies()) do
-		if damage.to:distanceTo(p) <= damage.to:getAttackRange() and p:objectName() ~= damage.to:objectName() then
+		if damage.to:distanceTo(p) <= damage.to:getAttackRange() and p:objectName() ~= damage.to:objectName()
+				and not p:hasFlag("XingchenSlashed") then
 			return true
 		end
 	end
@@ -249,7 +250,7 @@ end
 
 sgs.ai_skill_playerchosen.xingchen = function(self, targets)
 	for _, p in sgs.qlist(targets) do
-		if self:isEnemy(p) then
+		if self:isEnemy(p) and not p:hasFlag("XingchenSlashed") then
 			sgs.updateIntention(self.player, p, 80)
 			return p
 		end
