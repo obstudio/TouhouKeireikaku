@@ -71,8 +71,9 @@ int main(int argc, char *argv[])
             manager.append("skins/" + skins.at(i));
         }
 
+        QString download_dir = user_dir + "/mascot/download.json";
         QFile file;
-        file.setFileName(user_dir + "/mascot/download.json");
+        file.setFileName(download_dir);
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QString val = file.readAll();
         file.close();
