@@ -1156,32 +1156,128 @@ public:
 	}
 };
 
-/* class Yaoshi : public MasochismSkill
+RanhuiCard::RanhuiCard()
 {
-	
-public:
-	Yaoshi() : MasochismSkill("yaoshi")
-	{
-		frequency = Compulsory;
-	}
-	
-	QList<SkillInvokeDetail> triggerable(const Room *, const DamageStruct &damage) const
-    {
-        if (damage.to->isAlive() && damage.to->hasSkill(this) && damage.nature != DamageStruct::Normal) {
-            return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, damage.to, damage.to, NULL, true);
-        }
-        return QList<SkillInvokeDetail>();
-    }
+}
 
-	void onDamaged(Room *room, QSharedPointer<SkillInvokeDetail> invoke, const DamageStruct &damage) const
+bool RanhuiCard::targetFilter(const QList<const Player *> &selected, const Player *to_select, const Player *Self) const
+{
+	return selected.isEmpty() && to_select->getPhase() == Player::Finish;
+}
+
+void RanhuiCard::effect(const CardEffectStruct &effect) const
+{
+	ServerPlayer *from = effect.from;
+	ServerPlayer *to = effect.to;
+	Room *room = from->getRoom();
+
+	room->damage(DamageStruct("ranhui", from, to, 1, DamageStruct::Fire));
+	room->removePlayerMark(from, "@fire", 1);
+}
+
+class RanhuiVS : public ViewAsSkill
+{
+
+public:
+	RanhuiVS() : ViewAsSkill("ranhui")
 	{
-		ServerPlayer *target = damage.to;
-		room->sendCompulsoryTriggerLog(target, objectName());
-        //room->sendCompulsoryTriggerLog(target, objectName());
-		target->drawCards(2 * damage.damage);
+		response_pattern = "@@ranhui";
+	}
+
+	bool viewFilter(const QList<const Card *> &selected, const Card *to_select) const
+	{
+		return selected.length() < 3;
+	}
+
+	const Card *viewAs(const QList<const Card *> &cards) const
+	{
+		if (cards.length() != 3)
+			return NULL;
+		
+		RanhuiCard *card = new RanhuiCard;
+		card->addSubcards(cards);
+		return card;
 	}
 };
 
+class Ranhui : public TriggerSkill
+{
+
+public:
+	Ranhui() : TriggerSkill("ranhui")
+	{
+		events << EventPhaseStart;
+		view_as_skill = new RanhuiVS;
+	}
+
+	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
+	{
+		ServerPlayer *player = data.value<ServerPlayer *>();
+		ServerPlayer *pachouli = room->findPlayerBySkillName(objectName());
+		if (player && player->isAlive() && pachouli && pachouli->isAlive() && player->getPhase() == Player::Finish
+			&& player != pachouli)
+			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, pachouli, pachouli, NULL, false, player);
+		return QList<SkillInvokeDetail>();
+	}
+
+	bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		return room->askForUseCard(invoke->invoker, "@@ranhui", "@ranhui-discard");
+	}
+
+	void effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		//room->damage(DamageStruct(objectName(), invoke->invoker, invoke->preferredTarget, 1, DamageStruct::Fire));
+		return false;
+	}
+};
+
+class Huzang : public TriggerSkill
+{
+
+public:
+	Huzang() : TriggerSkill("huzang")
+	{
+		events << Damage;
+	}
+
+	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
+	{
+		DamageStruct damage = data.value<DamageStruct>();
+		ServerPlayer *pachouli = damage.from;
+		ServerPlayer *target = damage.to;
+		if (pachouli && pachouli->isAlive() && pachouli->hasSkill(this) && target && target->isAlive() && damage.damage > 0)
+			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, pachouli, pachouli, NULL, false, target);
+		return QList<SkillInvokeDetail>();
+	}
+
+	bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		return room->askForSkillInvoke(invoke->invoker, objectName(), data);
+	}
+
+	void effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		ServerPlayer *pachouli = invoke->invoker;
+		ServerPlayer *target = invoke->preferredTarget;
+		room->removePlayerMark(pachouli, "@water", 1);
+		int card_id = room->askForCardChosen(pachouli, target, "he", objectName());
+		room->throwCard(card_id, target, pachouli);
+		return false;
+	}
+};
+
+class Jiaodi : public TriggerSkill
+{
+
+public:
+	Jiaodi() : TriggerSkill("jiaodi")
+	{
+		events << CardsMoveOneTime;
+	}
+}
+
+/*
 HuangyanCard::HuangyanCard()
 {
 }
@@ -1377,15 +1473,36 @@ public:
 	}
 };
 
+XianshiCard::XianshiCard()
+{
+}
+
+bool XianshiCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
+{
+	return targets.length() < 3;
+}
+
+void XianshiCard::use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &targets) const
+{
+	foreach (ServerPlayer *p, targets) {
+		p->drawCards(2);
+	}
+}
+
 class XianshiVS : public ZeroCardViewAsSkill
 {
 
 public:
 	XianshiVS() : ZeroCardViewAsSkill("xianshi")
 	{
-		response_pattern = ""
+		response_pattern = "@@xianshi";
 	}
-}
+
+	const Card *viewAs() const
+	{
+		return new XianshiCard;
+	}
+};
 
 class Xianshi : public TriggerSkill
 {
@@ -3126,9 +3243,8 @@ THStandardPackage::THStandardPackage()
 	nitori->addSkill(new Shuimu);
 	
 	General *pachouli = new General(this, "pachouli", "hakurei", 3, false);
-	pachouli->addSkill(new Yaoshi);
-	pachouli->addSkill(new Huangyan);
-	pachouli->addSkill(new Jingyue);
+	pachouli->addSkill(new Shengyao);
+	pachouli->addSkill(new Xianshi);
 	
 	General *alice = new General(this, "alice", "hakurei", 3, false);
 	alice->addSkill(new Diaoou);
@@ -3195,7 +3311,9 @@ THStandardPackage::THStandardPackage()
 	addMetaObject<ShantouCard>();
 	addMetaObject<DaosheCard>();
 	addMetaObject<HeiyanCard>();
+	addMetaObject<RanhuiCard>();
 	addMetaObject<HuangyanCard>();
+	addMetaObject<XianshiCard>();
 	addMetaObject<DiaoouCard>();
 	addMetaObject<AnjiCard>();
 	addMetaObject<YaofengCard>();
@@ -3208,6 +3326,8 @@ THStandardPackage::THStandardPackage()
     addMetaObject<XianboCard>();
 	addMetaObject<HuanniCard>();
 	addMetaObject<CitanCard>();
+
+	skills << new Ranhui << new Huzang << new Jiaodi << new Dianjin << new Zhenlei << new Huangyan << new Jingyue;
 }
 
 ADD_PACKAGE(THStandard)
