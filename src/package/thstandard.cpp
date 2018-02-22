@@ -1275,6 +1275,30 @@ public:
 	{
 		events << CardsMoveOneTime;
 	}
+
+	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
+	{
+		CardsMoveOneTimeStruct move = data.value<CardsMoveOneTimeStruct>();
+		ServerPlayer *pachouli = qobject_cast<ServerPlayer *>(move.from);
+		if (pachouli && pachouli->isAlive() && pachouli->hasSkill(this) && move.reason.m_reason == 0x13)
+			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, pachouli, pachouli, NULL, false);
+		return QList<SkillInvokeDetail>();
+	}
+
+	bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		return room->askForSkillInvoke(invoke->invoker, objectName(), data);
+	}
+
+	void effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		ServerPlayer *pachouli = invoke->invoker;
+		ServerPlayer *target = invoke->preferredTarget;
+		room->removePlayerMark(pachouli, "@water", 1);
+		int card_id = room->askForCardChosen(pachouli, target, "he", objectName());
+		room->throwCard(card_id, target, pachouli);
+		return false;
+	}
 }
 
 /*
