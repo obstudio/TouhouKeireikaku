@@ -1,3 +1,6 @@
+#ifndef _thstandard_H
+#define _thstandard_H
+
 #include "package.h"
 #include "card.h"
 
@@ -53,6 +56,27 @@ public:
 	void use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &targets) const;
 };
 
+class RanhuiCard : public SkillCard
+{
+	Q_OBJECT
+
+public:
+	Q_INVOKABLE RanhuiCard();
+
+	bool targetFilter(const QList<const Player *> &selected, const Player *to_select, const Player *Self) const;
+	void onEffect(const CardEffectStruct &effect) const;
+};
+
+class DianjinCard : public SkillCard
+{
+	Q_OBJECT
+
+public:
+	Q_INVOKABLE DianjinCard();
+
+	void onUse(Room *room, const CardUseStruct &use) const;
+};
+
 class HuangyanCard : public SkillCard
 {
 	Q_OBJECT
@@ -60,6 +84,17 @@ class HuangyanCard : public SkillCard
 public:
 	Q_INVOKABLE HuangyanCard();
 	
+	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
+	void use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &targets) const;
+};
+
+class XianshiCard : public SkillCard
+{
+	Q_OBJECT
+
+public:
+	Q_INVOKABLE XianshiCard();
+
 	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 	void use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &targets) const;
 };
@@ -191,3 +226,5 @@ public:
 	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 	void onEffect(const CardEffectStruct &effect) const;
 };
+
+#endif
