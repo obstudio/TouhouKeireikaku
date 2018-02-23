@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QNetworkConfigurationManager>
 
 #include "mainwindow.h"
 #include "settings.h"
@@ -58,15 +59,16 @@ int main(int argc, char *argv[])
         QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() + "/plugins");
 
         QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-
-        DownloadManager manager;
-        manager.append("download.json");
-        manager.append("hash.json");
         QStringList skins;
         skins << "compactSkin.image.json" << "compactSkin.layout.json" << "compactSkinAlt.layout.json"
             << "defaultSkin.animation.json" << "defaultSkin.audio.json" << "defaultSkin.image.json"
             << "defaultSkin.layout.json" << "defaultSkinAlt.layout.json"
             << "skinList.json" << "skinListAlt.json";
+
+        DownloadManager manager;
+        manager.append("download.json");
+        manager.append("hash.json");
+        
         for (int i = 0; i < skins.length(); i++) {
             manager.append("skins/" + skins.at(i));
         }
@@ -190,6 +192,18 @@ int main(int argc, char *argv[])
 
         QObject::connect(&manager, SIGNAL(finished()), qApp, SLOT(quit()));
         qApp->exec();
+
+        if (!QFile::exists(user_dir + "/mascot/download.json") || !QFile::exists(user_dir + "/mascot/hash.json")) {
+            QMessageBox::warning(NULL, "TouhouKeireikaku Warning", "Files download failed!");
+            return 0;
+        } else {
+            for (int i = 0; i < skins.length(); i++) {
+                if (!QFile::exists(user_dir + "/mascot/skins/" + skins.at(i))) {
+                    QMessageBox::warning(NULL, "TouhouKeireikaku Warning", "Files download failed!");
+                    return 0;
+                }
+            }
+        }
     }
 
 #ifdef Q_OS_MAC
