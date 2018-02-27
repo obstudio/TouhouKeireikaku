@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,
+										initial-scale=1.0,
+										maximum-scale=1.0,
+										user-scalable=no">
+		<title>东方启灵阁 - 基础技能代码教程</title>
+		
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+			<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		
+		<style>
+			body
+			{
+				height: 100%;
+				width: 100%;
+				background: url("../backdrop.png");
+				background-size: cover;
+				background-repeat: no-repeat;
+				background-attachment: fixed;
+			}
+			div.container-logo
+			{
+				background-color: #00004b;
+			}
+			div.container-main
+			{
+				margin-top: 30px;
+				margin-bottom: 70px;
+				margin-left: 70px;
+				margin-right: 70px;
+			}
+			.row-eq-height
+			{
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+			}
+			@font-face
+			{
+				font-family: essentialSkillCodeFont;
+				src: url("../fonts/HanyiLingxinJ.ttf") format("truetype");
+			}
+			.essential-skill-code
+			{
+				font-family: essentialSkillCodeFont;
+				font-style: italic;
+				color: #555588;
+			}
+			p,ul
+			{
+				line-height: 40px;
+			}
+			.indent
+			{
+				text-indent: 2em;
+			}
+			a.code:link
+			{
+				color: #c23737;
+			}
+			a.code:visited
+			{
+				color: #ff2aa3;
+			}
+			a.code:hover
+			{
+				color: #97c90f;
+			}
+			a.code:active
+			{
+				color: #17c3cf;
+			}
+			div.pages
+			{
+				margin-bottom: 70px
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<!-- 东方启灵阁Logo -->
+		<div class="container-logo">
+			<div class="row-eq-height"
+				style="border-bottom-style: solid;
+				border-bottom-color: #626262">
+				<div class="col-lg-2">
+					<img src="../logo.png" class="img-rounded"
+							style="margin-top: 10px;
+									margin-left: 20px;
+									margin-bottom: 10px">
+				</div>
+			</div>
+		</div>
+
+		<!-- 主体部分 -->
+		<div class="container-main">
+			<div class="row-eq-height">
+
+				<!-- 目录栏+正文部分 -->
+				<div class="col-lg-3"
+					 style="background-color: #d5e0f2;
+					 		border-style: ridge;
+							 border-color: #999999">
+					<h2 style="font-weight: bold; margin-top:30px">技能代码教程</h2>
+					<h3 style="color: #828282"><small><i>作者：Kouchya</i></small></h3>
+					<p>
+						<h4 style="font-weight: bold">目录<br></h4>
+						<a href="0.html">〇 不得不说的前言</a><br>
+						<font color="#515151">一 主要对象类型</font><br>
+						<a href="2.html">二 DistanceSkill &amp; MaxCardsSkill</a><br>
+					</p>
+				</div>
+
+				<!-- 正文 -->
+				<div class="col-lg-9"
+					 style="background-color: #f1f1ff;
+					 		border-style: ridge;
+							 border-color: #999999">
+					
+					<!-- 页顶翻页 -->
+					<div class="row-eq-height"
+						style="margin-top:20px">
+						<div class="col-lg-4">
+							<a href="0.html">
+								<img src="../icons/prev_page.png" class="img-rounded">
+							</a>
+						</div>
+						<div class="col-lg-4">
+						</div>
+						<div class="col-lg-4">
+							<a href="2.html">
+								<img src="../icons/next_page.png" class="img-rounded" align="right">
+							</a>
+						</div>
+					</div>
+
+					<!-- 篇章标题 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		border-bottom-style: solid;
+						 		border-bottom-color: #999999;
+						 		border-bottom-width: 1;
+						 		margin-top: 10px">
+						<h1 class="essential-skill-code">
+							一 主要对象类型
+						</h1>
+					</div>
+
+					<!-- 篇章内容 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		margin-top: 20px">
+						<p class="indent">
+							鉴于东方启灵阁代码采用极端<del>OB</del>OOP的方式编写，我们几乎进行任何操作时都离不开一个具体的<del>女朋友</del>对象。在基本的技能代码中，有一些固定的对象类型会大量出现<del>，其执着和专情无疑是广大单身程序猿的福音</del>。它们在下面被列举出来：
+						</p>
+
+						<table class="table table-striped table-bordered table-hover"
+								style="border: 1px solid blue">
+							<thead>
+								<th>对象类型</th>
+								<th>不负责任的介绍</th>
+							</thead>
+
+							<tr>
+								<td>Skill</td>
+								<td>
+									小学生应该都认识这是技能的意思。技能类有诸多派生类，包括但不限于TriggerSkill，ViewAsSkill，TargetModSkill，DistanceSkill，PhaseChangeSkill……这些把人搞得莫名其妙的东西。我们会分散在以后的若干章节专门介绍Skill的各种派生类型。
+								</td>
+							</tr>
+
+							<tr>
+								<td>Room</td>
+								<td>
+									很莫名其妙但存在感超群的东西。按字面意思，它就是个房间，玩家玩游戏时待着的那个房间。一些涉及服务端与客户端交互的函数都是它的成员函数。<del>以后你们会知道没有Room可调用将会是一件多么令人痛不欲生的事情</del>
+								</td>
+							</tr>
+
+							<tr>
+								<td>Engine</td>
+								<td>
+									更加莫名其妙且存在感一般的东西，但它的字面意思足以使每个程序猿对它的核心性肃然起敬。在执行技能具体效果时有一些关键的转化函数都是它的方法。东方启灵阁的代码里有且仅有唯一的一个全局Engine实例，但它被命名为Sanguosha<del>，可见三国杀才是启灵阁祖宗</del>。
+								</td>
+							</tr>
+
+							<tr>
+								<td>Player &amp; ServerPlayer</td>
+								<td>
+									玩家本家，以及服务端维度下的玩家。这两个，嗯，有本质上的区别，但不涉及底层代码的话很难分辨清楚。基本上ServerPlayer在代码中出现的频率会高很多，但有些无需访问服务端的地方会强硬地采用Player<del>，并使在座的各位感受到没有Room的阴影</del>。具体功能上这俩就像个被踢来踢去的皮球，一会儿给这个做做参数一会儿给那个做做参数。它俩调用自己的方法的机会并不多。（其实你们看源码结构就知道还有个ClientPlayer，但那个……呵呵，零存在感吧。）
+								</td>
+							</tr>
+
+							<tr>
+								<td>General</td>
+								<td>
+									玩家所使用的角色。这个只在创建新角色并给其添加技能时会用上。
+								</td>
+							</tr>
+
+							<tr>
+								<td>SkillInvokeDetail</td>
+								<td>
+									详细解释的话挺麻烦，说白了就是个记录并传递技能发动信息的东西，在TriggerSkill里会应用广泛，相应章节里会细说。
+								</td>
+							</tr>
+						</table>
+
+						<h5 style="margin-bottom: 40px" class="indent">
+							总结一句话：架子先摆好，别的以后再说。（逃）
+						</h5>
+					</div>
+
+					<!-- 小结标题 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		border-bottom-style: solid;
+						 		border-bottom-color: #999999;
+						 		border-bottom-width: 1;
+						 		margin-top: 20px">
+						<h2 class="essential-skill-code">
+							小结
+						</h2>
+					</div>
+
+					<!-- 小结部分 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		margin-top: 20px">
+						<h4 style="font-weight: bold">
+							本章你应该掌握的东西：
+						</h4>
+						<ul>
+							<li>编写东方启灵阁技能代码需要<del>找对象</del>了解大量对象。</li>
+						</ul>
+
+						<h4 style="font-weight: bold">
+							本章你至少应该装作知道的东西：
+						</h4>
+						<ul>
+							<li>东方启灵阁的技能被分为好多好多种类。</li>
+							<li>Room，Engine和Player(ServerPlayer)是非常重要的三种对象类型。</li>
+						</ul>
+
+						<h4 style="font-weight: bold">
+							本章礼貌地问候了你的东西：
+						</h4>
+						<ul style="margin-bottom: 70px">
+							<li><del>三国杀是东方启灵阁祖宗。</del></li>
+							<li><del>从本章开始会有章后小结。</del></li>
+						</ul>
+					</div>
+
+					<!-- 页底翻页 -->
+					<div class="row-eq-height pages">
+						<div class="col-lg-4">
+							<a href="0.html">
+								<img src="../icons/prev_page.png" class="img-rounded">
+							</a>
+						</div>
+						<div class="col-lg-4">
+						</div>
+						<div class="col-lg-4">
+							<a href="2.html">
+								<img src="../icons/next_page.png" class="img-rounded" align="right">
+							</a>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</body>
+
+</html>

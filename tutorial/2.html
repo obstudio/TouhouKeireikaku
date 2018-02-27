@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,
+										initial-scale=1.0,
+										maximum-scale=1.0,
+										user-scalable=no">
+		<title>东方启灵阁 - 基础技能代码教程</title>
+		
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+			<link rel="stylesheet" href="../themes/prism.css">
+			<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+			<script src="../prism.js"></script>
+			<script src="../scripts/tutorial/2/2-1.js"></script>
+			<script src="../scripts/tutorial/2/2-2.js"></script>
+			<script src="../scripts/tutorial/2/2-3.js"></script>
+			<script src="../scripts/tutorial/2/2-4.js"></script>
+			<script src="../scripts/tutorial/2/2-5.js"></script>
+			<script src="../scripts/tutorial/2/2-6.js"></script>
+			<script src="../scripts/tutorial/2/2-7.js"></script>
+			<script src="../scripts/tutorial/2/2-8.js"></script>
+			<script src="../scripts/tutorial/2/2-9.js"></script>
+			<script src="../scripts/tutorial/2/2-10.js"></script>
+		
+		<style>
+			body
+			{
+				height: 100%;
+				width: 100%;
+				background: url("../backdrop.png");
+				background-size: cover;
+				background-repeat: no-repeat;
+				background-attachment: fixed;
+			}
+			div.container-logo
+			{
+				background-color: #00004b;
+			}
+			div.container-main
+			{
+				margin-top: 30px;
+				margin-bottom: 70px;
+				margin-left: 70px;
+				margin-right: 70px;
+			}
+			.row-eq-height
+			{
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+			}
+			@font-face
+			{
+				font-family: essentialSkillCodeFont;
+				src: url("../fonts/HanyiLingxinJ.ttf") format("truetype");
+			}
+			.essential-skill-code
+			{
+				font-family: essentialSkillCodeFont;
+				font-style: italic;
+				color: #555588;
+			}
+			p,ol,ul
+			{
+				line-height: 40px;
+			}
+			.indent
+			{
+				text-indent: 2em;
+			}
+			a.code:link
+			{
+				color: #c23737;
+			}
+			a.code:visited
+			{
+				color: #ff2aa3;
+			}
+			a.code:hover
+			{
+				color: #97c90f;
+			}
+			a.code:active
+			{
+				color: #17c3cf;
+			}
+			div.pages
+			{
+				margin-bottom: 70px
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<!-- 东方启灵阁Logo -->
+		<div class="container-logo">
+			<div class="row-eq-height"
+				style="border-bottom-style: solid;
+				border-bottom-color: #626262">
+				<div class="col-lg-2">
+					<img src="../logo.png" class="img-rounded"
+							style="margin-top: 10px;
+									margin-left: 20px;
+									margin-bottom: 10px">
+				</div>
+			</div>
+		</div>
+
+		<!-- 主体部分 -->
+		<div class="container-main" style="padding-left: 0px; padding-right: 0px">
+			<div class="row-eq-height">
+
+				<!-- 目录栏+正文部分 -->
+				<div class="col-lg-3"
+					 style="background-color: #d5e0f2;
+					 		border-style: ridge;
+							 border-color: #999999">
+					<h2 style="font-weight: bold; margin-top:30px">技能代码教程</h2>
+					<h3 style="color: #828282"><small><i>作者：Kouchya</i></small></h3>
+					<p>
+						<h4 style="font-weight: bold">目录<br></h4>
+						<a href="0.html">〇 不得不说的前言</a><br>
+						<a href="1.html">一 主要对象类型</a><br>
+						<font color="#515151">二 DistanceSkill &amp; MaxCardsSkill</font><br>
+					</p>
+				</div>
+
+				<!-- 正文 -->
+				<div class="col-lg-9"
+					 style="background-color: #f1f1ff;
+					 		border-style: ridge;
+					 		border-color: #999999">
+
+					<!-- 页顶翻页 -->
+					<div class="row-eq-height"
+						style="margin-top:20px">
+						<div class="col-lg-4">
+							<a href="1.html">
+								<img src="../icons/prev_page.png" class="img-rounded">
+							</a>
+						</div>
+						<div class="col-lg-8">
+						</div>
+					</div>
+
+					<!-- 篇章标题 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		border-bottom-style: solid;
+						 		border-bottom-color: #999999;
+						 		border-bottom-width: 1;
+						 		margin-top: 10px">
+						<h1 class="essential-skill-code">
+							二 DistanceSkill &amp; MaxCardsSkill
+						</h1>
+					</div>
+
+					<!-- 篇章内容 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+								 margin-top: 20px;
+								 margin-bottom: 50px">
+						<img src="../icons/red_warning.png" class="img-rounded" alt="注意">
+
+						<h4 class="text-danger" 
+							style="font-weight: bold">
+							注意：从本章开始，我们将直接进入特定技能类型代码的教程。因此src/core/skill.h将是一个应当一直保持打开的文件。
+						</h4>
+
+						<p class="indent">
+							顾名思义，标题中的两个技能类型应该是和距离有关的技能，以及和手牌上限有关的技能。这里想必大家都知道手牌上限指的是弃牌阶段能够保留的最大手牌数，而非任何时候积攒手牌的数量上限，否则请大声朗读第〇章第3条并同时倒立转十圈。<br>
+							然而纵观东方启灵阁乃至三国杀的技能，改变距离或手牌上限的技能都没有在所有技能中占很大比例。那么为什么我们要先考虑这两类技能呢？因为它们简单啊！（逃）
+						</p>
+
+						<p class="indent">
+							我们先来看skill.h中对DistanceSkill的定义：
+						</p>
+
+						<pre id="2-1"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							寥寥数行，可见它有多么简单。首先类型声明就已经非常明确地告诉我们，DistanceSkill是一个继承自Skill的类，换言之，它是个技能类型（废话）。其次一行Q_OBJECT，这是Qt自带的一种对象格式宏，只有加了这一条，我们的对象才能自如参与Qt美好的信号槽机制，但这些都不重要。
+						</p>
+
+						<p class="indent">
+							来看公共变量。构造函数指出我们创建一个DistanceSkill的实例时需要给进去一个QString。这个QString是Qt给我们的一种功能强大的字符串类型，不用太在意它，使用的时候就像正常的字符串一样写”xxx”就行了。这个QString参数叫name，也就是说，它是技能的名字。<b>鉴于程序不直接支持中文，我们一般采用技能名的汉语拼音小写。</b>
+						</p>
+
+						<p class="indent">
+							接下来是一个返回整型的虚函数getCorrect()，它包含两个Player指针类型的参数：from和to。凭借对三国杀技能的常识我们可以猜出，这是计算距离的起始玩家和目标玩家，而这个函数则返回具体的距离修改值。
+						</p>
+
+						<p class="indent">
+							我们创建的每个新技能都不是单个单个的实例，因为我们可能会不止一次使用它。<b>因此每个技能都是技能类型类的一个派生类。</b>因此一个类名为Jineng的合法的DistanceSkill应当差不多长这样：
+						</p>
+
+						<pre id="2-2"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							当然如果你觉得这个技能的效果可以直接无视from和to直接声明更改的距离值，你也可以直接写成：
+						</p>
+
+						<pre id="2-3"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							这里-1的意思是from到to计算距离-1。
+						</p>
+
+						<p class="indent">
+							我们来看个具体的例子。以三国杀的【飞影】为例：
+						</p>
+
+						<p class="indent"
+							style="background-color: #ebebeb">
+							<b>锁定技，</b>其他角色与你计算距离+1。
+						</p>
+
+						<p class="indent">
+							显然，这里拥有【飞影】的角色是距离计算中的那个to，而from则是任何一名其他角色（注意，是<b>其他</b>角色）。由于DistanceSkill对全局生效而并不自行考察角色是否拥有这个技能，我们需要手动在getCorrect方法里判断，那个to是否拥有此技能。为此，我们需要用到Player的hasSkill方法，其定义如下：
+						</p>
+
+						<pre id="2-4"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							第二个布尔类型参数include_lose指该角色是否曾经有过这个技能但现在失去了，这里我们当然希望采用默认值false，所以可以不填。重点是第一个参数，我们可以填写一个技能名(QString &amp;skill_name)，也可以给定一个技能对象(Skill *skill)。由于我们现在处在一个技能类的作用域中，我们可以直接用this指针得到当前这个技能。因此我们的代码写成：
+						</p>
+
+						<pre id="2-5"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							这里return 1表明【飞影】这个技能是让常规的计算距离+1。然而别忘了，我们还要判断计算距离的起始角色是一名“其他角色”，即技能拥有者以外的角色。故判断条件还要加一个：
+						</p>
+
+						<pre id="2-6"
+							style="background-color:#f6f3e9">
+						</pre>
+
+						<p class="indent">
+							最后，作为一名素养优良的程序猿，我们要记得设置默认值，也就是令除此情形以外的距离值不变：
+						</p>
+
+						<pre id="2-7"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							完整的【飞影】代码<a href="feiying.html" class="code" id="feiying">在此给出</a>。
+						</p>
+
+						<p class="indent">
+							有了DistanceSkill的例子，MaxCardsSkill就能很容易举一反三地学会。在skill.h中，MaxCardsSkill类定义如下：
+						</p>
+
+						<pre id="2-8"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p class="indent">
+							由代码可见，结构上MaxCardsSkill继承于Skill类、声明了Q_OBJECT宏、构造函数需要传入QString类型的技能名，这些与DistanceSkill都是一致的。事实上，任何类型的技能代码，这一部分都是一致的。因此今后我们研究某个技能类型，只需要关注构造函数之后的部分即可。目前后面的部分都是技能的一些方法，也有些技能会有公共属性。我们统称技能的<del>本体</del>主体部分。
+						</p>
+
+						<p class="indent">
+							MaxCardsSkill有两个方法：getExtra和getFixed。它们都返回整型变量。从名字上非常容易（？）猜到，前者设定多出的手牌上限值，后者将手牌上限无视一切情况设定成一个固定值。两个函数的参数都是Player指针target，用膝盖都能想到它指的是这个技能对谁生效。
+						</p>
+
+						<p class="indent">
+							如果你足够细心或具有欧皇血统，你会发现这两个方法的功能是矛盾的。事实上，一般而言，对于每个特定的MaxCardsSkill，我们只用得上其中的一个方法。此时另一个方法忽略不写就行。这里我们用两个例子分别演示两个方法的功能。
+						</p>
+
+						<p class="indent">
+							MaxCardsSkill例1：三国杀糜竺【巨贾】的第一部分。
+						</p>
+
+						<p class="indent"
+							style="background-color: #ebebeb">
+							<b>锁定技，</b>你的手牌上限+X（X为你的体力上限）。
+						</p>
+
+						<p class="indent">
+							调用角色的体力上限使用Player对象的getMaxHp()方法，没有参数。鉴于代码实现十分简单，<a href="jugu.html" class="code" id="jugu">此处直接给出技能代码。</a>代码理解起来应该没有难度。注意最后的return 0不能忘掉，它表示其余情形下角色不增加手牌上限。
+						</p>
+
+						<p class="indent">
+							MaxCardsSkill例2：三国杀界周瑜【英姿】的第二部分，有小改动。
+						</p>
+
+						<p class="indent"
+							style="background-color: #ebebeb">
+							<b>锁定技，</b>你的手牌上限始终等于体力上限。
+						</p>
+
+						<p class="indent">
+							看上去也非常简单，行云流水地写下代码：
+						</p>
+
+						<pre id="2-9"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							这一部分的代码写得非常轻易。但问题来了：对于默认情形，该怎么办？写return 0？那表示手牌上限固定为0。
+						</p>
+
+						<p class="indent">
+							好在强大的东方启灵阁早就给我们提供了完备周到的解决方案。这种情况下，让函数返回-1，表示回到默认情况，不对手牌上限进行固定。那么getFixed函数就应该这么写：
+						</p>
+
+						<pre id="2-10"
+							style="background-color: #f6f3e9">
+						</pre>
+
+						<p>
+							这样我们就完成了【英姿】的代码。完整代码<a href="yingzi.html" class="code" id="yingzi">在此给出</a>。今后将遇到另一些类似的情况，在设置固定值的函数里想要取消固定值而恢复默认值，都是采用传递-1的方法。正如一句古谚所言：没有什么事情是一个0做不到的；如果有，那就用-1。<del>你问我这古谚谁说的？你猜啊。</del>
+						</p>
+					</div>
+
+					<!-- 小结标题 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		border-bottom-style: solid;
+						 		border-bottom-color: #999999;
+						 		border-bottom-width: 1;
+						 		margin-top: 20px">
+						<h2 class="essential-skill-code">
+							小结
+						</h2>
+					</div>
+
+					<!-- 小结部分 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+								 margin-top: 20px;
+								 margin-bottom: 50px">
+						<h4 style="font-weight: bold">
+							本章你应该掌握的东西：
+						</h4>
+						<ul>
+							<li>src/core/skill.h是记载着各类技能的定义的核心秘籍。</li>
+							<li>每个要编写的技能都是它的技能类型类的派生类。</li>
+							<li>DistanceSkill和MaxCardsSkill是什么，做什么用的，以及框架长什么样。</li>
+							<li>所有技能类型都有的公共部分，以及不同的技能类型有不同的本体主体部分。</li>
+						</ul>
+
+						<h4 style="font-weight: bold">
+							本章你至少应该装作知道的东西：
+						</h4>
+						<ul>
+							<li>Player的hasSkill和getMaxHp方法。</li>
+							<li>很多时候，-1表示取消固定值而重新采用默认值。</li>
+							<li>tutorial/examples目录里存有教程中技能示例的完整代码。</li>
+						</ul>
+
+						<h4 style="font-weight: bold">
+							本章礼貌地问候了你的东西：
+						</h4>
+						<ul>
+							<li>一些乱入的三国杀技能。</li>
+							<li><del>你马上就会看到，从本章开始要有章后习题啦>ω<</del></li>
+						</ul>
+					</div>
+
+					<!-- 习题标题 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+						 		border-bottom-style: solid;
+						 		border-bottom-color: #999999;
+						 		border-bottom-width: 1;
+						 		margin-top: 20px">
+						<h2 class="essential-skill-code">
+							绝对不会让你感到紧张的习题
+						</h2>
+					</div>
+
+					<!-- 习题部分 -->
+					<div class="col-lg-12"
+						 style="background-color: inherit;
+								 margin-top: 20px;
+								 margin-bottom: 100px">
+						<ol>
+							<li>
+								源代码中的哪个文件有可能记载了OneCardViewAsSkill这一技能类型的定义？<br>
+								A.	src/ui/sanshadowtextfont.cpp<br>
+								B.	src/lua/lapi.c<br>
+								C.	src/core/skill.h<br>
+								D.	kouchya/is/my.god<br>
+							</li>
+							<li>
+								【巨贾】是下列哪个三国杀角色的技能？<br>
+								A.	张星彩<br>
+								B.	糜竺<br>
+								C.	祖茂<br>
+								D.	迎春活动年兽<br>
+							</li>
+							<li>
+								判断题：某个MaxCardsSkill的getFixed在某个条件下返回-1，意思是满足该条件的角色必须在弃牌阶段弃光手牌并透支下回合的一张手牌上限。
+							</li>
+							<li>
+								附加题：请写出以下技能的完整代码：
+								<p class="indent"
+									style="background-color: #ebebeb">
+									【拈来】锁定技，你与体力上限小于你的角色距离视为1；体力上限大于你的角色与你计算距离-1。
+								</p>
+							</li>
+						</ol>
+						<br>
+						<h5><i><a href="answer/ans2.html" class="code" id="ans2">你要的答案在这里。</a>但是好孩纸是不能偷看答案的哦！</i></h5>
+					</div>
+
+					<!-- 页底翻页 -->
+					<div class="row-eq-height pages">
+						<div class="col-lg-4">
+							<a href="1.html">
+								<img src="../icons/prev_page.png" class="img-rounded">
+							</a>
+						</div>
+						<div class="col-lg-8">
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</body>
+
+</html>
