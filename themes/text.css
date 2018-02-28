@@ -31,3 +31,15 @@ a.code:hover {
 a.code:active {
     color: #17c3cf;
 }
+a.bottom-link:link {
+    color: rgba(255, 255, 255, 0.5);
+}
+a.bottom-link:visited {
+    color: rgba(255, 255, 255, 0.5);
+}
+a.bottom-link:hover {
+    color: rgba(255, 255, 255, 0.5);
+}
+a.bottom-link:active {
+    color: rgba(255, 255, 255, 0.5);
+}
