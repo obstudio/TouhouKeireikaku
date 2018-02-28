@@ -1,0 +1,33 @@
+@font-face {
+    font-family: topicFont;
+    src: url("../../fonts/HanyiLingxinJ.ttf") format("truetype");
+}
+.topic {
+    font-family: topicFont;
+    font-style: italic;
+    color: #555588;
+}
+.indent {
+    text-indent: 2em;
+}
+.skill-description {
+    background-color: #dddddd;
+}
+.italic {
+    font-style: italic;
+}
+.bold {
+    font-weight: bold;
+}
+a.code:link {
+    color: #c23737;
+}
+a.code:visited {
+    color: #ff2aa3;
+}
+a.code:hover {
+    color: #97c90f;
+}
+a.code:active {
+    color: #17c3cf;
+}

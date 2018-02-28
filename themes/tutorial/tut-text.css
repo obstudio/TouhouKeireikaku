@@ -1,0 +1,95 @@
+@media (min-width: 1200px) {
+	.topic {
+        font-size: 2.8rem;
+    }
+    .tutorial-claim {
+        font-size: 2rem;
+    }
+    .author {
+        font-size: 1.65rem;
+    }
+    .contents-top {
+        font-size: 1.7rem;
+    }
+    p,ol,ul
+    {
+        line-height: 2.5rem;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199.99px) {
+	.topic {
+        font-size: 2.55rem;
+    }
+    .tutorial-claim {
+        font-size: 1.7rem;
+    }
+    .author {
+        font-size: 1.4rem;
+    }
+    .contents-top {
+        font-size: 1.5rem;
+    }
+    p,ol,ul
+    {
+        line-height: 2.2rem;
+    }
+}
+@media (min-width: 768px) and (max-width: 991.99px) {
+	.topic {
+        font-size: 2.35rem;
+    }
+    .tutorial-claim {
+        font-size: 1.4rem;
+    }
+    .author {
+        font-size: 1.15rem;
+    }
+    .contents-top {
+        font-size: 1.3rem;
+    }
+    p,ol,ul
+    {
+        line-height: 1.9rem;
+    }
+}
+@media (min-width: 576px) and (max-width: 767.99px) {
+	.topic {
+        font-size: 2rem;
+    }
+    p,ol,ul
+    {
+        line-height: 1.75rem;
+    }
+}
+@media (max-width: 575.99px) {
+	.topic {
+        font-size: 1.75rem;
+    }
+    p,ol,ul
+    {
+        line-height: 1.5rem;
+    }
+}
+
+.tutorial-claim {
+    font-weight: bold;
+}
+.author {
+    color: #828282;
+    font-style: italic;
+}
+.contents-top {
+    font-weight: bold;
+}
+a.answer:link {
+    color: #000000;
+}
+a.answer:visited {
+    color: #000000;
+}
+a.answer:hover {
+    color: #000000;
+}
+a.answer:active {
+    color: #000000;
+}

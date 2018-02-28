@@ -9,167 +9,75 @@
 										user-scalable=no">
 		<title>东方启灵阁 - 基础技能代码教程</title>
 		
-			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-			<link rel="stylesheet" href="../themes/prism.css">
-			<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-			<script src="../prism.js"></script>
-			<script src="../scripts/tutorial/2/2-1.js"></script>
-			<script src="../scripts/tutorial/2/2-2.js"></script>
-			<script src="../scripts/tutorial/2/2-3.js"></script>
-			<script src="../scripts/tutorial/2/2-4.js"></script>
-			<script src="../scripts/tutorial/2/2-5.js"></script>
-			<script src="../scripts/tutorial/2/2-6.js"></script>
-			<script src="../scripts/tutorial/2/2-7.js"></script>
-			<script src="../scripts/tutorial/2/2-8.js"></script>
-			<script src="../scripts/tutorial/2/2-9.js"></script>
-			<script src="../scripts/tutorial/2/2-10.js"></script>
-		
-		<style>
-			body
-			{
-				height: 100%;
-				width: 100%;
-				background: url("../backdrop.png");
-				background-size: cover;
-				background-repeat: no-repeat;
-				background-attachment: fixed;
-			}
-			div.container-logo
-			{
-				background-color: #00004b;
-			}
-			div.container-main
-			{
-				margin-top: 30px;
-				margin-bottom: 70px;
-				margin-left: 70px;
-				margin-right: 70px;
-			}
-			.row-eq-height
-			{
-				display: -webkit-box;
-				display: -webkit-flex;
-				display: -ms-flexbox;
-				display: flex;
-			}
-			@font-face
-			{
-				font-family: essentialSkillCodeFont;
-				src: url("../fonts/HanyiLingxinJ.ttf") format("truetype");
-			}
-			.essential-skill-code
-			{
-				font-family: essentialSkillCodeFont;
-				font-style: italic;
-				color: #555588;
-			}
-			p,ol,ul
-			{
-				line-height: 40px;
-			}
-			.indent
-			{
-				text-indent: 2em;
-			}
-			a.code:link
-			{
-				color: #c23737;
-			}
-			a.code:visited
-			{
-				color: #ff2aa3;
-			}
-			a.code:hover
-			{
-				color: #97c90f;
-			}
-			a.code:active
-			{
-				color: #17c3cf;
-			}
-			div.pages
-			{
-				margin-bottom: 70px
-			}
-		</style>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../themes/prism.css">
+		<link rel="stylesheet" href="../themes/comp.css">
+		<link rel="stylesheet" href="../themes/text.css">
+		<link rel="stylesheet" href="../themes/tutorial/main.css">
+		<link rel="stylesheet" href="../themes/tutorial/tut-text.css">
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		<script src="../prism.js"></script>
+		<script src="../scripts/tutorial/2/2-1.js"></script>
+		<script src="../scripts/tutorial/2/2-2.js"></script>
+		<script src="../scripts/tutorial/2/2-3.js"></script>
+		<script src="../scripts/tutorial/2/2-4.js"></script>
+		<script src="../scripts/tutorial/2/2-5.js"></script>
+		<script src="../scripts/tutorial/2/2-6.js"></script>
+		<script src="../scripts/tutorial/2/2-7.js"></script>
+		<script src="../scripts/tutorial/2/2-8.js"></script>
+		<script src="../scripts/tutorial/2/2-9.js"></script>
+		<script src="../scripts/tutorial/2/2-10.js"></script>
 	</head>
 
 	<body>
 
 		<!-- 东方启灵阁Logo -->
-		<div class="container-logo">
-			<div class="row-eq-height"
-				style="border-bottom-style: solid;
-				border-bottom-color: #626262">
-				<div class="col-lg-2">
-					<img src="../logo.png" class="img-rounded"
-							style="margin-top: 10px;
-									margin-left: 20px;
-									margin-bottom: 10px">
+		<!-- 东方启灵阁Logo -->
+		<div class="container-fluid head-logo">
+			<div class="row-eq-height">
+				<div class="col-lg">
+					<img src="../logo.png" class="img-rounded">
 				</div>
 			</div>
 		</div>
 
 		<!-- 主体部分 -->
-		<div class="container-main" style="padding-left: 0px; padding-right: 0px">
-			<div class="row-eq-height">
+		<div class="container-fluid tutorial-main">
+			<div class="container">
+				<div class="row-eq-height">
 
-				<!-- 目录栏+正文部分 -->
-				<div class="col-lg-3"
-					 style="background-color: #d5e0f2;
-					 		border-style: ridge;
-							 border-color: #999999">
-					<h2 style="font-weight: bold; margin-top:30px">技能代码教程</h2>
-					<h3 style="color: #828282"><small><i>作者：Kouchya</i></small></h3>
-					<p>
-						<h4 style="font-weight: bold">目录<br></h4>
-						<a href="0.html">〇 不得不说的前言</a><br>
-						<a href="1.html">一 主要对象类型</a><br>
-						<font color="#515151">二 DistanceSkill &amp; MaxCardsSkill</font><br>
-					</p>
-				</div>
-
-				<!-- 正文 -->
-				<div class="col-lg-9"
-					 style="background-color: #f1f1ff;
-					 		border-style: ridge;
-					 		border-color: #999999">
-
-					<!-- 页顶翻页 -->
-					<div class="row-eq-height"
-						style="margin-top:20px">
-						<div class="col-lg-4">
-							<a href="1.html">
-								<img src="../icons/prev_page.png" class="img-rounded">
-							</a>
-						</div>
-						<div class="col-lg-8">
-						</div>
+					<!-- 目录栏 -->
+					<div class="col-md-3 collapse contents">
+						<h2 class="tutorial-claim">技能代码教程</h2>
+						<h3 class="author">作者：Kouchya</h3>
+						<br>
+						<h4 class="contents-top">目录<br></h4>
+						<ul>
+							<li><a href="0.html">〇 不得不说的前言</a></li>
+							<li><a href="1.html">一 主要对象类型</a></li>
+							<li><font color="#515151">二 DistanceSkill &amp; MaxCardsSkill</font></li>
+						</ul>
 					</div>
 
-					<!-- 篇章标题 -->
-					<div class="col-lg-12"
-						 style="background-color: inherit;
-						 		border-bottom-style: solid;
-						 		border-bottom-color: #999999;
-						 		border-bottom-width: 1;
-						 		margin-top: 10px">
-						<h1 class="essential-skill-code">
-							二 DistanceSkill &amp; MaxCardsSkill
-						</h1>
-					</div>
+					<!-- 正文 -->
+					<div class="col-xs-12 col-md-9 tutorial-text">
 
-					<!-- 篇章内容 -->
-					<div class="col-lg-12"
-						 style="background-color: inherit;
-								 margin-top: 20px;
-								 margin-bottom: 50px">
+						<!-- 页顶翻页 -->
+						<div class="row-eq-height page-buttons">
+							<div class="col">
+								<a href="1.html"><button class="btn btn-outline-info">上一篇</button></a>
+							</div>
+						</div>
+
+						<!-- 篇章标题 -->
+						<h1 class="topic">二 DistanceSkill &amp; MaxCardsSkill</h1>
+
+						<!-- 篇章内容 -->
 						<img src="../icons/red_warning.png" class="img-rounded" alt="注意">
 
-						<h4 class="text-danger" 
-							style="font-weight: bold">
+						<h4 class="text-danger bold">
 							注意：从本章开始，我们将直接进入特定技能类型代码的教程。因此src/core/skill.h将是一个应当一直保持打开的文件。
 						</h4>
 
@@ -182,8 +90,7 @@
 							我们先来看skill.h中对DistanceSkill的定义：
 						</p>
 
-						<pre id="2-1"
-							style="background-color: #f6f3e9">
+						<pre id="2-1" class="code">
 						</pre>
 
 						<p>
@@ -202,16 +109,14 @@
 							我们创建的每个新技能都不是单个单个的实例，因为我们可能会不止一次使用它。<b>因此每个技能都是技能类型类的一个派生类。</b>因此一个类名为Jineng的合法的DistanceSkill应当差不多长这样：
 						</p>
 
-						<pre id="2-2"
-							style="background-color: #f6f3e9">
+						<pre id="2-2" class="code">
 						</pre>
 
 						<p>
 							当然如果你觉得这个技能的效果可以直接无视from和to直接声明更改的距离值，你也可以直接写成：
 						</p>
 
-						<pre id="2-3"
-							style="background-color: #f6f3e9">
+						<pre id="2-3" class="code">
 						</pre>
 
 						<p>
@@ -231,32 +136,28 @@
 							显然，这里拥有【飞影】的角色是距离计算中的那个to，而from则是任何一名其他角色（注意，是<b>其他</b>角色）。由于DistanceSkill对全局生效而并不自行考察角色是否拥有这个技能，我们需要手动在getCorrect方法里判断，那个to是否拥有此技能。为此，我们需要用到Player的hasSkill方法，其定义如下：
 						</p>
 
-						<pre id="2-4"
-							style="background-color: #f6f3e9">
+						<pre id="2-4" class="code">
 						</pre>
 
 						<p>
 							第二个布尔类型参数include_lose指该角色是否曾经有过这个技能但现在失去了，这里我们当然希望采用默认值false，所以可以不填。重点是第一个参数，我们可以填写一个技能名(QString &amp;skill_name)，也可以给定一个技能对象(Skill *skill)。由于我们现在处在一个技能类的作用域中，我们可以直接用this指针得到当前这个技能。因此我们的代码写成：
 						</p>
 
-						<pre id="2-5"
-							style="background-color: #f6f3e9">
+						<pre id="2-5" class="code">
 						</pre>
 
 						<p>
 							这里return 1表明【飞影】这个技能是让常规的计算距离+1。然而别忘了，我们还要判断计算距离的起始角色是一名“其他角色”，即技能拥有者以外的角色。故判断条件还要加一个：
 						</p>
 
-						<pre id="2-6"
-							style="background-color:#f6f3e9">
+						<pre id="2-6" class="code">
 						</pre>
 
 						<p class="indent">
 							最后，作为一名素养优良的程序猿，我们要记得设置默认值，也就是令除此情形以外的距离值不变：
 						</p>
 
-						<pre id="2-7"
-							style="background-color: #f6f3e9">
+						<pre id="2-7" class="code">
 						</pre>
 
 						<p>
@@ -267,8 +168,7 @@
 							有了DistanceSkill的例子，MaxCardsSkill就能很容易举一反三地学会。在skill.h中，MaxCardsSkill类定义如下：
 						</p>
 
-						<pre id="2-8"
-							style="background-color: #f6f3e9">
+						<pre id="2-8" class="code">
 						</pre>
 
 						<p class="indent">
@@ -287,8 +187,7 @@
 							MaxCardsSkill例1：三国杀糜竺【巨贾】的第一部分。
 						</p>
 
-						<p class="indent"
-							style="background-color: #ebebeb">
+						<p class="indent skill-description">
 							<b>锁定技，</b>你的手牌上限+X（X为你的体力上限）。
 						</p>
 
@@ -300,8 +199,7 @@
 							MaxCardsSkill例2：三国杀界周瑜【英姿】的第二部分，有小改动。
 						</p>
 
-						<p class="indent"
-							style="background-color: #ebebeb">
+						<p class="indent skill-description">
 							<b>锁定技，</b>你的手牌上限始终等于体力上限。
 						</p>
 
@@ -309,8 +207,7 @@
 							看上去也非常简单，行云流水地写下代码：
 						</p>
 
-						<pre id="2-9"
-							style="background-color: #f6f3e9">
+						<pre id="2-9" class="code">
 						</pre>
 
 						<p>
@@ -321,33 +218,18 @@
 							好在强大的东方启灵阁早就给我们提供了完备周到的解决方案。这种情况下，让函数返回-1，表示回到默认情况，不对手牌上限进行固定。那么getFixed函数就应该这么写：
 						</p>
 
-						<pre id="2-10"
-							style="background-color: #f6f3e9">
+						<pre id="2-10" class="code">
 						</pre>
 
 						<p>
 							这样我们就完成了【英姿】的代码。完整代码<a href="yingzi.html" class="code" id="yingzi">在此给出</a>。今后将遇到另一些类似的情况，在设置固定值的函数里想要取消固定值而恢复默认值，都是采用传递-1的方法。正如一句古谚所言：没有什么事情是一个0做不到的；如果有，那就用-1。<del>你问我这古谚谁说的？你猜啊。</del>
 						</p>
-					</div>
 
-					<!-- 小结标题 -->
-					<div class="col-lg-12"
-						 style="background-color: inherit;
-						 		border-bottom-style: solid;
-						 		border-bottom-color: #999999;
-						 		border-bottom-width: 1;
-						 		margin-top: 20px">
-						<h2 class="essential-skill-code">
-							小结
-						</h2>
-					</div>
+						<!-- 小结标题 -->
+						<h2 class="topic">小结</h2>
 
-					<!-- 小结部分 -->
-					<div class="col-lg-12"
-						 style="background-color: inherit;
-								 margin-top: 20px;
-								 margin-bottom: 50px">
-						<h4 style="font-weight: bold">
+						<!-- 小结部分 -->
+						<h4 class="bold">
 							本章你应该掌握的东西：
 						</h4>
 						<ul>
@@ -357,7 +239,7 @@
 							<li>所有技能类型都有的公共部分，以及不同的技能类型有不同的本体主体部分。</li>
 						</ul>
 
-						<h4 style="font-weight: bold">
+						<h4 class="bold">
 							本章你至少应该装作知道的东西：
 						</h4>
 						<ul>
@@ -366,32 +248,18 @@
 							<li>tutorial/examples目录里存有教程中技能示例的完整代码。</li>
 						</ul>
 
-						<h4 style="font-weight: bold">
+						<h4 class="bold">
 							本章礼貌地问候了你的东西：
 						</h4>
 						<ul>
 							<li>一些乱入的三国杀技能。</li>
 							<li><del>你马上就会看到，从本章开始要有章后习题啦>ω<</del></li>
 						</ul>
-					</div>
 
-					<!-- 习题标题 -->
-					<div class="col-lg-12"
-						 style="background-color: inherit;
-						 		border-bottom-style: solid;
-						 		border-bottom-color: #999999;
-						 		border-bottom-width: 1;
-						 		margin-top: 20px">
-						<h2 class="essential-skill-code">
-							绝对不会让你感到紧张的习题
-						</h2>
-					</div>
+						<!-- 习题标题 -->
+						<h2 class="topic">绝对不会让你感到紧张的习题</h2>
 
-					<!-- 习题部分 -->
-					<div class="col-lg-12"
-						 style="background-color: inherit;
-								 margin-top: 20px;
-								 margin-bottom: 100px">
+						<!-- 习题部分 -->
 						<ol>
 							<li>
 								源代码中的哪个文件有可能记载了OneCardViewAsSkill这一技能类型的定义？<br>
@@ -420,20 +288,16 @@
 						</ol>
 						<br>
 						<h5><i><a href="answer/ans2.html" class="code" id="ans2">你要的答案在这里。</a>但是好孩纸是不能偷看答案的哦！</i></h5>
+
+						<!-- 页底翻页 -->
+						<div class="row-eq-height page-buttons">
+							<div class="col">
+								<a href="1.html"><button class="btn btn-outline-info">上一篇</button></a>
+							</div>
+						</div>
 					</div>
 
-					<!-- 页底翻页 -->
-					<div class="row-eq-height pages">
-						<div class="col-lg-4">
-							<a href="1.html">
-								<img src="../icons/prev_page.png" class="img-rounded">
-							</a>
-						</div>
-						<div class="col-lg-8">
-						</div>
-					</div>
 				</div>
-
 			</div>
 		</div>
 

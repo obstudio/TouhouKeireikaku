@@ -1,0 +1,78 @@
+@media (min-width: 1200px) {
+	.contents {
+        display: block;
+    }
+    .tutorial-main {
+        padding-top: 1.6rem;
+        padding-bottom: 3.6rem;
+    }
+    .tutorial-text {
+        padding-top: 1.2rem;
+        padding-bottom: 4.5rem;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199.99px) {
+	.contents {
+        display: block;
+    }
+    .tutorial-main {
+        padding-top: 1.3rem;
+        padding-bottom: 3.3rem;
+    }
+    .tutorial-text {
+        padding-top: 1.1rem;
+        padding-bottom: 4rem;
+    }
+}
+@media (min-width: 768px) and (max-width: 991.99px) {
+	.contents {
+        display: block;
+    }
+    .tutorial-main {
+        padding-top: 1rem;
+        padding-bottom: 3rem;
+    }
+    .tutorial-text {
+        padding-top: 1rem;
+        padding-bottom: 3.5rem;
+    }
+    .page-buttons {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
+@media (min-width: 576px) and (max-width: 767.99px) {
+	.tutorial-main {
+        padding-top: 0.7rem;
+        padding-bottom: 2.7rem;
+    }
+    .tutorial-text {
+        padding-top: 0.9rem;
+        padding-bottom: 3rem;
+    }
+}
+@media (max-width: 575.99px) {
+	.tutorial-main {
+        padding-top: 0.8rem;
+        padding-bottom: 2.4rem;
+    }
+    .tutorial-text {
+        padding-top: 0.7rem;
+        padding-bottom: 2.5rem;
+    }
+}
+
+.contents {
+    background-color: #d5e0f2;
+    border-style: ridge;
+    border-color: #999999;
+    padding-top: 1rem;
+}
+.tutorial-text {
+    background-color: #f1f1ff;
+    border-style: ridge;
+    border-color: #999999;
+}
+pre.code {
+    background-color: #f6f3e9;
+}
