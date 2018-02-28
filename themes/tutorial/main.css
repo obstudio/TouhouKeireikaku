@@ -43,8 +43,10 @@
 }
 @media (min-width: 576px) and (max-width: 767.99px) {
 	.tutorial-main {
-        padding-top: 0.7rem;
-        padding-bottom: 2.7rem;
+        padding-top: 0rem;
+        padding-bottom: 0rem;
+        padding-left: 0;
+        padding-right: 0;
     }
     .tutorial-text {
         padding-top: 0.9rem;
@@ -53,8 +55,10 @@
 }
 @media (max-width: 575.99px) {
 	.tutorial-main {
-        padding-top: 0.8rem;
-        padding-bottom: 2.4rem;
+        padding-top: 0rem;
+        padding-bottom: 0rem;
+        padding-left: 0;
+        padding-right: 0;
     }
     .tutorial-text {
         padding-top: 0.7rem;
