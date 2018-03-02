@@ -2621,7 +2621,7 @@ class FangyingVS : public OneCardViewAsSkill
 public:
 	FangyingVS() : OneCardViewAsSkill("fangying")
 	{
-		filter_pattern = ".";
+		filter_pattern = ".|.|.|hand";
 		response_pattern = "@@fangying";
 	}
 
