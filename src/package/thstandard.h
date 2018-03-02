@@ -154,16 +154,6 @@ public:
 	void onEffect(const CardEffectStruct &effect) const;
 };
 
-class FangyingCard : public SkillCard
-{
-	Q_OBJECT
-	
-public:
-	Q_INVOKABLE FangyingCard();
-	
-	void use(Room *, ServerPlayer *source, QList<ServerPlayer *> &) const;
-};
-
 class DuannianCard : public SkillCard
 {
 	Q_OBJECT

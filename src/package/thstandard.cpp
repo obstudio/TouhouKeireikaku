@@ -2493,142 +2493,367 @@ public:
 	}
 };
 
-FangyingCard::FangyingCard()
+class XinyanVS : public ZeroCardViewAsSkill
 {
-	target_fixed = true;
-	will_throw = false;
-	handling_method = Card::MethodNone;
+
+public:
+	XinyanVS() : ZeroCardViewAsSkill("xinyan")
+	{
+		response_pattern = "@@xinyan";
+	}
+
+	const Card *viewAs() const
+	{
+		Card *mind_reading = new MindReading(Card::NoSuit, 0);
+		mind_reading->setSkillName(objectName());
+		return mind_reading;
+	}
+};
+
+class Xinyan : public TriggerSkill
+{
+
+public:
+	Xinyan() : TriggerSkill("xinyan")
+	{
+		events << EventPhaseStart << Damaged;
+		view_as_skill = new XinyanVS;
+	}
+
+	QList<SkillInvokeDetail> triggerable(TriggerEvent event, const Room *room, const QVariant &data) const
+	{
+		MindReading *mind_reading = new MindReading(Card::NoSuit, 0);
+		mind_reading->deleteLater();
+		if (event == EventPhaseStart) {
+			ServerPlayer *satori = data.value<ServerPlayer *>();
+			if (satori && satori->isAlive() && satori->hasSkill(this) && satori->getPhase() == Player::Play) {
+				QList<ServerPlayer *> targets;
+				foreach (ServerPlayer *p, room->getOtherPlayers(satori)) {
+					if (mind_reading->targetFilter(QList<const Player *>(), p, satori) && !room->isProhibited(satori, p, mind_reading))
+						targets << p;
+				}
+				if (!targets.isEmpty())
+					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, satori, satori, targets, false);
+			}
+		} else if (event == Damaged) {
+			DamageStruct damage = data.value<DamageStruct>();
+			ServerPlayer *satori = damage.to;
+			if (satori && satori->isAlive() && satori->hasSkill(this) && damage.damage > 0) {
+				QList<ServerPlayer *> targets;
+				foreach (ServerPlayer *p, room->getOtherPlayers(satori)) {
+					if (mind_reading->targetFilter(QList<const Player *>(), p, satori) && !room->isProhibited(satori, p, mind_reading))
+						targets << p;
+				}
+				if (!targets.isEmpty())
+					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, satori, satori, targets, false);
+			}
+		}
+		return QList<SkillInvokeDetail>();
+	}
+
+	bool cost(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		ServerPlayer *satori = invoke->invoker;
+		if (event == EventPhaseStart) {
+			return room->askForUseCard(satori, "@@xinyan", "@xinyan-use");
+		} else if (event == Damaged) {
+			DamageStruct damage = data.value<DamageStruct>();
+			for (int i = 0; i < damage.damage; i++) {
+				room->askForUseCard(satori, "@@xinyan", "@xinyan-use");
+			}
+			return true;
+		}
+		return true;
+	}
+
+	bool effect(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		return false;
+	}
+};
+
+/* FangyingCard::FangyingCard()
+{
 }
 
-void FangyingCard::use(Room *, ServerPlayer *source, QList<ServerPlayer *> &) const
+bool FangyingCard::targetFixed() const
 {
-    source->addToPile("imitation", this, true);
+	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
+	card->addSubcards(getSubcards());
+	return card->targetFixed();
 }
+
+bool FangyingCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
+{
+	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
+	card->addSubcards(getSubcards());
+	return card->targetFilter(targets, to_select, Self);
+}
+
+bool FangyingCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const
+{
+	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
+	card->addSubcards(getSubcards());
+	return card->targetsFeasible(targets, Self);
+}
+
+void FangyingCard::onUse(Room *room, const CardUseStruct &use) const
+{
+	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
+	card->addSubcards(getSubcards());
+	CardUseStruct card_use = use;
+	card_use.card = card;
+	card->onUse(room, card_use);
+}
+
+void FangyingCard::onEffect(const CardEffectStruct &effect) const
+{
+	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
+	card->addSubcards(getSubcards());
+	card->onEffect(effect);
+} */
 
 class FangyingVS : public OneCardViewAsSkill
 {
-	
+
 public:
 	FangyingVS() : OneCardViewAsSkill("fangying")
 	{
-		filter_pattern = ".|.|.|hand";
+		filter_pattern = ".";
 		response_pattern = "@@fangying";
 	}
-	
-	virtual const Card *viewAs(const Card *originalCard) const
+
+    bool isEnabledAtPlay(const Player *) const
+    {
+        return false;
+    }
+
+	bool isEnabledAtResponse(const Player *, const QString &pattern) const
 	{
-		if (originalCard) {
-			FangyingCard *card = new FangyingCard;
-			card->addSubcard(originalCard);
-			return card;
-		}
-		return NULL;
+		return pattern.startsWith("@@fangying-");
+	}
+
+	const Card *viewAs(const Card *originalCard) const
+	{
+		//QString pattern = Sanguosha->currentRoomState()->getCurrentCardUsePattern();
+		//QString card_str = pattern.section("-", -1, -1);
+		QString card_str = Self->property("fangying_card").toString();
+		Card *card = Sanguosha->cloneCard(card_str);
+		//FangyingCard *card = new FangyingCard;
+        card->addSubcard(originalCard);
+		//card->setUserString(card_str);
+		card->setSkillName(objectName());
+		return card;
 	}
 };
 
 class Fangying : public TriggerSkill
 {
-	
+
 public:
 	Fangying() : TriggerSkill("fangying")
 	{
-		events << CardFinished;
+		events << EventPhaseEnd << CardUsed << EventPhaseChanging;
 		view_as_skill = new FangyingVS;
 	}
-	
-	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
+
+	QList<SkillInvokeDetail> triggerable(TriggerEvent event, const Room *room, const QVariant &data) const
 	{
-		ServerPlayer *satori = room->findPlayerBySkillName(objectName());
-		CardUseStruct use = data.value<CardUseStruct>();
-		if (satori && satori->isAlive() && satori->hasSkill(this) && use.card && use.card->isNDTrick() && !satori->isKongcheng()
-				&& satori != use.from && !use.card->isKindOf("Nullification")) {
-			QList<int> imitation = satori->getPile("imitation");
-			if (imitation.isEmpty())
-				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, satori, satori, NULL, false);
+		if (event == CardUsed) {
+			ServerPlayer *satori = room->findPlayerBySkillName(objectName());
+			CardUseStruct use = data.value<CardUseStruct>();
+			ServerPlayer *from = use.from;
+			if (satori && satori->isAlive() && satori != from && from->getPhase() == Player::Play) {
+				const Card *card = use.card;
+				if (card->isKindOf("Slash") || card->isKindOf("Peach") || card->isKindOf("Analeptic") || (card->isNDTrick()
+					&& !card->isKindOf("Nullification"))) {
+					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, satori, satori, NULL, true);
+				}
+			}
+		} else if (event == EventPhaseEnd) {
+			ServerPlayer *player = data.value<ServerPlayer *>();
+			ServerPlayer *satori = room->findPlayerBySkillName(objectName());
+			if (satori && satori->isAlive() && player && player->isAlive() && player->getPhase() == Player::Play && satori != player
+				&& !satori->isKongcheng()) {
+				QVariant first_card_data = satori->tag["FangyingFirstCard"];
+				QVariant last_card_data = satori->tag["FangyingLastCard"];
+				bool can_first = false, can_last = false;
+                if (first_card_data != NULL) {
+					QString first_card_str = first_card_data.toString();
+					if (first_card_str != "") {
+						const Card *first_card = Sanguosha->cloneCard(first_card_str, Card::SuitToBeDecided, -1);
+						if (first_card->targetFixed()) {
+							if (first_card->isAvailable(satori)) {
+								can_first = true;
+							}
+						} else if (first_card->isAvailable(satori)) {
+							foreach (ServerPlayer *p, room->getAlivePlayers()) {
+								if (first_card->targetFilter(QList<const Player *>(), p, satori) && !room->isProhibited(satori, p, first_card)) {
+									can_first = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+                if (last_card_data != NULL) {
+					QString last_card_str = last_card_data.toString();
+					if (last_card_str != "") {
+						const Card *last_card = Sanguosha->cloneCard(last_card_str, Card::SuitToBeDecided, -1);
+						if (last_card->targetFixed()) {
+							if (last_card->isAvailable(satori)) {
+								can_last = true;
+							}
+						} else if (last_card->isAvailable(satori)) {
+							foreach (ServerPlayer *p, room->getAlivePlayers()) {
+								if (last_card->targetFilter(QList<const Player *>(), p, satori) && !room->isProhibited(satori, p, last_card)) {
+									can_last = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+				if (can_first || can_last)
+					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, satori, satori, NULL, true);
+			}
+		} else if (event == EventPhaseChanging) {
+			PhaseChangeStruct change = data.value<PhaseChangeStruct>();
+			ServerPlayer *player = change.player;
+			ServerPlayer *satori = room->findPlayerBySkillName(objectName());
+			if (satori && satori->isAlive() && player && change.to == Player::NotActive) {
+				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, satori, satori, NULL, true);
+			}
 		}
 		return QList<SkillInvokeDetail>();
 	}
-	
-	bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+
+	bool effect(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
 	{
 		ServerPlayer *satori = invoke->invoker;
-		room->setTag("fangyingTag", data);
-		bool use = room->askForUseCard(satori, "@@fangying", "@fangying");
-		room->removeTag("fangyingTag");
-		return use;
-	}
-	
-	bool effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
-	{
-		ServerPlayer *satori = invoke->invoker;
-		CardUseStruct use = data.value<CardUseStruct>();
-		room->obtainCard(satori, use.card, true);
+		if (event == CardUsed) {
+			CardUseStruct use = data.value<CardUseStruct>();
+			const Card *card = use.card;
+			QVariant first_card_data = satori->tag["FangyingFirstCard"];
+            if (first_card_data == NULL || first_card_data.toString() == "") {
+				satori->tag["FangyingFirstCard"] = QVariant(card->objectName());
+			}
+			satori->tag["FangyingLastCard"] = QVariant(card->objectName());
+		} else if (event == EventPhaseEnd) {
+			QVariant first_card_data = satori->tag["FangyingFirstCard"];
+			QVariant last_card_data = satori->tag["FangyingLastCard"];
+			QString first_card_str = "", last_card_str = "";
+			if (first_card_data != NULL) {
+				first_card_str = first_card_data.toString();
+			}
+			if (last_card_data != NULL) {
+				last_card_str = last_card_data.toString();
+			}
+			QStringList choices;
+			if (first_card_str != "") {
+				const Card *first_card = Sanguosha->cloneCard(first_card_str, Card::SuitToBeDecided, -1);
+				if (first_card->targetFixed()) {
+					if (first_card->isAvailable(satori)) {
+						choices << "FYFirst";
+					}
+				} else if (first_card->isAvailable(satori)) {
+					foreach (ServerPlayer *p, room->getAlivePlayers()) {
+						if (first_card->targetFilter(QList<const Player *>(), p, satori) && !room->isProhibited(satori, p, first_card)) {
+							choices << "FYFirst";
+							break;
+						}
+					}
+				}
+			}
+			if (last_card_str != "") {
+				const Card *last_card = Sanguosha->cloneCard(last_card_str, Card::SuitToBeDecided, -1);
+				if (last_card->targetFixed()) {
+					if (last_card->isAvailable(satori)) {
+						choices << "FYLast";
+					}
+				} else if (last_card->isAvailable(satori)) {
+					foreach (ServerPlayer *p, room->getAlivePlayers()) {
+						if (last_card->targetFilter(QList<const Player *>(), p, satori) && !room->isProhibited(satori, p, last_card)) {
+							choices << "FYLast";
+							break;
+						}
+					}
+				}
+			}
+			if (choices.isEmpty())
+				return false;
+			choices << "Cancel";
+			QString choice = room->askForChoice(satori, objectName(), choices.join("+"));
+			if (choice == "Cancel") {
+				return false;
+			} else if (choice == "FYFirst") {
+				room->setPlayerProperty(satori, "fangying_card", first_card_str);
+				room->askForUseCard(satori, "@@fangying", QString("@fangying:%1").arg(first_card_str));
+			} else if (choice == "FYLast") {
+				room->setPlayerProperty(satori, "fangying_card", last_card_str);
+				room->askForUseCard(satori, "@@fangying", QString("@fangying:%1").arg(last_card_str));
+			}
+		} else if (event == EventPhaseChanging) {
+			satori->tag["FangyingFirstCard"] = QVariant("");
+			satori->tag["FangyingLastCard"] = QVariant("");
+		}
 		return false;
 	}
 };
 
-class Xinyan : public MasochismSkill
+/* class CeshiVS : public OneCardViewAsSkill
 {
-	
+
 public:
-	Xinyan() : MasochismSkill("xinyan")
+	CeshiVS() : OneCardViewAsSkill("ceshi")
 	{
-		
+		filter_pattern = ".|.|.|hand";
 	}
-	
-	QList<SkillInvokeDetail> triggerable(const Room *room, const DamageStruct &damage) const
+
+	bool isEnabledAtPlay(const Player *) const
+    {
+        return false;
+    }
+
+	bool isEnabledAtResponse(const Player *, const QString &pattern) const
 	{
-		if (damage.to->isAlive() && damage.to->hasSkill(this)) {
-			QList<ServerPlayer *> targets;
-			foreach(ServerPlayer *p, room->getOtherPlayers(damage.to)) {
-				if (!p->isKongcheng() && (!damage.from || p != damage.from))
-					targets << p;
-			}
-			if (!targets.isEmpty())
-				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, damage.to, damage.to, targets, false);
-		}
-		return QList<SkillInvokeDetail>();
+		return pattern.startsWith("@@ceshi-");
 	}
-	
-	bool cost(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+
+	const Card *viewAs(const Card *originalCard) const
 	{
-		ServerPlayer *satori = invoke->invoker;
-		return room->askForSkillInvoke(satori, objectName(), data);
-	}
-	
-	void onDamaged(Room *room, QSharedPointer<SkillInvokeDetail> invoke, const DamageStruct &damage) const
-	{
-		ServerPlayer *satori = invoke->invoker;
-		ServerPlayer *target = room->askForPlayerChosen(satori, invoke->targets, objectName());
-		QList<int> card_ids;
-		foreach(const Card *card, target->getHandcards()) {
-			card_ids << card->getEffectiveId();
-		}
-		int card_id = room->doGongxin(satori, target, card_ids, objectName());
-		room->throwCard(card_id, target, satori);
-		if (damage.from && damage.from->isAlive()) {
-			const Card *card = Sanguosha->getCard(card_id);
-			QList<int> imitation = satori->getPile("imitation");
-            if (room->askForCard(damage.from, ".|" + card->getSuitString() + "|.|hand", "@xinyan-discard")) {
-				if (!imitation.isEmpty()) {
-					DummyCard *dummy = new DummyCard;
-					dummy->addSubcards(imitation);
-					room->obtainCard(satori, dummy, true);
-					satori->clearOnePrivatePile("imitation");
-				}
-			}
-			else {
-				room->loseHp(damage.from);
-				if (!imitation.isEmpty()) {
-					DummyCard *dummy = new DummyCard;
-					dummy->addSubcards(imitation);
-					room->throwCard(dummy, satori, damage.from);
-					satori->clearOnePrivatePile("imitation");
-				}
-			}
-		}
+		Slash *slash = new Slash(Card::SuitToBeDecided, -1);
+		slash->addSubcard(originalCard);
+		slash->setSkillName(objectName());
+		return slash;
 	}
 };
+
+class Ceshi : public TriggerSkill
+{
+
+public:
+	Ceshi() : TriggerSkill("ceshi")
+	{
+		events << EventPhaseStart;
+		view_as_skill = new CeshiVS;
+	}
+
+	QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
+	{
+		ServerPlayer *player = data.value<ServerPlayer *>();
+		if (player && player->isAlive() && player->hasSkill(this) && player->getPhase() == Player::RoundStart && !player->isKongcheng())
+			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, player, player, NULL, true);
+		return QList<SkillInvokeDetail>();
+	}
+
+	bool effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &) const
+	{
+		ServerPlayer *player = invoke->invoker;
+		room->askForUseCard(player, "@@ceshi-2", "@ceshi");
+		return false;
+	}
+}; */
 
 DuannianCard::DuannianCard()
 {
@@ -3533,8 +3758,8 @@ THStandardPackage::THStandardPackage()
 	suwako->addSkill(new Chiwa);
 	
 	General *satori = new General(this, "satori", "moriya", 3, false);
-	satori->addSkill(new Fangying);
 	satori->addSkill(new Xinyan);
+	satori->addSkill(new Fangying);
 	
 	General *koishi = new General(this, "koishi", "moriya", 4, false);
 	koishi->addSkill(new Duannian);
@@ -3584,7 +3809,6 @@ THStandardPackage::THStandardPackage()
 	addMetaObject<YaofengCard>();
 	addMetaObject<YuzhuCard>();
 	addMetaObject<ChiwaCard>();
-	addMetaObject<FangyingCard>();
 	addMetaObject<DuannianCard>();
 	addMetaObject<HunquCard>();
 	addMetaObject<ZhangqiCard>();
