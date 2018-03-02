@@ -253,19 +253,21 @@ public:
 		}
 	}
 	
-    QList<SkillInvokeDetail> triggerable(TriggerEvent, const Room *room, const QVariant &data) const
+    QList<SkillInvokeDetail> triggerable(TriggerEvent event, const Room *room, const QVariant &data) const
 	{
-		DamageStruct damage = data.value<DamageStruct>();
-		if (damage.from->hasSkill(objectName()) && damage.card && damage.card->isKindOf("Slash")
-				&& damage.to && damage.to->isAlive()) {
-            QList<ServerPlayer *> targets;
-            foreach (ServerPlayer *target, room->getOtherPlayers(damage.to)) {
-				if (damage.to->inMyAttackRange(target) && !target->hasFlag("XingchenSlashed")) {
-					targets << target;
+		if (event == Damage) {
+			DamageStruct damage = data.value<DamageStruct>();
+			if (damage.from->hasSkill(objectName()) && damage.card && damage.card->isKindOf("Slash")
+					&& damage.to && damage.to->isAlive()) {
+				QList<ServerPlayer *> targets;
+				foreach (ServerPlayer *target, room->getOtherPlayers(damage.to)) {
+					if (damage.to->inMyAttackRange(target) && !target->hasFlag("XingchenSlashed")) {
+						targets << target;
+					}
 				}
-			}
-			if (!targets.empty()) {
-				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, damage.from, damage.from, targets, false);
+				if (!targets.empty()) {
+					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, damage.from, damage.from, targets, false);
+				}
 			}
 		}
 		return QList<SkillInvokeDetail>();
@@ -2621,16 +2623,6 @@ public:
 	{
 		filter_pattern = ".";
 		response_pattern = "@@fangying";
-	}
-
-    bool isEnabledAtPlay(const Player *) const
-    {
-        return false;
-    }
-
-	bool isEnabledAtResponse(const Player *, const QString &pattern) const
-	{
-		return pattern.startsWith("@@fangying-");
 	}
 
 	const Card *viewAs(const Card *originalCard) const
