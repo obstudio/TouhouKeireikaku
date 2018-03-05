@@ -1873,7 +1873,7 @@ class Diaoou : public TriggerSkill
 public:
 	Diaoou() : TriggerSkill("diaoou")
 	{
-		events << EventPhaseStart << Damaged;
+		events << EventPhaseStart << Damaged << PostHpLost;
 		view_as_skill = new DiaoouViewAsSkill;
 	}
 
@@ -1901,8 +1901,16 @@ public:
 			}
 			else if (event == Damaged) {
 				DamageStruct damage = data.value<DamageStruct>();
-				if (alice == damage.to && !alice->isKongcheng()) {
+				if (alice == damage.to && !alice->isNude()) {
 					foreach(ServerPlayer *p, room->getOtherPlayers(alice)) {
+						if (p->getMark("@ningyou") > 0)
+							return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, alice, alice, NULL, false, p);
+					}
+				}
+			} else if (event == PostHpLost) {
+				HpLostStruct lost = data.value<HpLostStruct>();
+				if (alice == lost.player && !alice->isNude()) {
+					foreach (ServerPlayer *p, room->getOtherPlayers(alice)) {
 						if (p->getMark("@ningyou") > 0)
 							return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, alice, alice, NULL, false, p);
 					}
@@ -1917,8 +1925,8 @@ public:
 		ServerPlayer *alice = invoke->invoker;
 		if (event == EventPhaseStart && alice->getPhase() == Player::Finish)
 			return room->askForUseCard(alice, "@@diaoou", "diaoou-choose-target");
-		else if (event == Damaged)
-			return room->askForCard(alice, ".", "@diaoou-ask", data, objectName());
+		else if (event == Damaged || event == PostHpLost)
+			return room->askForCard(alice, "..", QString("@diaoou-ask:%1").arg(invoke->preferredTarget->objectName()), data, objectName());
 		return true;
 	}
 	
@@ -1929,7 +1937,15 @@ public:
 			DamageStruct damage = data.value<DamageStruct>();
             foreach (ServerPlayer *p, room->getOtherPlayers(alice)) {
 				if (p->getMark("@ningyou") > 0) {
-					room->damage(DamageStruct(objectName(), damage.from, p));
+					room->damage(DamageStruct(objectName(), alice, p, damage.damage, damage.nature));
+					break;
+				}
+			}
+		} else if (triggerevent == PostHpLost) {
+			HpLostStruct lost = data.value<HpLostStruct>();
+			foreach (ServerPlayer *p, room->getOtherPlayers(alice)) {
+				if (p->getMark("@ningyou") > 0) {
+					room->loseHp(p, lost.num);
 					break;
 				}
 			}
@@ -2574,47 +2590,6 @@ public:
 	}
 };
 
-/* FangyingCard::FangyingCard()
-{
-}
-
-bool FangyingCard::targetFixed() const
-{
-	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
-	card->addSubcards(getSubcards());
-	return card->targetFixed();
-}
-
-bool FangyingCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
-{
-	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
-	card->addSubcards(getSubcards());
-	return card->targetFilter(targets, to_select, Self);
-}
-
-bool FangyingCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const
-{
-	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
-	card->addSubcards(getSubcards());
-	return card->targetsFeasible(targets, Self);
-}
-
-void FangyingCard::onUse(Room *room, const CardUseStruct &use) const
-{
-	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
-	card->addSubcards(getSubcards());
-	CardUseStruct card_use = use;
-	card_use.card = card;
-	card->onUse(room, card_use);
-}
-
-void FangyingCard::onEffect(const CardEffectStruct &effect) const
-{
-	Card *card = Sanguosha->cloneCard(user_string, Card::SuitToBeDecided, -1);
-	card->addSubcards(getSubcards());
-	card->onEffect(effect);
-} */
-
 class FangyingVS : public OneCardViewAsSkill
 {
 
@@ -2627,13 +2602,9 @@ public:
 
 	const Card *viewAs(const Card *originalCard) const
 	{
-		//QString pattern = Sanguosha->currentRoomState()->getCurrentCardUsePattern();
-		//QString card_str = pattern.section("-", -1, -1);
 		QString card_str = Self->property("fangying_card").toString();
 		Card *card = Sanguosha->cloneCard(card_str);
-		//FangyingCard *card = new FangyingCard;
         card->addSubcard(originalCard);
-		//card->setUserString(card_str);
 		card->setSkillName(objectName());
 		return card;
 	}
@@ -2720,18 +2691,10 @@ public:
 		return QList<SkillInvokeDetail>();
 	}
 
-	bool effect(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	bool cost(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
 	{
 		ServerPlayer *satori = invoke->invoker;
-		if (event == CardUsed) {
-			CardUseStruct use = data.value<CardUseStruct>();
-			const Card *card = use.card;
-			QVariant first_card_data = satori->tag["FangyingFirstCard"];
-            if (first_card_data == NULL || first_card_data.toString() == "") {
-				satori->tag["FangyingFirstCard"] = QVariant(card->objectName());
-			}
-			satori->tag["FangyingLastCard"] = QVariant(card->objectName());
-		} else if (event == EventPhaseEnd) {
+		if (event == EventPhaseEnd) {
 			QVariant first_card_data = satori->tag["FangyingFirstCard"];
 			QVariant last_card_data = satori->tag["FangyingLastCard"];
 			QString first_card_str = "", last_card_str = "";
@@ -2780,11 +2743,26 @@ public:
 				return false;
 			} else if (choice == "FYFirst") {
 				room->setPlayerProperty(satori, "fangying_card", first_card_str);
-				room->askForUseCard(satori, "@@fangying", QString("@fangying:%1").arg(first_card_str));
+				return room->askForUseCard(satori, "@@fangying", QString("@fangying:%1").arg(first_card_str));
 			} else if (choice == "FYLast") {
 				room->setPlayerProperty(satori, "fangying_card", last_card_str);
-				room->askForUseCard(satori, "@@fangying", QString("@fangying:%1").arg(last_card_str));
+				return room->askForUseCard(satori, "@@fangying", QString("@fangying:%1").arg(last_card_str));
 			}
+		}
+		return true;
+	}
+
+	bool effect(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
+	{
+		ServerPlayer *satori = invoke->invoker;
+		if (event == CardUsed) {
+			CardUseStruct use = data.value<CardUseStruct>();
+			const Card *card = use.card;
+			QVariant first_card_data = satori->tag["FangyingFirstCard"];
+            if (first_card_data == NULL || first_card_data.toString() == "") {
+				satori->tag["FangyingFirstCard"] = QVariant(card->objectName());
+			}
+			satori->tag["FangyingLastCard"] = QVariant(card->objectName());
 		} else if (event == EventPhaseChanging) {
 			satori->tag["FangyingFirstCard"] = QVariant("");
 			satori->tag["FangyingLastCard"] = QVariant("");
