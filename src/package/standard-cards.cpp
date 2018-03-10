@@ -379,7 +379,7 @@ bool Slash::targetFilter(const QList<const Player *> &targets, const Player *to_
 
     }
     if (!Self->canSlash(to_select, this, distance_limit, rangefix, targets)) return false;
-    if (targets.length() >= slash_targets)
+    if (targets.length() >= slash_targets && !(Self->hasSkill("canye") && Self->distanceTo(to_select) <= 1))
         return false;
     return true;
 }
