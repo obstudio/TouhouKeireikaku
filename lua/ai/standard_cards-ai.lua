@@ -41,7 +41,7 @@ end
 --½ç¶¨ÂôÑª£¿
 --¶«·½ÆôÁé¸óÏà¹Ø
 function sgs.isGoodTarget(player, targets, self, isSlash)
-	local arr = {"jieming", "yiji", "guixin", "fangzhu", "neoganglie", "nosmiji", "xuehen", "xueji"}
+	local arr = {"jieming", "yiji", "guixin", "fangzhu", "neoganglie", "nosmiji", "xuehen", "xueji", "xuebeng", "huanni"}
 	local m_skill = false
 	local attacker = global_room:getCurrent()
 
@@ -63,18 +63,7 @@ function sgs.isGoodTarget(player, targets, self, isSlash)
 			elseif masochism == "xueji" and player:isWounded() then m_skill = false
 			elseif masochism == "jieming" and self and self:getJiemingChaofeng(player) > -4 then m_skill = false
 			elseif masochism == "yiji" and self and not self:findFriendsByType(sgs.Friend_Draw, player) then m_skill = false
-			elseif masochism == "shengqiang" and self and (not player:inMyAttackRange(self.player) or not isSlash) then m_skill = false
-			elseif masochism == "xuebeng" and (player:getPile("snow"):length() >= 2 or self:isVeryWeak(player)) then m_skill = false
-			elseif masochism == "xinyan" and self then
-				if #self.friends_noself == 0 then m_skill = false end
-				local flag = false
-				for _, p in ipairs(self.friends_noself) do
-					if not p:isKongcheng() then
-						flag = true
-						break
-					end
-				end
-				if not flag then m_skill = false end
+			elseif masochism == "xuebeng" and (player:getPile("snow"):length() >= 2 or (self and self:isVeryWeak(player))) then m_skill = false
 			elseif masochism == "huanni" and player:isKongcheng() then m_skill = false
 			elseif masochism == "feixiang" and self then
 				local flag = false
@@ -128,10 +117,6 @@ function sgs.isGoodTarget(player, targets, self, isSlash)
 		if id1 < 0 or id2 < 0 then
 			return false
 		end
-	end
-	
-	if isSlash and player:hasSkill("shengqiang") and self and player:inMyAttackRange(self.player) and player:getAttackRange() >= 3 then
-		return false
 	end
 	
 	if isSlash and player:hasSkill("wosui") and self then
@@ -614,6 +599,7 @@ end
 --¡¾ÃÎÏÖ¡¿¡¾»¯Áú¡¿ËÍ¾õÐÑ£¿£¿
 function SmartAI:isPriorFriendOfSlash(friend, card, source)
 	source = source or self.player
+	if source:hasSkill("canye") and not friend:isNude() and source:getHp() > friend:getHp() then return false end
 	local huatuo = self.room:findPlayerBySkillName("jijiu")
 	if source:hasSkill("here") or friend:hasSkill("here") then
 		card= self:copyHereSlash(card)

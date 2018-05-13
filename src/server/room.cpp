@@ -1388,7 +1388,7 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
     tryPause();
     notifyMoveFocus(player, S_COMMAND_RESPONSE_CARD);
 
-    QString real_pattern = (player->hasFlag("CannotResponse") && getCurrentDyingPlayer() == NULL && !pattern.startsWith("@@")) ? "none" : pattern;
+    QString real_pattern = pattern;
     _m_roomState.setCurrentCardUsePattern(real_pattern);
 
     const Card *card = NULL;
@@ -1607,7 +1607,7 @@ const Card *Room::askForUseCard(ServerPlayer *player, const QString &pattern, co
     tryPause();
     notifyMoveFocus(player, S_COMMAND_RESPONSE_CARD);
 
-    QString real_pattern = (player->hasFlag("CannotResponse") && getCurrentDyingPlayer() == NULL && !pattern.startsWith("@@")) ? "none" : pattern;
+    QString real_pattern = pattern;
     _m_roomState.setCurrentCardUsePattern(real_pattern);
     _m_roomState.setCurrentCardUseReason(CardUseStruct::CARD_USE_REASON_RESPONSE_USE);
     CardUseStruct card_use;

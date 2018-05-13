@@ -47,6 +47,10 @@ public:
         return $self->value<CardUseStruct>();
     }
 
+    DrawNCardsStruct toDrawNCards() const{
+        return $self->value<DrawNCardsStruct>();
+    }
+
     void setValue(const Card *card) {
         $self->setValue(QVariant::fromValue(card));
     }

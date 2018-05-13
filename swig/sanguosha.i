@@ -247,6 +247,9 @@ public:
 
     virtual bool isProhibited(const Player *to, const Card *card, const QList<const Player *> &others = QList<const Player *>()) const;
     bool canSlashWithoutCrossbow(const Card *slash = NULL) const;
+    bool needNoSpell() const;
+    void setNeedNoSpell(bool neednospell);
+    bool needNoSpell(const Card *slash) const;
     virtual bool isLastHandCard(const Card *card, bool contain = false) const = 0;
 
     bool isJilei(const Card *card) const;
