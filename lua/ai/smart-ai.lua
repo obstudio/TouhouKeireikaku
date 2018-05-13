@@ -139,6 +139,7 @@ sgs.fake_rebel_players = {}
 	need_equip: 【原器】【丸杵】
 	judge_reason: 【加护】【星尘】【凋风】【奇迹】【绵弦】【赎罪】【飞刀】【惑云】【花影】【羽霓】
 	attackRange: 【冰瀑】【核熔】
+	active: 【封魔】
 ]]--
 function setInitialTables()
 	sgs.current_mode_players = { lord = 0, loyalist = 0, rebel = 0, renegade = 0 }
@@ -147,7 +148,7 @@ function setInitialTables()
 	sgs.need_kongcheng = "lianying|kongcheng"
 	sgs.masochism_skill =       "guixin|yiji|fankui|jieming|xuehen|neoganglie|ganglie|vsganglie|enyuan|fangzhu|nosenyuan|langgu|quanji|" ..
 						"zhiyu|renjie|tanlan|tongxin|huashen|" ..
-						"shengqiang|diaoou|xuebeng|xinyan|huanni|thbanling|feixiang|zhouyuan|chengzhao|fuliao|suozhen|jieyu"
+						"diaoou|xuebeng|suiwa|xinyan|huanni|thbanling|feixiang|zhouyuan|chengzhao|fuliao|suozhen|jieyu"
 	sgs.wizard_skill =      "guicai|guidao|jilve|tiandu|luoying|noszhenlie|" ..
 						"qiangyun|michun|daorang|yuechong"
 	sgs.wizard_harm_skill =     "guicai|guidao|jilve|" ..
@@ -186,6 +187,11 @@ function setInitialTables()
 							"jiahu|xingchen|diaofeng|qiji|mianxian|shuzui|feidao|huoyun|huaying|yuni"
 	sgs.no_intention_damage = "nuhuo|pohuai|zhuonong|meiling"
 	sgs.attackRange_skill = "bingpu|herong"
+	-- 东方启灵阁新增 回合内发动/生效技能
+	sgs.active_skill = "fengmo|xingchen|shantou|daoshe|fengmi|shiling|shengxue|linshang|dianjin|zhenlei|huangyan|xianshi" ..
+					"|diaoou|anji|yuzhu|xinyan|duannian|hunqu|zhangqi|canye|tuji|xianbo|citan"
+	-- 东方启灵阁新增 体力上限/已损失体力值越大强度越大的技能
+	sgs.maxhp_skill = sgs.masochism_skill .. "|xuewang|kaihai|citan"
 
 	sgs.Friend_All = 0
 	sgs.Friend_Draw = 1
@@ -7267,6 +7273,69 @@ function SmartAI:findPlayerToDraw(include_self, drawnum)
 	return nil
 end
 
+function SmartAI:findPlayersToDraw(include_self, drawnum, playernum)
+	drawnum = drawnum or 1
+	playernum = playernum or 1
+	local players = sgs.QList2Table(include_self and self.room:getAllPlayers() or self.room:getOtherPlayers(self.player))
+	local friends = {}
+	for _, player in ipairs(players) do
+		if self:isFriend(player) and not hasManjuanEffect(player)
+			and not (player:hasSkill("kongcheng") and player:isKongcheng() and drawnum <= 2) then
+			table.insert(friends, player)
+		end
+	end
+	if #friends == 0 then return {} end
+
+	local drawers = {}
+
+	self:sort(friends, "defense")
+	for _, friend in ipairs(friends) do
+		if friend:getHandcardNum() < 2 and not self:needKongcheng(friend) and not self:willSkipPlayPhase(friend) then
+			table.insert(drawers, friend)
+		end
+	end
+
+	local AssistTarget = self:AssistTarget()
+	if AssistTarget then
+		for _, friend in ipairs(friends) do
+			if friend:objectName() == AssistTarget:objectName() and not self:willSkipPlayPhase(friend) then
+				table.insert(drawers, friend)
+			end
+		end
+	end
+
+	for _, friend in ipairs(friends) do
+		if self:hasSkills(sgs.cardneed_skill, friend) and not self:willSkipPlayPhase(friend) then
+			table.insert(drawers, friend)
+		end
+	end
+
+	self:sort(friends, "handcard")
+	for _, friend in ipairs(friends) do
+		if not self:needKongcheng(friend) and not self:willSkipPlayPhase(friend) then
+			table.insert(drawers, friend)
+		end
+	end
+
+	local final_drawers = {}
+	for _, p in ipairs(drawers) do
+		if #final_drawers < playernum then
+			table.insert(final_drawers, p)
+			if #final_drawers >= playernum then return final_drawers end
+		end
+	end
+	return final_drawers
+end
+
+function SmartAI:findPlayersNameToDraw(include_self, drawnum, playernum)
+	local drawers = self:findPlayersToDraw(include_self, drawnum, playernum)
+	local names = {}
+	for _, p in ipairs(drawers) do
+		table.insert(names, p:objectName())
+	end
+	return names
+end
+
 function SmartAI:cannotDraw(friend, drawnum)
 	drawnum = drawnum or 1
 	
@@ -7466,9 +7535,6 @@ function SmartAI:touhouConfirmDamage(damage,from,to)
 			elseif from and from:getMark("drank") > 0 then
 				damage.damage=damage.damage+from:getMark("drank")
 			end
-			if to:hasFlag("ZhangqiFlag") then
-				damage.damage = damage.damage + 1
-			end
 		end
 		--【魔法】加成
 		if damage.card:hasFlag("mofa_card") then --这是已经使用了卡。。。如果是player的dummyuse呢？？？
@@ -7482,13 +7548,17 @@ function SmartAI:touhouConfirmDamage(damage,from,to)
 			damage.damage=damage.damage+1
 		end
 	end
+	if to:hasFlag("ZhangqiFlag") then
+		damage.damage = damage.damage + 1
+		damage.nature = sgs.DamageStruct_Fire
+	end
 	if damage.nature == sgs.DamageStruct_Thunder and to:hasSkill("cizhang") then
 		damage.damage = 0
 	end
-	if from:hasSkill("rumo") and from:distanceTo(to) <= 1 then
+	if from and from:hasSkill("rumo") and from:distanceTo(to) <= 1 then
 		damage.damage = damage.damage + 1
 	end
-	if to:hasSkill("rumo") and not from:inMyAttackRange(to) then
+	if to:hasSkill("rumo") and from and not from:inMyAttackRange(to) then
 		damage.damage = damage.damage + 1
 	end
 	return damage
@@ -8436,7 +8506,7 @@ function SmartAI:cantbeHurt(player, from, damageNum)
 			x = x + getKnownCard(p, from, "Peach", true)
 		end
 	end
-	if player:hasSkill("diaoou") and not player:isKongcheng() and player:getHp() > damageNum then
+	if player:hasSkill("diaoou") and not player:isKongcheng() and player:getHp() + x > damageNum then
 		for _, p in sgs.qlist(self.room:getAlivePlayers()) do
 			if p:getMark("@ningyou") > 0 and not self:needToLoseHp(p) and self:isVeryWeak(p) and self:isFriend(from, p) then
 				return true
@@ -9741,6 +9811,60 @@ function SmartAI:canMaoyouSelf(player)
 		if t >= n then
 			return true
 		end
+	end
+	return false
+end
+
+function SmartAI:hasRedHandcard()
+	for _, c in sgs.qlist(self.player:getHandcards()) do
+		if c:isRed() then
+			return true
+		end
+	end
+	return false
+end
+
+function SmartAI:getKnownCards(player)
+	player = player or self.player
+	cards = {}
+	local flag = string.format("%s_%s_%s","visible",self.player:objectName(),player:objectName())
+	for _, c in sgs.qlist(player:getHandcards()) do
+		if c:hasFlag(flag) or c:hasFlag("visible") then
+			table.insert(cards, c)
+		end
+	end
+	for _, id in sgs.qlist(player:getPile("wooden_ox")) do
+		local c = sgs.Sanguosha:getCard(id)
+		if c:hasFlag(flag) or c:hasFlag("visible") then
+			table.insert(cards, c)
+		end
+	end
+	return cards
+end
+
+function SmartAI:getUnknownNum(player)
+	player = player or self.player
+	known = self:getKnownCards(player)
+	return player:getHandcardNum() + player:getPile("wooden_ox"):length() - #known
+end
+
+function SmartAI:hasUnknownCard(player)
+	player = player or self.player
+	return self:getUnknownNum(player) > 0
+end
+
+function SmartAI:endsGameByDeath(player)
+	player = player or self.player
+	if player:isLord() then return true end
+	local role = sgs.ai_role[player:objectName()]
+	if role == "loyalist" then return false end
+	local rebel_num = sgs.current_mode_players["rebel"]
+	local renegade_num = sgs.current_mode_players["renegade"]
+	local loyalist_num = sgs.current_mode_players["loyalist"]
+	if role == "rebel" then
+		return rebel_num == 1 and renegade_num == 0
+	elseif role == "renegade" then
+		return renegade_num == 1 and rebel_num == 0
 	end
 	return false
 end

@@ -1388,7 +1388,8 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
     tryPause();
     notifyMoveFocus(player, S_COMMAND_RESPONSE_CARD);
 
-    _m_roomState.setCurrentCardUsePattern(pattern);
+    QString real_pattern = pattern;
+    _m_roomState.setCurrentCardUsePattern(real_pattern);
 
     const Card *card = NULL;
     CardAskedStruct s;
@@ -1432,7 +1433,7 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
     } else {
         AI *ai = player->getAI();
         if (ai) {
-            card = ai->askForCard(pattern, prompt, data);
+            card = ai->askForCard(real_pattern, prompt, data);
             if (card && card->isKindOf("DummyCard") && card->subcardsLength() == 1)
                 card = Sanguosha->getCard(card->getEffectiveId());
             if (card && player->isCardLimited(card, method)) card = NULL;
@@ -1444,6 +1445,7 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
             arg << int(method);
             arg << notice_index;
             arg << QString(skill_name);
+            arg << real_pattern;
 
             bool success = doRequest(player, S_COMMAND_RESPONSE_CARD, arg, true);
             JsonArray clientReply = player->getClientReply().value<JsonArray>();
@@ -1605,7 +1607,8 @@ const Card *Room::askForUseCard(ServerPlayer *player, const QString &pattern, co
     tryPause();
     notifyMoveFocus(player, S_COMMAND_RESPONSE_CARD);
 
-    _m_roomState.setCurrentCardUsePattern(pattern);
+    QString real_pattern = pattern;
+    _m_roomState.setCurrentCardUsePattern(real_pattern);
     _m_roomState.setCurrentCardUseReason(CardUseStruct::CARD_USE_REASON_RESPONSE_USE);
     CardUseStruct card_use;
 
@@ -1613,7 +1616,7 @@ const Card *Room::askForUseCard(ServerPlayer *player, const QString &pattern, co
     bool isCardUsed = false;
     AI *ai = player->getAI();
     if (ai) {
-        QString answer = ai->askForUseCard(pattern, prompt, method);
+        QString answer = ai->askForUseCard(real_pattern, prompt, method);
         if (answer != ".") {
             isCardUsed = true;
             card_use.from = player;
@@ -1627,6 +1630,7 @@ const Card *Room::askForUseCard(ServerPlayer *player, const QString &pattern, co
         ask_str << int(method);
         ask_str << notice_index;
         ask_str << QString(skill_name);
+        ask_str << real_pattern;
 
         bool success = doRequest(player, S_COMMAND_RESPONSE_CARD, ask_str, true);
 

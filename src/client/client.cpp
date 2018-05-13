@@ -889,10 +889,11 @@ QString Client::_processCardPattern(const QString &pattern)
 void Client::askForCardOrUseCard(const QVariant &cardUsage)
 {
     JsonArray usage = cardUsage.value<JsonArray>();
-    if (usage.size() < 2 || !JsonUtils::isString(usage[0]) || !JsonUtils::isString(usage[1]))
+    if (usage.size() < 2 || !JsonUtils::isString(usage[0]) || !JsonUtils::isString(usage[1]) || !JsonUtils::isString(usage[5]))
         return;
     QString card_pattern = usage[0].toString();
-    _m_roomState.setCurrentCardUsePattern(card_pattern);
+    QString response_pattern = usage[5].toString();
+    _m_roomState.setCurrentCardUsePattern(response_pattern);
     QString textsString = usage[1].toString();
     QStringList texts = textsString.split(":");
     int index = usage[3].toInt();
@@ -908,7 +909,7 @@ void Client::askForCardOrUseCard(const QVariant &cardUsage)
     else
         m_isDiscardActionRefusable = true;
 
-    QString temp_pattern = _processCardPattern(card_pattern);
+    QString temp_pattern = _processCardPattern(response_pattern);
     QRegExp rx("^@@?(\\w+)(-card)?$");
     if (rx.exactMatch(temp_pattern)) {
         QString skill_name = rx.capturedTexts().at(1);

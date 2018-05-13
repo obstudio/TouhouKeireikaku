@@ -128,8 +128,60 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
     int card_id = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toInt();
     const Card *card = Sanguosha->getEngineCard(card_id);
     QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-    QString pixmap_path = user_dir + QString("/mascot/diorite/sage/%1").arg(card->objectName());
-    ui->cardLabel->setPixmap(pixmap_path);
+    QString fileName = user_dir + QString("/mascot/diorite/sage/%1").arg(card->objectName());
+
+    QPixmap pixmap;
+    QFile image_file(fileName);
+    image_file.open(QIODevice::ReadOnly);
+    //QByteArray val = image_file.readAll();
+
+    quint64 totalBytes = image_file.size();
+    quint64 bytesWritten = 0;
+    quint64 bytesToWrite = totalBytes;
+    quint64 loadSize = 65536;
+    QByteArray buf, val;
+
+    while (1) {
+        if (bytesToWrite > 0) {
+            quint64 minReadSize = qMin(bytesToWrite, loadSize);
+            val = image_file.read(minReadSize);
+            buf.append(val);
+            bytesWritten += val.length();
+            bytesToWrite -= val.length();
+            val.resize(0);
+        } else {
+            break;
+        }
+
+        if (bytesWritten >= totalBytes) {
+            break;
+        }
+    }
+    image_file.close();
+
+    /*QString key("");
+    for (int i = 0; i < fileName.section("/", -1, -1).length(); i++) {
+        key += val.at(5 + i);
+    }
+    if (key != fileName.section("/", -1, -1)) {
+        //QMessageBox::about(NULL, "About", key + "\n" + fileName.section("/", -1, -1));
+        return QPixmap(1, 1);
+    }*/
+    if (fileName.contains("/mascot/")) {
+        //QMessageBox::about(NULL, "About", fileName);
+        QString key("");
+        for (int i = 0; i < fileName.section("/", -1, -1).length(); i++) {
+            key += buf.at(5 + i);
+        }
+        if (key != fileName.section("/", -1, -1)) {
+            //QMessageBox::about(NULL, "About", key + "\n" + fileName.section("/", -1, -1));
+            pixmap = QPixmap(1, 1);
+        }
+        buf.remove(0, 32);
+    }
+    pixmap.loadFromData(buf);
+
+    ui->cardLabel->setPixmap(pixmap);
 
     ui->cardDescriptionBox->setText(card->getDescription(false));
 
