@@ -1116,7 +1116,11 @@ QList<int> Engine::getRandomCards() const
 
 QString Engine::getRandomGeneralName() const
 {
-    return generals.keys().at(qrand() % generals.size());
+    QString name = generals.keys().at(qrand() % generals.size());
+    while (name == "anjiang")
+        name = generals.keys().at(qrand() % generals.size());
+    return name;
+    //return generals.keys().at(qrand() % generals.size());
 }
 
 void Engine::playSystemAudioEffect(const QString &name) const

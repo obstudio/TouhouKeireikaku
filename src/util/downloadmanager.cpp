@@ -181,7 +181,7 @@ void DownloadManager::startNextDownload()
 
     QString loc = locationQueue.dequeue();
     QString filename = saveFileName(url, loc);
-    /*if (QFile::exists(filename)) {
+    if (QFile::exists(filename) && !QFile::exists("C:/ProgramData/TouhouKeireikaku/mascot/download.json")) {
         if (!filename.endsWith(".json")) {
             QString hash_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
             hash_dir += QString("/mascot/hash.json");
@@ -207,7 +207,7 @@ void DownloadManager::startNextDownload()
                 return;
             }
         }
-    } */
+    }
     output.setFileName(filename);
     if (!output.open(QIODevice::WriteOnly)) {
         fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
