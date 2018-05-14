@@ -1711,7 +1711,7 @@ sgs.ai_skill_playerchosen.kaihai = function(self, targets)
 		end
 	end
 	if player ~= nil then
-		sgs.updateIntention(self.player, p, -80)
+		sgs.updateIntention(self.player, player, -80)
 		return player
 	end
 	return nil

@@ -1836,7 +1836,7 @@ public:
 		ServerPlayer *pachouli = invoke->invoker;
 		if (event == AfterDrawInitialCards) {
 			room->sendCompulsoryTriggerLog(pachouli, objectName());
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 2; i++) {
 				QString element = room->askForChoice(pachouli, objectName(), "@fire+@water+@wood+@gold+@earth");
 				pachouli->gainMark(element, 1);
 			}
@@ -2089,7 +2089,7 @@ public:
 	{
 		ServerPlayer *alice = invoke->invoker;
 		if (event == EventPhaseStart && alice->getPhase() == Player::Finish)
-			return room->askForUseCard(alice, "@@diaoou", "diaoou-choose-target");
+			return room->askForUseCard(alice, "@@diaoou", "@diaoou-choose-target");
 		else if (event == Damaged) {
 			DamageStruct damage = data.value<DamageStruct>();
 			return room->askForCard(alice, "..", QString("@diaoou-damage-ask:%1::%2").arg(invoke->preferredTarget->objectName()).arg(QString::number(damage.damage)), data, objectName());
@@ -2399,7 +2399,7 @@ void KaihaiCard::onEffect(const CardEffectStruct &effect) const
 	ServerPlayer *to = effect.to;
 	Room *room = to->getRoom();
 	int delta = to->getHandcardNum() - to->getHp();
-	room->askForDiscard(to, "kaihai", delta, delta, false, false, "@kaihai-discard");
+	room->askForDiscard(to, "kaihai", delta, delta, false, false, QString("@kaihai-discard:%1").arg(QString::number(delta)));
 }
 
 class KaihaiVS : public ZeroCardViewAsSkill
