@@ -529,10 +529,10 @@ sgs.ai_skill_choice.bingpu = function(self, choices)
 				return "ObtainWithSkip"
 			end
 		end
-		if self:getCardsNum("Armor", self.player, "e") > 0 then
+		if self:getCardsNum("Armor", "e") > 0 then
 			return "ObtainWithSkip"
 		end
-		if self:getCardsNum("Weapon", self.player, "e") > 0 then
+		if self:getCardsNum("Weapon", "e") > 0 then
 			return "ObtainWithSkip"
 		end
 		return "LetMeSnatch"
@@ -1190,7 +1190,7 @@ dianjin_skill.getTurnUseCard = function(self)
 	if #cards == 1 or self:isWeak() then
 		card = cards[1]
 		if self:getUseValue(card) <= 6 and self:getKeepValue(card) <= 6 then
-			return sgs.Card_Parse("@DianjinCard=%d"):format(card:getEffectiveId())
+			return sgs.Card_Parse(("@DianjinCard=%d"):format(card:getEffectiveId()))
 		end
 	end
 
@@ -1342,7 +1342,7 @@ sgs.ai_skill_use["@@huangyan"] = function(self, prompt)
 end
 
 sgs.ai_skill_use["@@jingyue"] = function(self, prompt)
-	local use = data:toCardUse()
+	local use = self.player:getTag("JingyueUse"):toCardUse()
 	local card = use.card
 	local friends = {}
 	local enemies = {}
