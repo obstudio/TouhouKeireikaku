@@ -529,10 +529,10 @@ sgs.ai_skill_choice.bingpu = function(self, choices)
 				return "ObtainWithSkip"
 			end
 		end
-		if self:getCardsNum("Armor", self.player, "e") > 0 then
+		if self:getCardsNum("Armor", "e") > 0 then
 			return "ObtainWithSkip"
 		end
-		if self:getCardsNum("Weapon", self.player, "e") > 0 then
+		if self:getCardsNum("Weapon", "e") > 0 then
 			return "ObtainWithSkip"
 		end
 		return "LetMeSnatch"
