@@ -169,17 +169,17 @@
         <translation>获得卡牌</translation>
     </message>
     <message>
-        <location filename="../src/dialog/cardoverview.cpp" line="114"/>
+        <location filename="../src/dialog/cardoverview.cpp" line="115"/>
         <source>&lt;font color=#FFFF33&gt;This is an Lua extension&lt;/font&gt;</source>
         <translation>&lt;font color=#FFFF33&gt;该包为Lua扩展包&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/dialog/cardoverview.cpp" line="154"/>
+        <location filename="../src/dialog/cardoverview.cpp" line="208"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/dialog/cardoverview.cpp" line="154"/>
+        <location filename="../src/dialog/cardoverview.cpp" line="208"/>
         <source>These packages don&apos;t contain this card</source>
         <translation>此牌所在卡牌包已禁用</translation>
     </message>
@@ -223,196 +223,196 @@
 <context>
     <name>Client</name>
     <message>
-        <location filename="../src/client/client.cpp" line="318"/>
-        <location filename="../src/client/client.cpp" line="1406"/>
+        <location filename="../src/client/client.cpp" line="319"/>
+        <location filename="../src/client/client.cpp" line="1408"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="318"/>
+        <location filename="../src/client/client.cpp" line="319"/>
         <source>Setup string can not be parsed: %1</source>
         <translation>设置字符串没能成功解析: %1</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="608"/>
+        <location filename="../src/client/client.cpp" line="609"/>
         <source>&lt;p align = &quot;center&quot;&gt;Game will start in &lt;b&gt;%1&lt;/b&gt; seconds...&lt;/p&gt;</source>
         <translation>&lt;p align = &quot;center&quot;&gt;游戏将在 &lt;b&gt;%1&lt;/b&gt; 秒后开始...&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="655"/>
+        <location filename="../src/client/client.cpp" line="656"/>
         <source>Your role is %1</source>
         <translation>你的身份是 %1</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="657"/>
+        <location filename="../src/client/client.cpp" line="658"/>
         <source>
  wait for the lord player choosing general, please</source>
         <translation>
 请等待主公选择人物</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="874"/>
+        <location filename="../src/client/client.cpp" line="875"/>
         <source>The argument (%1) of command %2 does not conform the format %3</source>
         <translation>命令 %2 的参数 (%1) 不符合其格式 %3</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="876"/>
+        <location filename="../src/client/client.cpp" line="877"/>
         <source>Command format warning</source>
         <translation>命令格式警告</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="917"/>
+        <location filename="../src/client/client.cpp" line="919"/>
         <source>&lt;br/&gt; &lt;b&gt;Notice&lt;/b&gt;: %1&lt;br/&gt;</source>
         <translation>&lt;br/&gt; &lt;b&gt;操作提示&lt;/b&gt;: %1&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="948"/>
+        <location filename="../src/client/client.cpp" line="950"/>
         <source>Do you want to invoke skill [%1] ?</source>
         <translation>你想发动技能“%1”吗?</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="952"/>
+        <location filename="../src/client/client.cpp" line="954"/>
         <source>Do you want to invoke skill [%1] to %2 ?</source>
         <translation>你想对%2发动技能“%1”吗?</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="977"/>
+        <location filename="../src/client/client.cpp" line="979"/>
         <source>%1 initiated a vote for disadvataged side to claim capitulation. Click &quot;OK&quot; to surrender or &quot;Cancel&quot; to resist.</source>
         <translation>%1 要求所有人表决是否投降。 点【确定】表示你要投降，点【取消】拒绝向其他玩家投降。</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="980"/>
+        <location filename="../src/client/client.cpp" line="982"/>
         <source>&lt;br/&gt; &lt;b&gt;Notice&lt;/b&gt;: if all people on your side decides to surrender. You&apos;ll lose this game.</source>
         <translation>&lt;br/&gt;&lt;b&gt;注意&lt;/b&gt;：如果所有同阵营的玩家决定投降，你将输掉这局游戏。</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="991"/>
+        <location filename="../src/client/client.cpp" line="993"/>
         <source>Do you want to use the luck card?</source>
         <translation>你想使用手气卡吗？</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1028"/>
+        <location filename="../src/client/client.cpp" line="1030"/>
         <source>Do you want to use nullification to trick card %1 from %2?</source>
         <translation>是否对 %2 的 %1 使用【无懈可击】？</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1032"/>
+        <location filename="../src/client/client.cpp" line="1034"/>
         <source>%1 used trick card %2 to %3 &lt;br&gt;Do you want to use nullification?</source>
         <translation>%1 对 %3 使用锦囊【%2】 &lt;br&gt;是否使用【无懈可击】？</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1221"/>
+        <location filename="../src/client/client.cpp" line="1223"/>
         <source>Draw pile: &lt;b&gt;%1&lt;/b&gt;, discard pile: &lt;b&gt;%2&lt;/b&gt;, swap times: &lt;b&gt;%3&lt;/b&gt;</source>
         <translation>摸牌堆:&lt;b&gt;%1&lt;/b&gt;,弃牌堆:&lt;b&gt;%2&lt;/b&gt;,洗牌次数:&lt;b&gt;%3&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1242"/>
+        <location filename="../src/client/client.cpp" line="1244"/>
         <source>Please discard %1 card(s), include equip</source>
         <translation>请弃置 %1 张牌，包括装备区的牌</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1244"/>
+        <location filename="../src/client/client.cpp" line="1246"/>
         <source>Please discard %1 card(s), only hand cards is allowed</source>
         <translation>请弃置 %1 张手牌</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1247"/>
+        <location filename="../src/client/client.cpp" line="1249"/>
         <source>%1 %2 cards(s) are required at least</source>
         <translation>你需要至少弃置 %1 张%2牌</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1247"/>
+        <location filename="../src/client/client.cpp" line="1249"/>
         <source>hand</source>
         <translation>手</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1280"/>
+        <location filename="../src/client/client.cpp" line="1282"/>
         <source>Please give %1 cards to exchange</source>
         <translation>请选择用于交换的 %1 张手牌</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1282"/>
+        <location filename="../src/client/client.cpp" line="1284"/>
         <source>Please give at most %1 cards to exchange.&lt;br /&gt;You can give %2 cards at least</source>
         <translation>请选择至多 %1 张牌用于交换。&lt;br /&gt;你至少可以交换 %2 张牌</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1397"/>
+        <location filename="../src/client/client.cpp" line="1399"/>
         <source>Game is over now</source>
         <translation>游戏已经结束</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1399"/>
+        <location filename="../src/client/client.cpp" line="1401"/>
         <source>Invalid signup string</source>
         <translation>无效的登录字符串</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1401"/>
+        <location filename="../src/client/client.cpp" line="1403"/>
         <source>Your level is not enough</source>
         <translation>你的等级不够</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1403"/>
+        <location filename="../src/client/client.cpp" line="1405"/>
         <source>Unknown warning: %1</source>
         <translation>未知警告: %1</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1607"/>
+        <location filename="../src/client/client.cpp" line="1622"/>
         <source>You are dying, please provide %1 peach(es)(or analeptic) to save yourself</source>
         <translation>你处于濒死状态，请提供 %1 个【桃】（或【酒】）来自救</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1612"/>
+        <location filename="../src/client/client.cpp" line="1627"/>
         <source>%1 is dying, please provide %2 peach(es)(or analeptic) to save him</source>
         <translation>%1 处于濒死状态，请提供 %2 个【桃】（或【酒】）来挽救该角色</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1615"/>
+        <location filename="../src/client/client.cpp" line="1630"/>
         <source>%1 is dying, please provide %2 peach(es) to save him</source>
         <translation>%1 处于濒死状态，请提供 %2 个【桃】来挽救该角色</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1649"/>
+        <location filename="../src/client/client.cpp" line="1664"/>
         <source>%1 request you to show one hand card</source>
         <translation>%1 要求你展示一张手牌</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1792"/>
+        <location filename="../src/client/client.cpp" line="1807"/>
         <source>Please play a card for pindian</source>
         <translation>请出一张卡牌用于拼点</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1795"/>
+        <location filename="../src/client/client.cpp" line="1810"/>
         <source>%1 ask for you to play a card to pindian</source>
         <translation>%1 要求你出一张卡牌用于拼点</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1820"/>
+        <location filename="../src/client/client.cpp" line="1835"/>
         <source>Please distribute %1 cards %2 as you wish</source>
         <translation>请将 %1 张牌交给任意一名%2角色</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1822"/>
+        <location filename="../src/client/client.cpp" line="1837"/>
         <source>to another player</source>
         <translation>给其他角色</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1860"/>
-        <location filename="../src/client/client.cpp" line="1864"/>
+        <location filename="../src/client/client.cpp" line="1875"/>
+        <location filename="../src/client/client.cpp" line="1879"/>
         <source>&lt;br/&gt; &lt;b&gt;Source&lt;/b&gt;: %1&lt;br/&gt;</source>
         <translation>&lt;br/&gt; &lt;b&gt;技能来源&lt;/b&gt;: %1&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1862"/>
+        <location filename="../src/client/client.cpp" line="1877"/>
         <source>Please choose a player</source>
         <translation>请选择一名玩家</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1931"/>
+        <location filename="../src/client/client.cpp" line="1946"/>
         <source>&lt;font color=&apos;red&apos;&gt;System: %1&lt;/font&gt;</source>
         <translation>&lt;font color=&apos;red&apos;&gt;系统: %1&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/client/client.cpp" line="1949"/>
+        <location filename="../src/client/client.cpp" line="1964"/>
         <source>&lt;font color=&apos;%1&apos;&gt;[%2] said: %3 &lt;/font&gt;</source>
         <translation>&lt;font color=&apos;%1&apos;&gt;[%2] 说: %3 &lt;/font&gt;</translation>
     </message>
@@ -752,33 +752,58 @@
     </message>
     <message>
         <location filename="../src/dialog/connectiondialog.ui" line="131"/>
+        <source>Password:</source>
+        <translation>密码:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog/connectiondialog.ui" line="144"/>
         <source>Host:</source>
         <translation>主机:</translation>
     </message>
     <message>
-        <location filename="../src/dialog/connectiondialog.ui" line="177"/>
+        <location filename="../src/dialog/connectiondialog.ui" line="190"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/dialog/connectiondialog.ui" line="190"/>
+        <location filename="../src/dialog/connectiondialog.ui" line="203"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../src/dialog/connectiondialog.ui" line="203"/>
+        <location filename="../src/dialog/connectiondialog.ui" line="216"/>
         <source>Reconnection</source>
         <translation>断线重连</translation>
     </message>
     <message>
-        <location filename="../src/dialog/connectiondialog.cpp" line="71"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="90"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="95"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="173"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="178"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/dialog/connectiondialog.cpp" line="71"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="90"/>
         <source>The user name can not be empty!</source>
         <translation>用户名不能为空!</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog/connectiondialog.cpp" line="95"/>
+        <source>Password cannot be empty!</source>
+        <translation>密码不能为空!</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog/connectiondialog.cpp" line="173"/>
+        <source>Username or password is incorrect!
+Validate code: %1</source>
+        <translation>用户名或密码错误!
+校验结果:%1</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog/connectiondialog.cpp" line="178"/>
+        <source>Fatal error occurred during request!</source>
+        <translation>发送校验请求时出现严重错误!</translation>
     </message>
 </context>
 <context>
@@ -2359,7 +2384,7 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="../src/core/player.cpp" line="1275"/>
+        <location filename="../src/core/player.cpp" line="1317"/>
         <source>&lt;font color=%1&gt;No skills&lt;/font&gt;</source>
         <translation>&lt;font color=%1&gt;无技能&lt;/font&gt;</translation>
     </message>
@@ -2494,157 +2519,157 @@
         <translation>开启AI</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="406"/>
+        <location filename="../src/core/record-analysis.cpp" line="417"/>
         <source>Soy</source>
         <translation>泡泡</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="413"/>
+        <location filename="../src/core/record-analysis.cpp" line="424"/>
         <source>Rapid Victory</source>
         <translation>登场杀手</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="415"/>
+        <location filename="../src/core/record-analysis.cpp" line="426"/>
         <source>Burning Soul</source>
         <translation>流血千里</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="416"/>
+        <location filename="../src/core/record-analysis.cpp" line="427"/>
         <source>Regretful Lose</source>
         <translation>非致命主义</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="417"/>
+        <location filename="../src/core/record-analysis.cpp" line="428"/>
         <source>Fall Short</source>
         <translation>终章殒命</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="419"/>
+        <location filename="../src/core/record-analysis.cpp" line="430"/>
         <source>Wicked Kill</source>
         <translation>一B通关</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="420"/>
+        <location filename="../src/core/record-analysis.cpp" line="431"/>
         <source>Peaceful Watcher</source>
         <translation>弹幕稀薄</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="421"/>
+        <location filename="../src/core/record-analysis.cpp" line="432"/>
         <source>MVP</source>
         <translation>自机主角</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="423"/>
+        <location filename="../src/core/record-analysis.cpp" line="434"/>
         <source>Useless alive</source>
         <translation>隙间生物</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="424"/>
+        <location filename="../src/core/record-analysis.cpp" line="435"/>
         <source>Awe Prestige</source>
         <translation>信仰尽聚</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="426"/>
+        <location filename="../src/core/record-analysis.cpp" line="437"/>
         <source>Wisely Loyalist</source>
         <translation>虔诚信徒</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="427"/>
+        <location filename="../src/core/record-analysis.cpp" line="438"/>
         <source>Conspiracy</source>
         <translation>异变黑幕</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="429"/>
+        <location filename="../src/core/record-analysis.cpp" line="440"/>
         <source>Vanguard</source>
         <translation>戮敌以祭</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="430"/>
+        <location filename="../src/core/record-analysis.cpp" line="441"/>
         <source>Fierce Lord</source>
         <translation>信仰霸权</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="431"/>
+        <location filename="../src/core/record-analysis.cpp" line="442"/>
         <source>Blood Judgement</source>
         <translation>血华神宴</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="432"/>
+        <location filename="../src/core/record-analysis.cpp" line="443"/>
         <source>Rampage</source>
         <translation>举世皆邪</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="433"/>
+        <location filename="../src/core/record-analysis.cpp" line="444"/>
         <source>Unrealized Aspiration</source>
         <translation>信仰天坑</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="449"/>
+        <location filename="../src/core/record-analysis.cpp" line="460"/>
         <source>Break Point</source>
         <translation>大和神再世</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="451"/>
+        <location filename="../src/core/record-analysis.cpp" line="462"/>
         <source>Legatus</source>
         <translation>怪力乱神</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="452"/>
+        <location filename="../src/core/record-analysis.cpp" line="463"/>
         <source>Frightful Lord</source>
         <translation>尚武神教</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="453"/>
+        <location filename="../src/core/record-analysis.cpp" line="464"/>
         <source>Bloody Warrior</source>
         <translation>百斩符文</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="454"/>
+        <location filename="../src/core/record-analysis.cpp" line="465"/>
         <source>Warrior Soul</source>
         <translation>千斩符文</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="455"/>
+        <location filename="../src/core/record-analysis.cpp" line="466"/>
         <source>Wrath Warlord</source>
         <translation>万斩符文</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="457"/>
+        <location filename="../src/core/record-analysis.cpp" line="468"/>
         <source>Peaceful</source>
         <translation>天界仙桃</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="458"/>
+        <location filename="../src/core/record-analysis.cpp" line="469"/>
         <source>Recovery</source>
         <translation>山泉祝祭</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="460"/>
+        <location filename="../src/core/record-analysis.cpp" line="471"/>
         <source>Fodder</source>
         <translation>无名牲祭</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="461"/>
+        <location filename="../src/core/record-analysis.cpp" line="472"/>
         <source>Fire Target</source>
         <translation>无神嘲讽</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="462"/>
+        <location filename="../src/core/record-analysis.cpp" line="473"/>
         <source>Master Tank</source>
         <translation>不死鸟</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="463"/>
+        <location filename="../src/core/record-analysis.cpp" line="474"/>
         <source>War Spirit</source>
         <translation>浴血超生</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="470"/>
+        <location filename="../src/core/record-analysis.cpp" line="481"/>
         <source>Priority Honor</source>
         <translation>绝境信仰</translation>
     </message>
     <message>
-        <location filename="../src/core/record-analysis.cpp" line="471"/>
+        <location filename="../src/core/record-analysis.cpp" line="482"/>
         <source>Impasse Strike</source>
         <translation>异端正位</translation>
     </message>
@@ -2716,89 +2741,89 @@
 <context>
     <name>Room</name>
     <message>
-        <location filename="../src/server/room.cpp" line="2538"/>
+        <location filename="../src/server/room.cpp" line="2574"/>
         <source>disconnected</source>
         <translation>断开</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="2561"/>
+        <location filename="../src/server/room.cpp" line="2597"/>
         <source>&lt;font color=#000000&gt;Player &lt;b&gt;%1&lt;/b&gt; left the game&lt;/font&gt;</source>
         <translation>&lt;font color=#000000&gt;玩家 %1 离开了游戏&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="2763"/>
+        <location filename="../src/server/room.cpp" line="2799"/>
         <source>This server is limited to add robot. YOU CAN ONLY ADD ROBOT USING &quot;Fill Robots&quot;.</source>
         <translation>这个服务器启用了限制添加电脑。&lt;b&gt;只允许使用“补全所有电脑”来添加电脑。&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="2786"/>
+        <location filename="../src/server/room.cpp" line="2822"/>
         <source>Computer %1</source>
         <translation>电脑 %1</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="2790"/>
+        <location filename="../src/server/room.cpp" line="2826"/>
         <source>Hello, I&apos;m a robot</source>
         <translation>我今天作为一个长者给你们传授人生的经验</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="2799"/>
+        <location filename="../src/server/room.cpp" line="2835"/>
         <source>This server is limited to add robot. Please ensure that the number of players is more than 4 and there is more than a half human players.</source>
         <translation>这个服务器启用了限制添加电脑。请确定本模式人数大于4并且存在一半以上的真人玩家。</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="2845"/>
+        <location filename="../src/server/room.cpp" line="2881"/>
         <source>&lt;font color=#EEB422&gt;Player &lt;b&gt;%1&lt;/b&gt; joined the game&lt;/font&gt;</source>
         <translation>&lt;font color=#EEB422&gt;玩家 &lt;b&gt;%1&lt;/b&gt; 加入了游戏&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3367"/>
+        <location filename="../src/server/room.cpp" line="3403"/>
         <source>Rara</source>
         <translation>啦啦</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3373"/>
+        <location filename="../src/server/room.cpp" line="3409"/>
         <source>lzxqqqq</source>
         <translation>忧郁的月兔</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3376"/>
+        <location filename="../src/server/room.cpp" line="3412"/>
         <source>LT-Y</source>
         <translation>叫什么啊你妹</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3379"/>
+        <location filename="../src/server/room.cpp" line="3415"/>
         <source>nima</source>
         <translation>付尼玛</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3394"/>
+        <location filename="../src/server/room.cpp" line="3430"/>
         <source>Unable to parse player</source>
         <translation>无法解析玩家</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3396"/>
+        <location filename="../src/server/room.cpp" line="3432"/>
         <source>Server is not waiting for reply from %1</source>
         <translation>服务器无法获取 %1 的响应</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3398"/>
+        <location filename="../src/server/room.cpp" line="3434"/>
         <source>Reply command should be %1 instead of %2</source>
         <translation>应答指令应为 %1 而不是 %2</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="3401"/>
+        <location filename="../src/server/room.cpp" line="3437"/>
         <source>Reply serial should be %1 instead of %2</source>
         <translation>玩家序号应为 %1 而不是 %2</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="5020"/>
+        <location filename="../src/server/room.cpp" line="5056"/>
         <source>Card cannot be parsed:
  %1</source>
         <translation>卡牌字符串无法解析:
  %1</translation>
     </message>
     <message>
-        <location filename="../src/server/room.cpp" line="6566"/>
+        <location filename="../src/server/room.cpp" line="6602"/>
         <source>&lt;font color=#EEB422&gt;The network delay of player &lt;b&gt;%1&lt;/b&gt; is %2 milliseconds.&lt;/font&gt;</source>
         <translation>&lt;font color=#EEB422&gt;玩家 &lt;b&gt;%1&lt;/b&gt; 的网络延迟为 %2 毫秒&lt;/font&gt;</translation>
     </message>
@@ -3811,7 +3836,7 @@ P = 你自己, R = 你所在的房间</translation>
     <message>
         <location filename="../src/core/settings.cpp" line="102"/>
         <source>Sanguosha-fans</source>
-        <translation>隙间的罪袋</translation>
+        <translation>妄称总管的罪袋</translation>
     </message>
     <message>
         <location filename="../src/core/settings.cpp" line="103"/>
@@ -4012,12 +4037,12 @@ P = 你自己, R = 你所在的房间</translation>
 <context>
     <name>UdpDetectorDialog</name>
     <message>
-        <location filename="../src/dialog/connectiondialog.cpp" line="136"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="199"/>
         <source>Detect available server&apos;s addresses at LAN</source>
         <translation>在局域网内探测可用的服务器地址</translation>
     </message>
     <message>
-        <location filename="../src/dialog/connectiondialog.cpp" line="137"/>
+        <location filename="../src/dialog/connectiondialog.cpp" line="200"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
