@@ -9,6 +9,9 @@
 #include <QTimer>
 #include <QRadioButton>
 #include <QBoxLayout>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 static const int ShrinkWidth = 285;
 static const int ExpandWidth = 826;
@@ -44,6 +47,9 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     ui->nameLineEdit->setText(Config.UserName);
     ui->nameLineEdit->setMaxLength(64);
 
+    ui->passwordLineEdit->setText("");
+    ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
+
     ui->hostComboBox->addItems(Config.HistoryIPs);
     ui->hostComboBox->lineEdit()->setText(Config.HostAddress);
 
@@ -58,6 +64,10 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
     setFixedHeight(height());
     setFixedWidth(ShrinkWidth);
+
+    manager = new QNetworkAccessManager(this);
+    QObject::connect(manager, SIGNAL(finished(QNetworkReply *)),
+        this, SLOT(finishedSlot(QNetworkReply *)));
 }
 
 ConnectionDialog::~ConnectionDialog()
@@ -68,20 +78,37 @@ ConnectionDialog::~ConnectionDialog()
 void ConnectionDialog::on_connectButton_clicked()
 {
     QString username = ui->nameLineEdit->text();
+    QString password = ui->passwordLineEdit->text();
+
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    QByteArray pwarray = password.toLatin1();
+    char *pwchar = pwarray.data();
+    hash.addData(pwchar);
+    QString password_hash = hash.result().toHex();
 
     if (username.isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("The user name can not be empty!"));
         return;
     }
 
+    if (password.isEmpty()) {
+        QMessageBox::warning(this, tr("Warning"), tr("Password cannot be empty!"));
+        return;
+    }
+
+    // verify username and password here
+    QNetworkRequest request;
+
+    QString url = QString("https://id.ob-studio.cn/assets/data/user_login.php");
+    request.setUrl(url);
+    QString cont;
+    cont = QString("username=%1&password_hash=%2").arg(username).arg(password_hash);
+    QByteArray contArray = cont.toLatin1();
+    char *contChar = contArray.data();
+    m_Reply = manager->post(request, contChar);
+
     Config.UserName = username;
     Config.HostAddress = ui->hostComboBox->lineEdit()->text();
-
-    Config.setValue("UserName", Config.UserName);
-    Config.setValue("HostAddress", Config.HostAddress);
-    Config.setValue("EnableReconnection", ui->reconnectionCheckBox->isChecked());
-
-    accept();
 }
 
 void ConnectionDialog::on_changeAvatarButton_clicked()
@@ -128,6 +155,38 @@ void ConnectionDialog::on_detectLANButton_clicked()
             ui->hostComboBox->lineEdit(), SLOT(setText(QString)));
 
     detector_dialog->exec();
+}
+
+void ConnectionDialog::finishedSlot(QNetworkReply *)
+{
+    m_Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    m_Reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+    bool flag = false;
+
+    if (m_Reply->error() == QNetworkReply::NoError) {
+        QByteArray contentArray = m_Reply->readAll();
+        QString content = QString::fromUtf8(contentArray);
+        qDebug() << content;
+        if (content != QString("0")) {
+            QMessageBox::warning(this, tr("Warning"), QString(tr("Username or password is incorrect!\nValidate code: %1")).arg(content));
+            flag = true;
+        }
+    } else {
+        qDebug() << m_Reply->errorString();
+        QMessageBox::warning(this, tr("Warning"), tr("Fatal error occurred during request!"));
+        flag = true;
+    }
+
+    m_Reply->deleteLater();
+
+    if (flag) return;
+
+    Config.setValue("UserName", Config.UserName);
+    Config.setValue("HostAddress", Config.HostAddress);
+    Config.setValue("EnableReconnection", ui->reconnectionCheckBox->isChecked());
+
+    accept();
 }
 
 // -----------------------------------

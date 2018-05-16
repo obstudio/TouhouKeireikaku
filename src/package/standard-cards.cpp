@@ -1909,10 +1909,10 @@ void Haze::onEffect(const CardEffectStruct &effect) const
     log.arg = suit_str;
     room->sendLog(log);
     
-    const Card *card;
+    const Card *card = NULL;
     if (!hasFlag("ShilingUnavoidable"))
         card = room->askForCard(effect.to, pattern, prompt);
-    if (!card && !effect.to->isAllNude()) {
+    if (card == NULL && !effect.to->isAllNude()) {
         int card_id = room->askForCardChosen(effect.from, effect.to, "hej", objectName());
         CardMoveReason reason(CardMoveReason::S_REASON_EXTRACTION, effect.from->objectName());
         room->obtainCard(effect.from, Sanguosha->getCard(card_id), reason, room->getCardPlace(card_id) != Player::PlaceHand);
