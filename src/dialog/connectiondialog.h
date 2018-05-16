@@ -5,6 +5,8 @@
 #include <QListWidget>
 #include <QComboBox>
 #include <QButtonGroup>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class UdpDetector;
 
@@ -25,6 +27,8 @@ public:
 
 private:
     Ui::ConnectionDialog *ui;
+    QNetworkAccessManager *manager;
+    QNetworkReply *m_Reply;
 
 private slots:
     void on_detectLANButton_clicked();
@@ -32,6 +36,7 @@ private slots:
     void on_avatarList_itemDoubleClicked(QListWidgetItem *item);
     void on_changeAvatarButton_clicked();
     void on_connectButton_clicked();
+    void finishedSlot(QNetworkReply *);
 };
 
 class UdpDetectorDialog : public QDialog

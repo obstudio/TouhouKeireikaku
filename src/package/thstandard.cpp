@@ -1406,6 +1406,8 @@ public:
 		ServerPlayer *player = qobject_cast<ServerPlayer *>(move.from);
 		ServerPlayer *pachouli = room->findPlayerBySkillName(objectName());
 		if (pachouli && pachouli->isAlive() && player && player->isAlive() && player->isWounded() && (move.reason.m_reason % 16 == 3)
+			&& (move.from_places.contains(Player::PlaceHand)
+			|| (move.from_places.contains(Player::PlaceEquip)))
 			&& move.card_ids.length() >= player->getHp())
 			return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, pachouli, pachouli, NULL, false, player);
 		return QList<SkillInvokeDetail>();

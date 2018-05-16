@@ -634,7 +634,7 @@ sgs.ai_skill_cardask["@shiling-discard"] = function(self, data)
 
 	if self:isFriend(use.from) then return "." end
 
-	if card:isKindOf("Slash") and not use.from:hasWeapon("Axe") and not use.from:hasWeaopon("Blade") and self:getCardsNum("Jink") > 0 then
+	if card:isKindOf("Slash") and not use.from:hasWeapon("Axe") and not use.from:hasWeapon("Blade") and self:getCardsNum("Jink") > 0 then
 		return "."
 	elseif card:isKindOf("Duel") and self:getCardsNum("Slash") > use.from:getHandcardNum() / 2 then
 		return "."
