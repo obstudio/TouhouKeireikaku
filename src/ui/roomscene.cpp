@@ -48,6 +48,7 @@
 #include <QInputDialog>
 #include <qmath.h>
 #include <QTransform>
+#include <QHostInfo>
 #include "uiUtils.h"
 
 
@@ -3609,18 +3610,113 @@ void RoomScene::viewGenerals(const QString &reason, const QStringList &names)
 
 void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *> &players)
 {
-    table->setColumnCount(11);
-    table->setRowCount(players.length());
-    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
     RecAnalysis *record = new RecAnalysis(ClientInstance->getReplayPath());
     QMap<QString, PlayerRecordStruct *> record_map = record->getRecordMap();
+
+    QHostInfo host = QHostInfo::fromName("www.baidu.com");
+    if (host.error() == QHostInfo::NoError) {
+        QList<const ClientPlayer *> real_players;
+        foreach (const ClientPlayer *p, players) {
+            if (p->getState() == "online" || p->getState() == "trust") {
+                real_players << p;
+            }
+        }
+        if (real_players.length() > 1) {
+            PlayerRecordStruct *rec = record_map.value(Self->objectName());
+            if (Self->getState() == "online" || Self->getState() == "trust") {
+                Self->addBP(Self->getMark("Global_TurnCount") * 2.78 + 5.00);
+                Self->addBP((Self->getHandcardNum() + Self->getPile("wooden_ox").length()) * 2.06 + Self->getEquips().length() * 2.88);
+
+                if (Self->isAlive() || Self->getRole() == "renegade")
+                    Self->addBP(10);
+
+                if (Self->property("win").toBool()) {
+                    double coef = 0.20;
+                    if (Self->getRole() == "lord") {
+                        coef += 0.20;
+                    } else if (Self->getRole() == "loyalist") {
+                        coef += 0.10;
+                    } else if (Self->getRole() == "renegade") {
+                        coef += 0.60;
+                    }
+                    Self->addBP(Self->getBP() * coef);
+                }
+
+                QStringList des = rec->m_designation;
+                double reward = 0;
+                if (des.contains(tr("Legatus")) || des.contains(tr("Frightful Lord"))) {
+                    reward += 4.82;
+                }
+
+                if (des.contains(tr("Vanguard")) || des.contains(tr("Fierce Lord"))) {
+                    reward += 10.27;
+                }
+
+                if (des.contains(tr("Peaceful")) || des.contains(tr("Recovery"))) {
+                    reward += 3.03;
+                }
+
+                if (des.contains(tr("War Spirit"))) {
+                    reward += 0.80;
+                } else if (des.contains(tr("Fire Target"))) {
+                    reward += 0.85;
+                } else if (des.contains(tr("Master Tank"))) {
+                    reward += 5.73;
+                }
+
+                if (des.contains(tr("Priority Honor")) || des.contains("Impasse Strike")) {
+                    reward += 8.54;
+                }
+
+                if (des.contains(tr("Warrior Soul"))) {
+                    reward += 2.19;
+                } else if (des.contains(tr("Wrath Warlord"))) {
+                    reward += 4.34;
+                }
+
+                if (des.contains(tr("Soy"))) {
+                    reward += 5.00;
+                } else if (des.contains(tr("Useless alive"))) {
+                    reward += 6.64;
+                }
+
+                if (des.contains(tr("Rapid Victory"))) {
+                    reward += 10.55;
+                } else if (des.contains(tr("Break Point"))) {
+                    reward += 7.43;
+                }
+
+                if (des.contains(tr("Conspiracy"))) {
+                    reward += 13.07;
+                }
+
+                if (des.contains(tr("Wicked Kill"))) {
+                    reward += 9.29;
+                }
+
+                if (des.contains(tr("MVP"))) {
+                    reward += 16.85;
+                }
+
+                Self->addBP(qMin(reward, 45.00));
+
+                // upload BP for username: player->screenName()
+            }
+        }
+    } else {
+        qDebug() << "Cannot access to the Internet. Failed to update bonus points." << endl;
+    }
+
+    table->setColumnCount(12);
+    table->setRowCount(players.length());
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     static QStringList labels;
     if (labels.isEmpty()) {
         labels << tr("General") << tr("Name") << tr("Alive");
         labels << tr("Role");
 
+        labels << tr("BP");
         labels << tr("TurnCount");
         labels << tr("Recover") << tr("Damage") << tr("Damaged") << tr("Kill") << tr("Designation");
         labels << tr("Handcards");
@@ -3631,6 +3727,8 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
 
     for (int i = 0; i < players.length(); i++) {
         const ClientPlayer *player = players[i];
+
+        PlayerRecordStruct *rec = record_map.value(player->objectName());
 
         QTableWidgetItem *item = new QTableWidgetItem;
         item->setText(ClientInstance->getPlayerName(player->objectName()));
@@ -3678,29 +3776,33 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         table->setItem(i, 3, item);
 
         item = new QTableWidgetItem;
-        item->setText(QString::number(player->getMark("Global_TurnCount")));
+        QString text = player == Self ? QString::number((unsigned int)(player->getBP() + 0.5)) : "";
+        item->setText(text);
         table->setItem(i, 4, item);
 
-        PlayerRecordStruct *rec = record_map.value(player->objectName());
         item = new QTableWidgetItem;
-        item->setText(QString::number(rec->m_recover));
+        item->setText(QString::number(player->getMark("Global_TurnCount")));
         table->setItem(i, 5, item);
 
         item = new QTableWidgetItem;
-        item->setText(QString::number(rec->m_damage));
+        item->setText(QString::number(rec->m_recover));
         table->setItem(i, 6, item);
 
         item = new QTableWidgetItem;
-        item->setText(QString::number(rec->m_damaged));
+        item->setText(QString::number(rec->m_damage));
         table->setItem(i, 7, item);
 
         item = new QTableWidgetItem;
-        item->setText(QString::number(rec->m_kill));
+        item->setText(QString::number(rec->m_damaged));
         table->setItem(i, 8, item);
 
         item = new QTableWidgetItem;
-        item->setText(rec->m_designation.join(", "));
+        item->setText(QString::number(rec->m_kill));
         table->setItem(i, 9, item);
+
+        item = new QTableWidgetItem;
+        item->setText(rec->m_designation.join(", "));
+        table->setItem(i, 10, item);
 
         item = new QTableWidgetItem;
         QString handcards = QString::fromUtf8(QByteArray::fromBase64(player->property("last_handcards").toString().toLatin1()));
@@ -3709,10 +3811,10 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         handcards.replace("<img src='image/system/log/club.png' height = 12/>", tr("Club"));
         handcards.replace("<img src='image/system/log/diamond.png' height = 12/>", tr("Diamond"));
         item->setText(handcards);
-        table->setItem(i, 10, item);
+        table->setItem(i, 11, item);
     }
 
-    for (int i = 2; i <= 10; i++)
+    for (int i = 2; i <= 11; i++)
         table->resizeColumnToContents(i);
 }
 

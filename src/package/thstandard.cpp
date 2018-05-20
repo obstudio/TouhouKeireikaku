@@ -824,7 +824,7 @@ public:
 	int getFixed(const Player *remilia) const
 	{
 		if (remilia->hasSkill(this)) {
-			int max = 0;
+			int max = remilia->getHp();
 			foreach (const Player *p, remilia->getAliveSiblings()) {
 				if (p->getHp() > max)
 					max = p->getHp();

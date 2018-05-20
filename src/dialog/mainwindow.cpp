@@ -694,6 +694,7 @@ void MainWindow::on_actionPC_Console_Start_triggered()
 
     server->createNewRoom();
 
+    Config.PCMode = true;
     Config.HostAddress = "127.0.0.1";
     startConnection();
 }
