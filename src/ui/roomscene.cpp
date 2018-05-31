@@ -22,6 +22,8 @@
 #include "bubblechatbox.h"
 #include "lightboxanimation.h"
 
+#include <stdio.h>
+
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
@@ -49,6 +51,13 @@
 #include <qmath.h>
 #include <QTransform>
 #include <QHostInfo>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkReply>
+#include <QDir>
+#include <QCryptographicHash>
 #include "uiUtils.h"
 
 
@@ -3701,6 +3710,69 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
                 Self->addBP(qMin(reward, 45.00));
 
                 // upload BP for username: player->screenName()
+                QString dir = QDir::currentPath() + "/aes_keys.json";
+                if (!QFile::exists(dir))
+                    QMessageBox::warning(main_window, "Warning", "AES key file open failed!");
+                QFile file;
+                file.setFileName(QApplication::applicationDirPath() + "/aes_keys.json");
+                file.open(QIODevice::ReadOnly | QIODevice::Text);
+                QString val = file.readAll();
+                file.close();
+
+                QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+                QJsonObject all_keys = doc.object();
+                QString qBPKey = all_keys.value(QString("upload_bp")).toString();
+                QByteArray qBPKeyBytes = qBPKey.toLatin1();
+                char *bp_key = qBPKeyBytes.data();
+
+                char bpchar[191];
+                sprintf(bpchar, "%d", (unsigned int)(Self->getBP() + 0.50));
+                std::string bpstring;
+                bpstring.resize(strlen(bpchar), '\0');
+                for (int i = 0, j = 0; i < strlen(bpchar); i++) {
+                    bpstring[i] = bpchar[i] ^ bp_key[j == strlen(bp_key) ? 0 : j++];
+                }
+                QString bpcode = QString::fromStdString(bpstring);
+                QByteArray bparray = bpcode.toLatin1();
+                bpcode = bparray.toBase64();
+                QString rawbpstring = QString(QLatin1String(bpchar));
+                QByteArray rawbparray = rawbpstring.toLatin1();
+                QString bphash = QCryptographicHash::hash(rawbparray, QCryptographicHash::Sha256).toHex();
+
+                QString qUNKey = all_keys.value(QString("upload_username")).toString();
+                QByteArray qUNKeyBytes = qUNKey.toLatin1();
+                char *un_key = qUNKeyBytes.data();
+
+                QString username = Config.UserName;
+                QByteArray usernameArray = username.toLatin1();
+                char *unchar = usernameArray.data();
+                std::string unstring;
+                unstring.resize(strlen(unchar), '\0');
+                for (int i = 0, j = 0; i < strlen(unchar); i++) {
+                    unstring[i] = unchar[i] ^ un_key[j == strlen(un_key) ? 0 : j++];
+                }
+                QString uncode = QString::fromStdString(unstring);
+                QByteArray unarray = uncode.toLatin1();
+                uncode = unarray.toBase64();
+                QString rawunstring = QString(QLatin1String(unchar));
+                QByteArray rawunarray = rawunstring.toLatin1();
+                QString unhash = QCryptographicHash::hash(rawunarray, QCryptographicHash::Sha256).toHex();
+
+                QNetworkRequest request(QString("http://87ed293f-76a9-47bb-b9ad-c087c92f9447.coding.io/upload_bp.php"));
+                QString cont = QString("usernamex=%1&bpx=%2&username_hash=%3&bp_hash=%4").arg(uncode).arg(bpcode).arg(unhash).arg(bphash);
+                QByteArray contArray = cont.toLatin1();
+                char *contChar = contArray.data();
+                QNetworkAccessManager *manager = new QNetworkAccessManager(main_window);
+                QNetworkReply *reply = manager->post(request, contChar);
+                QEventLoop eventLoop;
+                connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+                eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
+                QByteArray replyData = reply->readAll();
+                QString replyString(replyData);
+                reply->deleteLater();
+                reply = nullptr;
+
+                //QMessageBox::warning(main_window, "Warning", replyString + "\nQt BP Base64: " + bpcode);
             }
         }
     } else {

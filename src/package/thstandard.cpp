@@ -3530,6 +3530,8 @@ public:
 		ServerPlayer *yamame = invoke->invoker;
 		ServerPlayer *to = invoke->preferredTarget;
 		if (event == DamageCaused) {
+			if (to->getMark("@spell") > 0)
+				room->removePlayerMark(to, "@spell", 1);
 			room->setPlayerFlag(to, "ZhangqiFlag");
 			return true;
 		} else if (event == ConfirmDamage) {
@@ -3559,7 +3561,6 @@ void THZhusiCard::onEffect(const CardEffectStruct &effect) const
 	Room *room = yamame->getRoom();
 	if (!to->isChained()) {
 		room->setPlayerProperty(to, "chained", true);
-		to->drawCards(1);
 	} else if (to->isChained()) {
 		room->setPlayerProperty(to, "chained", false);
 		int n = 0;

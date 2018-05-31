@@ -32,8 +32,8 @@ fengmo_skill.getTurnUseCard = function(self)
 					break
 				end
 			end
-			if (slash and reimu:needNoSpell(slash)) or not reimu:inMyAttackRange(p)
-				or slash == nil or reimu:getMark("@spell") > 1 then
+			if ((slash and reimu:needNoSpell(slash)) or not reimu:inMyAttackRange(p)
+				or slash == nil) and reimu:getMark("@spell") > 1 then
 				card_str = "@FengmoCard=."
 				break
 			end
@@ -75,7 +75,7 @@ fengmo_skill.getTurnUseCard = function(self)
 				break
 			end
 		end
-		if reimu:getMark("@spell") > self:getCardsNum("Slash") or not self:canAttack(p, reimu) or not reimu:inMyAttackRange(p) then
+		if reimu:getMark("@spell") > self:getCardsNum("Slash") and (not self:canAttack(p, reimu) or not reimu:inMyAttackRange(p)) then
 			card_str = "@FengmoCard=."
 			break
 		end
@@ -101,8 +101,8 @@ sgs.ai_skill_use_func.FengmoCard = function(card, use, self)
 					break
 				end
 			end
-			if (slash and reimu:needNoSpell(slash)) or not reimu:inMyAttackRange(p)
-				or slash == nil or reimu:getMark("@spell") > 1 then
+			if ((slash and reimu:needNoSpell(slash)) or not reimu:inMyAttackRange(p)
+				or slash == nil) and reimu:getMark("@spell") > 1 then
 				use.card = card
 				if use.to then use.to:append(p) end
 				return
@@ -120,7 +120,7 @@ sgs.ai_skill_use_func.FengmoCard = function(card, use, self)
 				return
 			end
 		end
-		if reimu:getMark("@spell") > self:getCardsNum("Slash") or not self:canAttack(p, reimu) or not reimu:inMyAttackRange(p) then
+		if reimu:getMark("@spell") > self:getCardsNum("Slash") and (not self:canAttack(p, reimu) or not reimu:inMyAttackRange(p)) then
 			use.card = card
 			if use.to then use.to:append(p) end
 			return
@@ -139,6 +139,11 @@ sgs.ai_skill_discard.fengmo2 = function(self, discard_num, optional, include_equ
 	local reimu_choice = self.player:getTag("FengmoReimuChoice"):toString()
 	local cards = sgs.QList2Table(self.player:getHandcards())
 	self:sortByKeepValue(cards)
+	if self.player:getMark("@spell") == 0 then
+		table.insert(discards, cards[1]:getEffectiveId())
+		table.insert(discards, cards[2]:getEffectiveId())
+		return discards
+	end
 	if reimu_choice == "LoseSpell" then
 		local peaches = self:getCardsNum("Peach")
 		local jinks = self:getCardsNum("Jink")
@@ -2338,6 +2343,9 @@ sgs.ai_skill_invoke.zhangqi = function(self, data)
 	local damage = data:toDamage()
 	local to = damage.to
 	if damage.damage >= to:getHp() then return false end
+	if not self:isWeak(to) and #self.enemies > #self.friends and self:isEnemy(to) and to:getMark("@spell") > 0 and self:hasWeakFriend() then
+		return true
+	end
 	local effective_friends = 0
 	for _, p in ipairs(self.friends_noself) do
 		if not self:willSkipPlayPhase(p) and p:faceUp() and not (self:willSkipDrawPhase(p) and p:isKongcheng())
@@ -2436,8 +2444,29 @@ sgs.ai_skill_use["@@thzhusi"] = function(self, prompt)
 		end
 	end
 	if #chained_enemies == 1 and not chained_enemies[1]:isNude() and (self:hasKeyEquip(chained_enemies[1])
-		or getKnownCard(chained_enemies[1], self.player, "Peach", true) > 0) then
+		or getKnownCard(chained_enemies[1], self.player, "Peach", true) > 0
+		or (self:isWeak(chained_enemies[1]) and chained_enemies[1]:getCards("he"):length() >= 2)) then
 		return chained_enemies[1]
+	end
+	if #chained_enemies == 1 then
+		self:sort(self.enemines, "defense")
+		for p in ipairs(self.enemines) do
+			if p:isChained() then continue end
+			local damage1 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Fire)
+			damage1 = self:touhouDamage(damage1, nil, p)
+			local damage2 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Thunder)
+			damage2 = self:touhouDamage(damage2, nil, p)
+			if math.max(damage1.damage, damage2.damage) >= 1 then return p end
+		end
+	end
+	if #chained_enemies == 2 then
+		for _, p in ipairs(chained_enemies) do
+			local damage1 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Fire)
+			damage1 = self:touhouDamage(damage1, nil, p)
+			local damage2 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Thunder)
+			damage2 = self:touhouDamage(damage2, nil, p)
+			if math.max(damage1.damage, damage2.damage) < 1 then return p end
+		end
 	end
 	if #chained_enemies > 2 then
 		for _, p in ipairs(chained_enemies) do

@@ -217,6 +217,7 @@ INCLUDEPATH += src/server
 INCLUDEPATH += src/ui
 INCLUDEPATH += src/util
 INCLUDEPATH += src/jsoncpp/include
+INCLUDEPATH += C:/OpenSSL-Win32/include
 
 win32{
     RC_FILE += resource/icon.rc
@@ -228,6 +229,8 @@ macx{
 
 
 LIBS += -L.
+LIBS += -L"C:/OpenSSL-Win32/lib" -llibcrypto
+LIBS += -L"C:/OpenSSL-Win32/lib" -llibssl
 win32-msvc*{
     DEFINES += _CRT_SECURE_NO_WARNINGS
     !contains(QMAKE_HOST.arch, x86_64) {
