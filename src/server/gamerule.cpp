@@ -631,6 +631,7 @@ bool GameRule::effect(TriggerEvent triggerEvent, Room *room, QSharedPointer<Skil
                 }
             }
         }
+
         break;
     }
     case CardEffected:

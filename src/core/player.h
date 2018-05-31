@@ -279,6 +279,10 @@ public:
     void clearCardLimitation(bool single_turn = false);
     bool isCardLimited(const Card *card, Card::HandlingMethod method, bool isHandcard = false) const;
 
+    double getBP() const;
+    void setBP(double bp);
+    void addBP(double bp);
+
     // just for convenience
     void addQinggangTag(const Card *card);
     void removeQinggangTag(const Card *card);
@@ -289,6 +293,8 @@ public:
     QList<const Player *> getAliveSiblings() const;
 
     QVariantMap tag;
+
+
 
 protected:
     QMap<QString, int> marks;
@@ -327,6 +333,8 @@ private:
     QHash<const Player *, int> fixed_distance;
 
     QMap<Card::HandlingMethod, QStringList> card_limitation;
+
+    double bp;
 
 signals:
     void general_changed();

@@ -1310,7 +1310,6 @@ void Client::gameOver(const QVariant &arg)
     foreach (const QVariant &role, args[1].value<JsonArray>())
         roles << role.toString();
 
-
     Q_ASSERT(roles.length() == players.length());
 
     for (int i = 0; i < roles.length(); i++) {

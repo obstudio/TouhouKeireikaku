@@ -98,3 +98,6 @@ d3dcompiler_47.dll
 /discussion.md
 /update.*
 /*.json
+/designations.txt
+src/util/aes.*
+src/util/testaes.*

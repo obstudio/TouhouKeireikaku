@@ -11,6 +11,7 @@ Player::Player(QObject *parent)
       phase(NotActive), weapon(NULL), armor(NULL), defensive_horse(NULL), offensive_horse(NULL), treasure(NULL),
       face_up(true), chained(false), initspell(1), neednospell(false)
 {
+    bp = 0;
 }
 
 void Player::setScreenName(const QString &screen_name)
@@ -1429,6 +1430,25 @@ bool Player::isCardLimited(const Card *card, Card::HandlingMethod method, bool i
     }
 
     return false;
+}
+
+double Player::getBP() const
+{
+    return bp;
+}
+
+void Player::setBP(double bp)
+{
+    this->bp = bp;
+    if (this->bp < 0)
+        this->bp = 0;
+}
+
+void Player::addBP(double bp)
+{
+    this->bp += bp;
+    if (this->bp < 0)
+        this->bp = 0;
 }
 
 void Player::addQinggangTag(const Card *card)

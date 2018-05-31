@@ -173,8 +173,7 @@ void ConnectionDialog::finishedSlot(QNetworkReply *)
             flag = true;
         }
     } else {
-        qDebug() << m_Reply->errorString();
-        QMessageBox::warning(this, tr("Warning"), tr("Fatal error occurred during request!"));
+        QMessageBox::warning(this, tr("Warning"), QString(tr("Fatal error occurred during request!\n%1")).arg(m_Reply->errorString()));
         flag = true;
     }
 
@@ -185,6 +184,7 @@ void ConnectionDialog::finishedSlot(QNetworkReply *)
     Config.setValue("UserName", Config.UserName);
     Config.setValue("HostAddress", Config.HostAddress);
     Config.setValue("EnableReconnection", ui->reconnectionCheckBox->isChecked());
+    Config.setValue("PCMode", false);
 
     accept();
 }

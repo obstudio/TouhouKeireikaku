@@ -71,6 +71,8 @@ public:
     ushort DetectorPort;
     int MaxCards;
 
+    bool PCMode;
+
     bool EnableHotKey;
     bool NeverNullifyMyTrick;
     bool EnableAutoTarget;
