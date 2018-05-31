@@ -194,6 +194,7 @@ HEADERS += \
     src/util/socket.h \
     src/util/downloadmanager.h \
     src/util/textprogressbar.h \
+    src/util/key.h \
     src/ui/choosetriggerorderbox.h \
     src/ui/graphicsbox.h \
     src/ui/lightboxanimation.h \
