@@ -13,7 +13,7 @@ Email: kouchyakun@outlook.com<br>
 
 *************************************
 
-Current version: 0.2.1 Alpha
+Current version: 0.2.2 Alpha
 
 *************************************
 
