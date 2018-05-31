@@ -21,6 +21,7 @@
 
 #include "bubblechatbox.h"
 #include "lightboxanimation.h"
+#include "key.h"
 
 #include <stdio.h>
 
@@ -3710,21 +3711,7 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
                 Self->addBP(qMin(reward, 45.00));
 
                 // upload BP for username: player->screenName()
-                QString dir = QDir::currentPath() + "/aes_keys.json";
-                if (!QFile::exists(dir))
-                    QMessageBox::warning(main_window, "Warning", "AES key file open failed!");
-                QFile file;
-                file.setFileName(QApplication::applicationDirPath() + "/aes_keys.json");
-                file.open(QIODevice::ReadOnly | QIODevice::Text);
-                QString val = file.readAll();
-                file.close();
-
-                QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
-                QJsonObject all_keys = doc.object();
-                QString qBPKey = all_keys.value(QString("upload_bp")).toString();
-                QByteArray qBPKeyBytes = qBPKey.toLatin1();
-                char *bp_key = qBPKeyBytes.data();
-
+                char *bp_key = (char *)EncryptKey::bp_key;
                 char bpchar[191];
                 sprintf(bpchar, "%d", (unsigned int)(Self->getBP() + 0.50));
                 std::string bpstring;
@@ -3739,10 +3726,7 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
                 QByteArray rawbparray = rawbpstring.toLatin1();
                 QString bphash = QCryptographicHash::hash(rawbparray, QCryptographicHash::Sha256).toHex();
 
-                QString qUNKey = all_keys.value(QString("upload_username")).toString();
-                QByteArray qUNKeyBytes = qUNKey.toLatin1();
-                char *un_key = qUNKeyBytes.data();
-
+                char *un_key = (char *)EncryptKey::un_key;
                 QString username = Config.UserName;
                 QByteArray usernameArray = username.toLatin1();
                 char *unchar = usernameArray.data();
