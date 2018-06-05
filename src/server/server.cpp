@@ -170,28 +170,28 @@ QWidget *ServerDialog::createAdvancedTab()
 	
     enable_cheat_checkbox = new QCheckBox(tr("Enable cheat"));
     enable_cheat_checkbox->setToolTip(tr("<font color=#FFFF33>This option enables the cheat menu</font>"));
-    //enable_cheat_checkbox->setChecked(Config.EnableCheat);
-    enable_cheat_checkbox->setChecked(false);
-    enable_cheat_checkbox->setEnabled(false);
+    enable_cheat_checkbox->setChecked(Config.EnableCheat);
+    //enable_cheat_checkbox->setChecked(false);
+    //enable_cheat_checkbox->setEnabled(false);
 
     free_choose_checkbox = new QCheckBox(tr("Choose generals and cards freely"));
-    //free_choose_checkbox->setChecked(Config.FreeChoose);
-    //free_choose_checkbox->setVisible(Config.EnableCheat);
-    free_choose_checkbox->setChecked(false);
-    free_choose_checkbox->setVisible(false);
+    free_choose_checkbox->setChecked(Config.FreeChoose);
+    free_choose_checkbox->setVisible(Config.EnableCheat);
+    //free_choose_checkbox->setChecked(false);
+    //free_choose_checkbox->setVisible(false);
 
     free_assign_checkbox = new QCheckBox(tr("Assign role and seat freely"));
-    //free_assign_checkbox->setChecked(Config.value("FreeAssign").toBool());
-    //free_assign_checkbox->setVisible(Config.EnableCheat);
-    free_assign_checkbox->setChecked(false);
-    free_assign_checkbox->setVisible(false);
+    free_assign_checkbox->setChecked(Config.value("FreeAssign").toBool());
+    free_assign_checkbox->setVisible(Config.EnableCheat);
+    //free_assign_checkbox->setChecked(false);
+    //free_assign_checkbox->setVisible(false);
 
     free_assign_self_checkbox = new QCheckBox(tr("Assign only your own role"));
-    //free_assign_self_checkbox->setChecked(Config.FreeAssignSelf);
+    free_assign_self_checkbox->setChecked(Config.FreeAssignSelf);
     free_assign_self_checkbox->setEnabled(free_assign_checkbox->isChecked());
-    //free_assign_self_checkbox->setVisible(Config.EnableCheat);
-    free_assign_self_checkbox->setChecked(false);
-    free_assign_self_checkbox->setVisible(false);
+    free_assign_self_checkbox->setVisible(Config.EnableCheat);
+    //free_assign_self_checkbox->setChecked(false);
+    //free_assign_self_checkbox->setVisible(false);
 
     connect(enable_cheat_checkbox, SIGNAL(toggled(bool)), free_choose_checkbox, SLOT(setVisible(bool)));
     connect(enable_cheat_checkbox, SIGNAL(toggled(bool)), free_assign_checkbox, SLOT(setVisible(bool)));

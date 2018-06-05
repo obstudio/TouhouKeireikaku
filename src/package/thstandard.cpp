@@ -3026,7 +3026,7 @@ public:
 				QVariant first_card_data = satori->tag["FangyingFirstCard"];
 				QVariant last_card_data = satori->tag["FangyingLastCard"];
 				bool can_first = false, can_last = false;
-                if (first_card_data != NULL) {
+                if (!first_card_data.isNull()) {
 					QString first_card_str = first_card_data.toString();
 					if (first_card_str != "") {
 						const Card *first_card = Sanguosha->cloneCard(first_card_str, Card::SuitToBeDecided, -1);
@@ -3044,7 +3044,7 @@ public:
 						}
 					}
 				}
-                if (last_card_data != NULL) {
+                if (!last_card_data.isNull()) {
 					QString last_card_str = last_card_data.toString();
 					if (last_card_str != "") {
 						const Card *last_card = Sanguosha->cloneCard(last_card_str, Card::SuitToBeDecided, -1);
@@ -3083,10 +3083,10 @@ public:
 			QVariant first_card_data = satori->tag["FangyingFirstCard"];
 			QVariant last_card_data = satori->tag["FangyingLastCard"];
 			QString first_card_str = "", last_card_str = "";
-			if (first_card_data != NULL) {
+			if (!first_card_data.isNull()) {
 				first_card_str = first_card_data.toString();
 			}
-			if (last_card_data != NULL) {
+			if (!last_card_data.isNull()) {
 				last_card_str = last_card_data.toString();
 			}
 			QStringList choices;
@@ -3144,7 +3144,7 @@ public:
 			CardUseStruct use = data.value<CardUseStruct>();
 			const Card *card = use.card;
 			QVariant first_card_data = satori->tag["FangyingFirstCard"];
-            if (first_card_data == NULL || first_card_data.toString() == "") {
+            if (first_card_data.isNull() || first_card_data.toString() == "") {
 				satori->tag["FangyingFirstCard"] = QVariant(card->objectName());
 			}
 			satori->tag["FangyingLastCard"] = QVariant(card->objectName());
