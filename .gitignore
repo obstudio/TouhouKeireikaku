@@ -103,3 +103,4 @@ src/util/aes.*
 src/util/testaes.*
 src/util/key.h
 src/util/encryptor.*
+/serverinfo.txt
