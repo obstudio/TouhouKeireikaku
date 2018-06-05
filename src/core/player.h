@@ -334,6 +334,7 @@ private:
 
     QMap<Card::HandlingMethod, QStringList> card_limitation;
 
+    int m_damage, m_damaged, m_kill, m_recover;
     double bp;
 
 signals:

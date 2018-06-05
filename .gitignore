@@ -102,3 +102,5 @@ d3dcompiler_47.dll
 src/util/aes.*
 src/util/testaes.*
 src/util/key.h
+src/util/encryptor.*
+/serverinfo.txt
