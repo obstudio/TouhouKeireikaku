@@ -602,6 +602,8 @@ void GeneralOverview::on_tableWidget_itemSelectionChanged()
     ui->originLineEdit->setText(getOriginInfo(general->objectName()));
 
     button_layout->addStretch();
+    /*QString intro_text = Sanguosha->translate("intro:" + general->objectName());
+    ui->skillTextEdit->append("<font color=#001c9d><b>" + intro_text + "<br></b></font>");*/
     ui->skillTextEdit->append(general->getSkillDescription(true, false));
     ui->changeGeneralButton->setEnabled(Self && Self->getGeneralName() != general->objectName());
 }
