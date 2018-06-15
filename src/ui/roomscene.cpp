@@ -3691,7 +3691,7 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         table->setItem(i, 3, item);
 
         item = new QTableWidgetItem;
-        QString text = player == Self ? QString::number((unsigned int)(player->getBP() + 0.5)) : "";
+        QString text = player == Self ? QString::number(player->property("bonus_point").toInt()) : "";
         item->setText(text);
         table->setItem(i, 4, item);
 

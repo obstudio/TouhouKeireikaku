@@ -288,7 +288,7 @@
     <message>
         <location filename="../src/client/client.cpp" line="993"/>
         <source>Do you want to use the luck card?</source>
-        <translation>你想使用手气卡吗？</translation>
+        <translation>你想使用手气卡吗（需要消耗 3 积分）？</translation>
     </message>
     <message>
         <location filename="../src/client/client.cpp" line="1030"/>
