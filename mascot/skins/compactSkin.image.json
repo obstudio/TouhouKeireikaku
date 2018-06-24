@@ -15,8 +15,8 @@
 "photoFrameWhenSelected": "image/compact/frame/photoSelected.png",
 
 "playerGeneralIcon-default-1": ["diorite/dandelion/bonito/urotopine/%1", [0, 0, 250, 291], [129, 150]],
-"playerGeneralIcon-default-4": ["diorite/dandelion/bonito/urotopine/%1", [70, 0, 124, 291], [64, 150]], //small avatar for photo
-"playerGeneralIcon-default-6": ["diorite/dandelion/bonito/urotopine/%1", [65, 0, 250, 291], [129, 150]],  //primary avatar for photo
+"playerGeneralIcon-default-4": ["diorite/dandelion/bonito/urotopine/%1", [70, 0, 124, 291], [64, 150]],
+"playerGeneralIcon-default-6": ["diorite/dandelion/bonito/urotopine/%1", [65, 0, 250, 291], [129, 150]],
 
 "generalCircleImage-0": "image/fullskin/compact/circle-compactphoto.png",
 "generalCircleMask-0": "deprecated",
