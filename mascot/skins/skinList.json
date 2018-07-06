@@ -9,7 +9,9 @@
 "compact":
 {
 "roomLayoutConfigFile": "skins/compactSkin.layout.json",
-"roomImageConfigFile": "skins/compactSkin.image.json"
+"roomImageConfigFile": "skins/compactSkin.image.json",
+"roomAudioConfigFile": "skins/defaultSkin.audio.json",
+"roomAnimationConfigFile": "skins/defaultSkin.animation.json"
 },
 "fulldefault":
 {
@@ -21,6 +23,8 @@
 "fullcompact":
 {
 "roomLayoutConfigFile": "skins/fullcompactSkin.layout.json",
-"roomImageConfigFile": "skins/fullcompactSkin.image.json"
+"roomImageConfigFile": "skins/fullcompactSkin.image.json",
+"roomAudioConfigFile": "skins/defaultSkin.audio.json",
+"roomAnimationConfigFile": "skins/defaultSkin.animation.json"
 }
 }
