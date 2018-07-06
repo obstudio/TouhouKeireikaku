@@ -63,7 +63,7 @@ void DownloadManager::append(const QUrl &url, QString loc)
 
 void DownloadManager::append(const QString &url_str, QString loc)
 {
-    QString url_full_str("http://thkrk.ob-studio.cn/mascot/");
+    QString url_full_str("https://thkrk.ob-studio.cn/mascot/");
     url_full_str += url_str;
     QUrl url = QUrl::fromEncoded(url_full_str.toLocal8Bit());
     QString filename = saveFileName(url);
@@ -213,6 +213,7 @@ void DownloadManager::startNextDownload()
         fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
                 qPrintable(filename), url.toEncoded().constData(),
                 qPrintable(output.errorString()));
+        QMessageBox::warning(NULL, "TouhouKeireikaku Warning", "Problem opening save file '" + filename + "' for download '" + url.toEncoded().constData() + "': " + output.errorString());
 
         startNextDownload();
         return;                 // skip this download
