@@ -183,7 +183,7 @@ void ConnectionDialog::finishedSlot(QNetworkReply *)
     }
     int status = statusCode.toInt();
     if (status != 200) {
-        QString reason = reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
+        QString reason = m_Reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
         QMessageBox::warning(this, tr("Warning"), QString(tr("Authentication failed!\nError code: %1")).arg(status));
         return;
     }
