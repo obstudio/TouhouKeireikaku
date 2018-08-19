@@ -218,8 +218,7 @@ sgs.ai_skill_invoke.guayu = function(self, data)
 			break
 		end
 	end
-	if self.player:getMark("@spell") > 0 and (self:getCardsNum("Slash") <= 0 or (slash and self.player:needNoSpell(slash))
-		or (slash and not self:hasSlashTarget(slash))) then
+	if self.player:getMark("@spell") > 0 and (self:getCardsNum("Slash") <= 0 or (slash and self.player:needNoSpell(slash)) or (slash and not self:hasSlashTarget(slash))) and reimu:getMark("@spell") <= 1 then
 		return true
 	end
 	return false
@@ -363,8 +362,8 @@ sgs.ai_skill_use_func.DaosheCard = function(card, use, self)
 	local room = self.room
 	if self:isWeak() and #self.friends_noself > 0 then
 		for _, p in ipairs(self.friends_noself) do
-			if p:getHandcardNum() == p:getHp() + 1 and self:getKnownCard(p, self.player, "Peach", false) > 0 and (not p:isWounded()
-					or (not self:isWeak(p) and p:getHp() >= 4) and self:getKnownCard(p, self.player, "Peach", true) < p:getHandcardNum()) then
+			if p:getHandcardNum() == p:getHp() + 1 and getKnownCard(p, self.player, "Peach", false) > 0 and (not p:isWounded()
+					or (not self:isWeak(p) and p:getHp() >= 4) and getKnownCard(p, self.player, "Peach", true) < p:getHandcardNum()) then
 				use.card = card
 				if use.to then use.to:append(p) end
 				self:speak("daoshe", self.player:isFemale())
@@ -375,7 +374,13 @@ sgs.ai_skill_use_func.DaosheCard = function(card, use, self)
 	if #self.enemies > 0 then
 		self:sort(self.enemies, "hp")
 		for _, p in ipairs(self.enemies) do
-			if p:getHandcardNum() == p:getHp() + 1 and getKnownCard(p, self.player, "Peach", true) then
+			local extra = 1
+			for _, kyouko in sgs.qlist(room:getOtherPlayers(p)) do
+				if self:isFriend(kyouko, p) and kyouko:hasSkill("huiyin") and kyouko:getHandcardNum() >= 2 then
+					extra = 0
+				end
+			end
+			if p:getHandcardNum() == p:getHp() + extra and getKnownCard(p, self.player, "Peach", true) then
 				use.card = card
 				if use.to then use.to:append(p) end
 				self:speak("daoshe", self.player:isFemale())
@@ -774,6 +779,7 @@ sgs.dynamic_value.damage_card.HeiyanCard = true
 sgs.ai_skill_cardask["@huiyin-discard"] = function(self, data)
 	local move = data:toMoveOneTime()
 	if not self:isFriend(move.from) then return "." end
+	if move.reason.m_skillName == "daoshe" and move.from:getHandcardNum() == move.from:getHp() - 1 then return "." end
 	local suit_list = {}
 	for _, id in sgs.qlist(move.card_ids) do
 		local c = sgs.Sanguosha:getCard(id)
@@ -2342,17 +2348,37 @@ sgs.ai_skill_invoke.zhangqi = function(self, data)
 
 	local damage = data:toDamage()
 	local to = damage.to
+	if to:getHp() - damage.damage >= getBestHp(to) and self:isEnemy(to) then
+		return true
+	end
 	if damage.damage >= to:getHp() then return false end
 	if not self:isWeak(to) and #self.enemies > #self.friends and self:isEnemy(to) and to:getMark("@spell") > 0 and self:hasWeakFriend() then
 		return true
+	end
+	if self:needToLoseHp(to, self.player) then
+		if self:isFriend(to) then
+			return false
+		end
+		if self:isEnemy(to) then
+			return true
+		end
 	end
 	local effective_friends = 0
 	for _, p in ipairs(self.friends_noself) do
 		if not self:willSkipPlayPhase(p) and p:faceUp() and not (self:willSkipDrawPhase(p) and p:isKongcheng())
 			and (((p:getHandcardNum() >= 3 or getKnownCard(p, self.player, "Slash", true) > 0) and p:inMyAttackRange(to)
-			and p:canSlash(to)) or getKnownCard(p, self.player, "Duel") + getKnownCard(p, self.player, "SavageAssault", true)
-			+ getKnownCard(p, self.player, "ArcheryAttack", true) + getKnownCard(p, self.player, "FireAttack", true) > 0) then
+			and p:canSlash(to)) or getKnownCard(p, self.player, "Duel", true) + getKnownCard(p, self.player, "SavageAssault", true)
+			+ getKnownCard(p, self.player, "ArcheryAttack", true) + getKnownCard(p, self.player, "FireAttack", true) > 0 or (getKnownCard(p, self.player, "PhoenixFlame", true) > 0 and to:inMyAttackRange(p) and to:getHandcardNum() <= self:getKnownNum(to) and getKnownCard(to, self.player, "Slash", true) <= 0)) then
 			effective_friends = effective_friends + 1
+			if (p:getHandcardNum() >= 3 or getKnownCard(p, self.player, "Slash", true) > 0) and p:inMyAttackRange(to) and p:canSlash(to) and (self:isVeryWeak() or (getKnownCard(to, self.player, "Jink", true) <= 0 and to:getHandcardNum() == self:getKnownNum(to))) then
+				effective_friends = effective_friends + 1
+			end
+			if getKnownCard(p, self.player, "PhoenixFlame", true) > 0 and to:inMyAttackRange(p) and to:getHandcardNum() <= self:getKnownNum(to) and getKnownCard(to, self.player, "Slash", true) <= 0 then
+				effective_friends = effective_friends + 1
+			end
+			if getKnownCard(p, self.player, "Duel", true) > 0 and ((getKnownCard(to, self.player, "Slash", true) <= getKnownCard(p, self.player, "Slash", true) and (to:getHandcardNum() == getKnownCard(to) or to:getHandcardNum() <= getKnownCard(p, self.player, "Slash", true))) or to:getHandcardNum() <= p:getHandcardNum() - 2) then
+				effective_friends = effective_friends + 1
+			end
 		end
 	end
 	if effective_friends == 0 then return false end
@@ -2390,7 +2416,7 @@ sgs.ai_skill_invoke.zhangqi = function(self, data)
 			if not self.room:isProhibited(self.player, to, c) and c:targetFilter(to, sgs.PlayerList(), self.player)
 				and not self:hasUnknownCard(to) then
 				local have_all = true
-				for _, c in ipairs(self:getKnownCard(to)) do
+				for _, c in ipairs(self:getKnownCards(to)) do
 					local have_this_suit = false
 					for _, c2 in sgs.qlist(self.player:getHandcards()) do
 						if c:getSuit() == c2:getSuit() then
@@ -2414,12 +2440,12 @@ sgs.ai_skill_use["@@thzhusi"] = function(self, prompt)
 	self:sort(self.friends, "hp")
 	for _, p in ipairs(self.friends) do
 		if p:isChained() and p:isWounded() and p:hasArmorEffect("SilverLion") then
-			return p
+			return "@THZhusiCard=.->" .. p:objectName()
 		end
 	end
 	for _, p in ipairs(self.friends) do
-		if p:isChained() and p:isNude() then
-			return p
+		if p:isChained() and (p:isNude() or (p:getCards("he"):length() == 1 and p:getArmor() and p:getArmor():isKindOf("Vine"))) then
+			return "@THZhusiCard=.->" .. p:objectName()
 		end
 	end
 	self:sort(self.enemies, "defense")
@@ -2427,9 +2453,9 @@ sgs.ai_skill_use["@@thzhusi"] = function(self, prompt)
 	d = 1
 	for _, p in ipairs(self.enemies) do
 		if p:isChained() then continue end
-		local damage1 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Fire)
+		local damage1 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Fire)
 		damage1 = self:touhouDamage(damage1, nil, p)
-		local damage2 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Thunder)
+		local damage2 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Thunder)
 		damage2 = self:touhouDamage(damage2, nil, p)
 		if math.max(damage1.damage, damage2.damage) > d then
 			d = math.max(damage1.damage, damage2.damage)
@@ -2446,39 +2472,49 @@ sgs.ai_skill_use["@@thzhusi"] = function(self, prompt)
 	if #chained_enemies == 1 and not chained_enemies[1]:isNude() and (self:hasKeyEquip(chained_enemies[1])
 		or getKnownCard(chained_enemies[1], self.player, "Peach", true) > 0
 		or (self:isWeak(chained_enemies[1]) and chained_enemies[1]:getCards("he"):length() >= 2)) then
-		return chained_enemies[1]
+		return "@THZhusiCard=.->" .. chained_enemies[1]:objectName()
 	end
 	if #chained_enemies == 1 then
-		self:sort(self.enemines, "defense")
-		for p in ipairs(self.enemines) do
+		self:sort(self.enemies, "defense")
+		for _, p in ipairs(self.enemies) do
 			if p:isChained() then continue end
-			local damage1 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Fire)
+			local damage1 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Fire)
 			damage1 = self:touhouDamage(damage1, nil, p)
-			local damage2 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Thunder)
+			local damage2 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Thunder)
 			damage2 = self:touhouDamage(damage2, nil, p)
-			if math.max(damage1.damage, damage2.damage) >= 1 then return p end
+			if math.max(damage1.damage, damage2.damage) >= 1 then
+				return "@THZhusiCard=.->" .. p:objectName()
+			end
 		end
 	end
 	if #chained_enemies == 2 then
 		for _, p in ipairs(chained_enemies) do
-			local damage1 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Fire)
+			if p:isNude() then continue end
+			local damage1 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Fire)
 			damage1 = self:touhouDamage(damage1, nil, p)
-			local damage2 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Thunder)
+			local damage2 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Thunder)
 			damage2 = self:touhouDamage(damage2, nil, p)
-			if math.max(damage1.damage, damage2.damage) < 1 then return p end
+			if math.max(damage1.damage, damage2.damage) < 1 then
+				return "@THZhusiCard=.->" .. p:objectName()
+			end
 		end
 	end
 	if #chained_enemies > 2 then
 		for _, p in ipairs(chained_enemies) do
-			local damage1 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Fire)
+			if p:isNude() then continue end
+			local damage1 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Fire)
 			damage1 = self:touhouDamage(damage1, nil, p)
-			local damage2 = sgs.DamageStruct("thzhusi", nil, p, 1, sgs.DamageStruct_Thunder)
+			local damage2 = sgs.DamageStruct(nil, nil, p, 1, sgs.DamageStruct_Thunder)
 			damage2 = self:touhouDamage(damage2, nil, p)
-			if math.max(damage1.damage, damage2.damage) <= 1 then return p end
+			if math.max(damage1.damage, damage2.damage) <= 1 then
+				return "@THZhusiCard=.->" .. p:objectName()
+			end
 		end
 	end
 	for _, p in ipairs(self.enemies) do
-		if not p:isChained() then return p end
+		if not p:isChained() then
+			return "@THZhusiCard=.->" .. p:objectName()
+		end
 	end
 	return "."
 end
@@ -2887,12 +2923,11 @@ sgs.ai_use_value.CitanCard = 7.2
 sgs.dynamic_value.damage_card.CitanCard = true
 sgs.dynamic_value.control_card.CitanCard = true
 
-sgs.ai_chaofeng.marisa = 3
-sgs.ai_chaofeng.aya = 4
-sgs.ai_chaofeng.cirno = 2
-sgs.ai_chaofeng.remilia = 4
-sgs.ai_chaofeng.kyouko = 3
+sgs.ai_chaofeng.aya = 3
+sgs.ai_chaofeng.cirno = 1
+sgs.ai_chaofeng.pachouli = 2
 sgs.ai_chaofeng.kanako = 4
-sgs.ai_chaofeng.koishi = 3
-sgs.ai_chaofeng.mystia = 5
+sgs.ai_chaofeng.satori = 2
+sgs.ai_chaofeng.koishi = 2
+sgs.ai_chaofeng.mystia = 4
 sgs.ai_chaofeng.tewi = 3

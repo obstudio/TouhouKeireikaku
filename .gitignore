@@ -95,13 +95,13 @@ d3dcompiler_47.dll
 /.qmake.*
 /todo.txt
 /design_organize.txt
+/design_plans.txt
 /discussion.md
 /update.*
-/*.json
+/aes_keys.json
 /designations.txt
 src/util/aes.*
 src/util/testaes.*
-src/util/key.h
 src/util/encryptor.*
 /serverinfo.txt
 /*.xlsx

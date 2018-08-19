@@ -357,6 +357,20 @@ function sgs.getDefenseSlash(player, self)
 		defense = defense - math.max(6, (sgs.ai_chaofeng[player:getGeneralName()] or 0)) * 0.035
 	end
 
+	if player:hasFlag("ZhangqiFlag") then
+		defense = defense - 2.6
+		if self and self:isWeak(player) then
+			defense = defense - 2
+		end
+		if knownJink == 0 and not hasEightDiagram then
+			defense = defense - 3
+		end
+	end
+
+	if player:getMark("@philosopher") > 0 and player:getMark("@fire") * player:getMark("@water") * player:getMark("@wood") * player:getMark("@gold") * player:getMark("@earth") > 0 then
+		defense = defense - 5
+	end
+
 	if not player:faceUp() then defense = defense - 0.35 end
 
 	if player:containsTrick("indulgence") and not player:containsTrick("YanxiaoCard") then defense = defense - 0.15 end

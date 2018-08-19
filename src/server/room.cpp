@@ -15,6 +15,7 @@
 #include "structs.h"
 #include "miniscenarios.h"
 #include "audio.h"
+#include "encryptor.h"
 
 #include <QStringList>
 #include <QMessageBox>
@@ -546,7 +547,7 @@ void Room::gameOver(const QString &winner)
 
     //QHostInfo vHostInfo = QHostInfo::fromName(QHostInfo::localHostName());
     //QList<QHostAddress> vAddressList = vHostInfo.addresses();
-    if (Config.HostAddress == "140.143.132.93") {
+    if (Config.HostAddress == "142.93.20.189") {
         QHostInfo host = QHostInfo::fromName("www.baidu.com");
         if (host.error() == QHostInfo::NoError) {
             qDebug() << "Connected to the Internet." << endl;
@@ -2423,13 +2424,13 @@ QString Room::post(QString url, QString cont) {
 
 QString Room::uploadBP(QString username, int bp) {
     QString url("https://87ed293f-76a9-47bb-b9ad-c087c92f9447.coding.io/upload_bp.php");
-    QString cont = QString("username=%1&bp=%2").arg(username).arg(QString::number(bp));
+    QString cont = QString("username=%1&bp=%2&password=%3").arg(username).arg(QString::number(bp)).arg(Encryptor_PHP_Password);
     return post(url, cont);
 }
 
 int Room::downloadBP(QString username) {
     QString url("https://87ed293f-76a9-47bb-b9ad-c087c92f9447.coding.io/download_bp.php");
-    QString cont = QString("username=%1").arg(username);
+    QString cont = QString("username=%1&password=%2").arg(username).arg(Encryptor_PHP_Password);
     QString replyString = post(url, cont);
     bool bp_valid;
     int bp = replyString.toInt(&bp_valid);
@@ -5335,7 +5336,7 @@ void Room::askForLuckCard()
         foreach (ServerPlayer *player, m_players) {
             if (!player->getAI()) {
                 // judge whether player has enough BP to use luck card
-                if (Config.HostAddress == "140.143.132.93") {
+                if (Config.HostAddress == "142.93.20.189") {
                     int bp = downloadBP(player->screenName());
                     if (bp < 3) continue;
                 }
@@ -5362,7 +5363,7 @@ void Room::askForLuckCard()
             const QVariant &clientReply = player->getClientReply();
             if (!player->m_isClientResponseReady || !JsonUtils::isBool(clientReply) || !clientReply.toBool())
                 continue;
-            if (Config.HostAddress == "140.143.132.93") {
+            if (Config.HostAddress == "142.93.20.189") {
                 QString bp_cost_info = uploadBP(player->screenName(), -3);
                 if (bp_cost_info != "Successfully uploaded.") {
                     qDebug() << player->screenName() + " failed to use luck card." << endl;

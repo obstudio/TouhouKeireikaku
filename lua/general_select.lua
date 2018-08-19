@@ -152,13 +152,15 @@ selectFirst = function(player, candidates) -- string
 
 	local weak_lords = {
 		"marisa",
-		"remilia",
+		"suika",
 		"kyouko",
 		"alice",
-		"kanako",
-		"suwako",
+		"koishi",
 		"mystia",
+		"yamame",
 		"minoriko",
+		"tewi",
+		"iku"
 	}
 	
 	local seat_place
