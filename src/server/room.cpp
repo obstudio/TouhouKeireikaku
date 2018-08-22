@@ -2423,13 +2423,13 @@ QString Room::post(QString url, QString cont) {
 }
 
 QString Room::uploadBP(QString username, int bp) {
-    QString url("https://thkrk.ob-studio.cn/upload_bp.php");
+    QString url("https://thkrk.ob-studio.cn/upload_bp");
     QString cont = QString("username=%1&bp=%2&password=%3").arg(username).arg(QString::number(bp)).arg(Encryptor_PHP_Password);
     return post(url, cont);
 }
 
 int Room::downloadBP(QString username) {
-    QString url("https://thkrk.ob-studio.cn/download_bp.php");
+    QString url("https://thkrk.ob-studio.cn/download_bp");
     QString cont = QString("username=%1&password=%2").arg(username).arg(Encryptor_PHP_Password);
     QString replyString = post(url, cont);
     bool bp_valid;
