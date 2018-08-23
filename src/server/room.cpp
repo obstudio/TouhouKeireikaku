@@ -5337,8 +5337,8 @@ void Room::askForLuckCard()
             if (!player->getAI()) {
                 // judge whether player has enough BP to use luck card
                 if (Config.HostAddress == "142.93.20.189") {
-                    //int bp = downloadBP(player->screenName());
-                    int bp = 10000;
+                    int bp = downloadBP(player->screenName());
+                    //int bp = 10000;
                     if (bp < 3) continue;
                 }
                 
@@ -5364,13 +5364,13 @@ void Room::askForLuckCard()
             const QVariant &clientReply = player->getClientReply();
             if (!player->m_isClientResponseReady || !JsonUtils::isBool(clientReply) || !clientReply.toBool())
                 continue;
-            /*if (Config.HostAddress == "142.93.20.189") {
+            if (Config.HostAddress == "142.93.20.189") {
                 QString bp_cost_info = uploadBP(player->screenName(), -3);
                 if (bp_cost_info != "Successfully uploaded.") {
                     qDebug() << player->screenName() + " failed to use luck card." << endl;
                     continue;
                 }
-            }*/
+            }
 
             used << player;
         }
