@@ -5185,7 +5185,7 @@ void RoomScene::setLordBackdrop(QString lord)
     if (lord_name == NULL)
         lord_name = Self->getGeneralName();
     if (changeBackdrop)
-        image_path = "backdrop/" + lord_name + ".jpg";
+        image_path = "backdrop/" + Sanguosha->translate("scene:" + lord_name) + ".jpg";
 
     if ((image_path != NULL) && QFile::exists(image_path))
         changeTableBg(image_path);
