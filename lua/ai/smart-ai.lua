@@ -34,6 +34,25 @@ sgs.ai_keep_value =         {}
 sgs.ai_use_value =          {}
 sgs.ai_use_priority =       {}
 sgs.ai_suit_priority =      {}
+--[[
+chaofeng-rank relation list:
+E-:		<= -5.2
+E:		(-5.2, -3.8]
+E+:		(-3.8, -3.55]
+D-:		(-3.55, -3.3]
+D:		(-3.3, -1.4]
+D+:		(-1.4, -1.15]
+C-:		(-1.15, -0.9]
+C:		(-0.9, 0.9]
+C+:		(0.9, 1.12]
+B-:		(1.12, 1.2]
+B:		(1.2, 3]
+B+:		(3, 3.27]
+A-:		(3.27, 3.53]
+A:		(3.53, 6]
+A+:		(6, 8]
+S:		> 8
+]]--
 sgs.ai_chaofeng =           {}
 sgs.ai_global_flags =       {}
 sgs.ai_skill_invoke =       {}
@@ -374,6 +393,7 @@ function sgs.getDefense(player, gameProcess)
 
 	if player:hasSkills("tuntian+zaoxian") then defense = defense + player:getHandcardNum() * 0.4 end
 	if player:hasSkill("aocai") and player:getPhase() == sgs.Player_NotActive then defense = defense + 0.3 end
+	if player:hasSkill("wosui") and player:isKongcheng() and not (player:getArmor() and player:getArmor():isKindOf("EightDiagram")) and player:getPile("wooden_ox"):isEmpty() then defense = defense - 4 end
 	if player:hasSkill("anyun") then defense = defense + 0.8 end
 	if attacker or gameProcess then
 		local m = sgs.masochism_skill:split("|")
@@ -415,8 +435,9 @@ function sgs.getDefense(player, gameProcess)
 		if sgs.isLordInDanger() then defense = defense - 0.7 end
 	end
 
-	if not gameProcess and (sgs.ai_chaofeng[player:getGeneralName()] or 0) >= 3 then
-		defense = defense - math.max(6, (sgs.ai_chaofeng[player:getGeneralName()] or 0)) * 0.035
+	-- TouhouKeireikaku: remove condition chaofeng >= 3, remove maximum chaofeng that effects the reduction to defense, change coefficient from 0.035 to 0.3
+	if not gameProcess then
+		defense = defense - (sgs.ai_chaofeng[player:getGeneralName()] or 0) * 0.3
 	end
 
 	if not player:faceUp() then defense = defense - 0.35 end
@@ -428,7 +449,7 @@ function sgs.getDefense(player, gameProcess)
 	end
 
 	if player:getMark("@philosopher") > 0 and player:getMark("@fire") * player:getMark("@water") * player:getMark("@wood") * player:getMark("@gold") * player:getMark("@earth") > 0 then
-		defense = defense - 5
+		defense = defense - 10
 	end
 	
 	if player:hasSkill("maoyou") then
@@ -8558,6 +8579,16 @@ function SmartAI:cantbeHurt(player, from, damageNum)
 	if player:hasSkill("diaoou") and not player:isKongcheng() and player:getHp() + x > damageNum then
 		for _, p in sgs.qlist(self.room:getAlivePlayers()) do
 			if p:getMark("@ningyou") > 0 and not self:needToLoseHp(p) and (self:isWeak(p) or self:isWeakerThan(p, player)) and self:isFriend(from, p) then
+				return true
+			end
+		end
+	end
+	if player:hasSkill("suiwa") and player:getHp() + x > damageNum then
+		for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+			if p:getArmor() and p:getArmor():isKindOf("SilverLion") then
+				return true
+			end
+			if p:getArmor() and p:objectName() ~= player:objectName() and player:getArmor() == nil then
 				return true
 			end
 		end

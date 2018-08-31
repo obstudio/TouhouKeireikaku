@@ -2842,7 +2842,7 @@ citan_skill.getTurnUseCard = function(self)
 	for _, c in ipairs(cards) do
 		if c:isKindOf("Peach") then
 			return
-		elseif c:isKindOf("Analeptic") then
+		elseif c:isKindOf("Analeptic") or c:isKindOf("Jink") then
 			local all_weak = true
 			for _, p in ipairs(self.enemies) do
 				if not self:isWeak(p) then
@@ -2902,11 +2902,11 @@ sgs.ai_skill_use_func.CitanCard = function(card, use, self)
 				return
 			end
 		end
-		for _, p in ipairs(self.friends) do
+		for _, p in ipairs(self.friends_noself) do
 			local damage = self:touhouDamage(sgs.DamageStruct("citan", self.player, p, 1, sgs.DamageStruct_Thunder), self.player, p)
 			if damage.damage == 0 then continue end
 			if p:getHandcardNum() <= self.player:getHandcardNum() and math.abs(self.player:getHandcardNum() - p:getHandcardNum()) <= self.player:getLostHp()
-					and self:needToLoseHp(p) then
+					and self:needToLoseHp(p) and p:getHp() - damage.damage >= getBestHp(p) then
 				use.card = card
 				if use.to then
 					sgs.updateIntention(self.player, p, -80)
@@ -2923,11 +2923,19 @@ sgs.ai_use_value.CitanCard = 7.2
 sgs.dynamic_value.damage_card.CitanCard = true
 sgs.dynamic_value.control_card.CitanCard = true
 
-sgs.ai_chaofeng.aya = 3
-sgs.ai_chaofeng.cirno = 1
-sgs.ai_chaofeng.pachouli = 2
-sgs.ai_chaofeng.kanako = 4
-sgs.ai_chaofeng.satori = 2
-sgs.ai_chaofeng.koishi = 2
-sgs.ai_chaofeng.mystia = 4
-sgs.ai_chaofeng.tewi = 3
+sgs.ai_chaofeng.marisa = 2.24
+sgs.ai_chaofeng.suika = 1.37
+sgs.ai_chaofeng.cirno = 3.86
+sgs.ai_chaofeng.remilia = 1.19
+sgs.ai_chaofeng.flandre = -2.13
+sgs.ai_chaofeng.kyouko = 1.75
+sgs.ai_chaofeng.nitori = 5.32
+sgs.ai_chaofeng.pachouli = 9.33
+sgs.ai_chaofeng.kanako = 4.48
+sgs.ai_chaofeng.suwako = -1.62
+sgs.ai_chaofeng.satori = 0.36
+sgs.ai_chaofeng.koishi = 3.15
+sgs.ai_chaofeng.mystia = 3.93
+sgs.ai_chaofeng.minoriko = 2.38
+sgs.ai_chaofeng.tewi = 3.02
+sgs.ai_chaofeng.iku = 1.66
