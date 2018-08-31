@@ -197,7 +197,7 @@ return{
 	["#letty"] = "寒冬之神",
 	["designer:letty"] = "Kouchya",
 	["illustrator:letty"] = "粟",
-	["scene:letty"] = "winter"
+	["scene:letty"] = "lake"
 	["xuebeng"] = "雪崩",
 	[":xuebeng"] = "当你受到一点伤害时，你可以摸一张牌，然后将牌堆顶一张牌置于你的武将牌上，称为“雪”。结束阶段，若你的武将牌上有“雪”，你将其中一张收入手牌。",
 	["snow"] = "雪",
@@ -304,7 +304,7 @@ return{
 	["#yamame"] = "洞穴的毒蛛",
 	["designer:yamame"] = "githubshn, Kouchya",
 	["illustrator:yamame"] = "ペンギn",
-	["scene:yamame"] = "cave",
+	["scene:yamame"] = "kyuuto",
 	["zhangqi"] = "瘴气",
 	[":zhangqi"] = "你对其他角色造成伤害时，若你本轮没有对其发动过“瘴气”，你可以防止此伤害。若如此做，其失去一张符卡，且直到你下个回合开始前，该角色受到的伤害视为火焰伤害且+1。",
 	["#ZhangqiDamage"] = "%from 的 %arg 被触发，%to 受到的伤害变为 %arg2 点",
