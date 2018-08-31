@@ -3994,7 +3994,7 @@ CitanCard::CitanCard()
 
 bool CitanCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
 {
-	return targets.isEmpty() && to_select != Self && qAbs(Self->getHandcardNum() - to_select->getHandcardNum() <= Self->getLostHp())
+	return targets.isEmpty() && to_select != Self && qAbs(Self->getHandcardNum() - to_select->getHandcardNum()) <= Self->getLostHp()
 		&& Self->getHandcardNum() + to_select->getHandcardNum() >= 1;
 }
 

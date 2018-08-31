@@ -13,7 +13,7 @@ Email: kouchyakun@outlook.com<br>
 
 *************************************
 
-Current version: 0.2.3 Alpha
+Current version: 0.2.4 Alpha
 
 *************************************
 
@@ -49,24 +49,6 @@ Make sure that swig/sanguosha_wrap.cxx exists, and then open the .pro file in QT
 
 Acknowledgements:
 
-The persons listed below are appreciated who have made considerable and significant contributions to this project:<br>
+The persons listed below are appreciated who have made significant contributions to this project:<br>
 	Mogara - The author of QSanguosha.<br>
 	lwtmusou - The author of TouhouKill.<br>
-
-The persons listed below are appreciated who have helped me a lot with my coding problems in Tieba:<br>
-	独孤安河<br>
-	youko1316<br>
-	myetyet<br>
-	Yajin°<br>
-	xtfnfhvzzv<br>
-	czb0598<br>
-	doublebit<br>
-
-What is more, we shall express my gratitude and apology to the illustrators of the raw images of the generals and cards, whose names are
-presented in illustrators.xlsx. Since we do not have a single illustrator in our studio, we have to pick the pictures from Pixiv and some
-other websites without being authorized. We are sorry for arbitrarily using those illustrators' works in this program, and we promise that
-this program is never to be used for commercial purposes.
-
-
-
-	

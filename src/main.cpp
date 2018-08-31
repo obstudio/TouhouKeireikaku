@@ -207,6 +207,7 @@ int main(int argc, char *argv[])
             }
 
             manager.append("download.json", pro_dir);
+            //QMessageBox::warning(NULL, "TouhouKeireikaku Warning", "Pro download failed!");
 
             QObject::connect(&manager, SIGNAL(finished()), qApp, SLOT(quit()));
             qApp->exec();

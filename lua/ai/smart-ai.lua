@@ -11,7 +11,7 @@ math.randomseed(os.time())
 SmartAI = (require "middleclass").class("SmartAI")
 
 --original_version = "QSanguosha AI 20140901 (V1.414213562 Alpha)"
-version = "TouhouKeireikaku AI 20180126"
+version = "TouhouKeireikaku AI 20180714"
 
 
 
@@ -34,6 +34,25 @@ sgs.ai_keep_value =         {}
 sgs.ai_use_value =          {}
 sgs.ai_use_priority =       {}
 sgs.ai_suit_priority =      {}
+--[[
+chaofeng-rank relation list:
+E-:		<= -5.2
+E:		(-5.2, -3.8]
+E+:		(-3.8, -3.55]
+D-:		(-3.55, -3.3]
+D:		(-3.3, -1.4]
+D+:		(-1.4, -1.15]
+C-:		(-1.15, -0.9]
+C:		(-0.9, 0.9]
+C+:		(0.9, 1.12]
+B-:		(1.12, 1.2]
+B:		(1.2, 3]
+B+:		(3, 3.27]
+A-:		(3.27, 3.53]
+A:		(3.53, 6]
+A+:		(6, 8]
+S:		> 8
+]]--
 sgs.ai_chaofeng =           {}
 sgs.ai_global_flags =       {}
 sgs.ai_skill_invoke =       {}
@@ -121,21 +140,25 @@ sgs.fake_rebel_players = {}
 	！！！请使用这种技能名框：【】
 
 	东方启灵阁：
-	masochism: 【圣枪】【吊偶】【雪崩】【心眼】【幻睨】【半灵】【绯想】【妒欲】【承诏】【腐疗】【梭针】【解语】
+	masochism: 【圣曜】【吊偶】【雪崩】【开海】【祟蛙】【心眼】【幻睨】【半灵】【绯想】【妒欲】【承诏】【腐疗】
+			【梭针】【解语】
 	wizard: 【强运】【觅春】【道禳】【月铳】
-	priority: 【封魔】【盗摄】【皇炎】【暗机】【御柱】【断念】【魂曲】
+	priority: 【封魔】【盗摄】【冰瀑】【誓灵】【回音】【粼殇】【圣曜】【妖风】【御柱】【心眼】【断念】【魂曲】
+			【残叶】【土祭】【强运】【加护】
 			【龙钻】【花舞】【归桥】【煽仇】
 			【远摄】【伎舞】【探囊】【广戒】【经阁】【教免】【梭针】【裂帛】【妖书】【丸杵】【鹰弹】
 			【念力】【入幻】【恫吓】【灭理】【诱亡】【凿壁】
 	save: 【尸魂】
-	cardneed: 【封魔】【射月】【快照】【冰瀑】【圣血】【黑炎】【回音】【水幕】【吊偶】【暗机】【赤蛙】【仿影】
+	cardneed: 【封魔】【盗摄】【冰瀑】【黑炎】【回音】【燃灰】【点金】【震垒】【皇炎】【吊偶】【暗机】【仿影】
 			【断念】【土祭】【强运】【幻睨】【结界】【猫又】【核熔】【魔镰】【龙钻】【流月】【妖刀】【巨浪】
 			【纵火】【花舞】【归桥】【疾杀】【谛闻】【远摄】【惑云】【饰面】【罔界】【月蚀】【灵摆】【广戒】
 			【卷灵】【经阁】【永夜】【易月】【梭针】【丸杵】【恫吓】【凿壁】
 	drawpeach: 【弦波】【玉枝】【摄魂】【远摄】【犯逆】【永夜】
-	recover: 【魂曲】【圣血】【磁探】【猫又】【玉枝】【半灵】【金磐】【神泉】【妒欲】【谛闻】【摄魂】【腐疗】
+	recover: 【圣血】【粼殇】【角笛】【御柱】【金轮】【祟蛙】【仿影】【魂曲】【磁探】【猫又】【玉枝】【半灵】
+			【金磐】【神泉】【妒欲】【谛闻】【摄魂】【腐疗】
 			【罔界】【花影】【灵摆】【羽霓】【珍灵】【永夜】【丸杵】【入幻】【夜雨】
-	use_lion: 【原器】【快晴】【猫又】【魔镰】【流月】【巨浪】【诱导】【远摄】【饰面】【梭针】【丸杵】【念力】
+	use_lion: 【盗摄】【回音】【燃灰】【吊偶】【祟蛙】【原器】【快晴】【猫又】【魔镰】【流月】【巨浪】【诱导】
+			【远摄】【饰面】【梭针】【丸杵】【念力】
 	need_equip: 【原器】【丸杵】
 	judge_reason: 【加护】【星尘】【凋风】【奇迹】【绵弦】【赎罪】【飞刀】【惑云】【花影】【羽霓】
 	attackRange: 【冰瀑】【核熔】
@@ -148,7 +171,7 @@ function setInitialTables()
 	sgs.need_kongcheng = "lianying|kongcheng"
 	sgs.masochism_skill =       "guixin|yiji|fankui|jieming|xuehen|neoganglie|ganglie|vsganglie|enyuan|fangzhu|nosenyuan|langgu|quanji|" ..
 						"zhiyu|renjie|tanlan|tongxin|huashen|" ..
-						"diaoou|xuebeng|suiwa|xinyan|huanni|thbanling|feixiang|zhouyuan|chengzhao|fuliao|suozhen|jieyu"
+						"shengyao|diaoou|xuebeng|kaihai|suiwa|xinyan|huanni|thbanling|feixiang|zhouyuan|chengzhao|fuliao|suozhen|jieyu"
 	sgs.wizard_skill =      "guicai|guidao|jilve|tiandu|luoying|noszhenlie|" ..
 						"qiangyun|michun|daorang|yuechong"
 	sgs.wizard_harm_skill =     "guicai|guidao|jilve|" ..
@@ -157,7 +180,7 @@ function setInitialTables()
 	sgs.priority_skill =        "dimeng|haoshi|qingnang|nosjizhi|jizhi|guzheng|qixi|jieyin|guose|duanliang|jujian|fanjian|neofanjian|lijian|" ..
 						"noslijian|manjuan|tuxi|qiaobian|yongsi|zhiheng|luoshen|nosrende|rende|mingce|wansha|gongxin|jilve|anxu|" ..
 						"qice|yinling|qingcheng|houyuan|zhaoxin|shuangren|" ..
-						"fengmo|daoshe|huangyan|anji|yuzhu|duannian|hunqu|" ..
+						"fengmo|daoshe|bingpu|shiling|huiyin|linshang|shengyao|yaofeng|yuzhu|xinyan|fangying|duannian|hunqu|canye|tuji|qiangyun|jiahu|" ..
 						"longzuan|huawu|guiqiao|shanchou|jiwu|yuanshe|tannang|guangjie|jingge|jiaomian|suozhen|" ..
 						"liebo|yaoshu|wanchu|yingdan|nianli|ruhuan|donghe|mieli|youwang|zaobi"
 	sgs.save_skill =        "jijiu|buyi|nosjiefan|chunlao|hezhou|" ..
@@ -167,24 +190,25 @@ function setInitialTables()
 	sgs.cardneed_skill =        "paoxiao|tianyi|xianzhen|shuangxiong|nosjizhi|jizhi|guose|duanliang|qixi|qingnang|yinling|luoyi|guhuo|nosguhuo|kanpo|" ..
 						"jieyin|renjie|zhiheng|nosrende|rende|nosjujian|guicai|guidao|qiaobian|beige|jieyuan|" ..
 						"mingce|nosfuhun|lirang|longluo|xuanfeng|xinzhan|dangxian|xiaoguo|neoluoyi|fuhun|"..
-						"fengmo|sheyue|kuaizhao|bingpu|shengxue|heiyan|huiyin|shuimu|diaoou|anji|chiwa|fangying|duannian|" ..
-						"tuji|qiangyun|huanni|jiejie|maoyou|herong|molian|longzuan|liuyue|yaodao|julang|zonghuo|huawu|guiqiao|" ..
+						"fengmo|daoshe|bingpu|heiyan|huiyin|ranhui|dianjin|zhenlei|huangyan|diaoou|anji|fangying|duannian|tuji|qiangyun|huanni|" ..
+						"jiejie|maoyou|herong|molian|longzuan|liuyue|yaodao|julang|zonghuo|huawu|guiqiao|" ..
 						"jisha|diwen|yuanshe|huoyun|shimian|wangjie|yueshi|lingbai|guangjie|juanling|jingge|yongye|yiyue|suozhen|" ..
 						"wanchu|donghe|zaobi"
 	sgs.drawpeach_skill =       "tuxi|qiaobian|" ..
 						"xianbo|yuzhi|shehun|yuanshe|fanni|yongye"
 	sgs.recover_skill =     "nosrende|rende|kofkuanggu|kuanggu|zaiqi|jieyin|qingnang|yinghun|shenzhi|nosmiji|zishou|ganlu|xueji|shangshi|" ..
 						"nosshangshi|ytchengxiang|buqu|miji|"..
-						"hunqu|shengxue|citan|maoyou|yuzhi|thbanling|jinpan|shenquan|zhouyuan|diwen|shehun|fuliao|wangjie|huaying|lingbai|" ..
+						"shengxue|linshang|jiaodi|yuzhu|jinlun|suiwa|fangying|hunqu|citan|maoyou|yuzhi|thbanling|jinpan|shenquan|zhouyuan|diwen|shehun|fuliao|wangjie|huaying|lingbai|" ..
 						"yuni|zhenling|yongye|wanchu|ruhuan|yeyu"
 	sgs.use_lion_skill =         "duanliang|qixi|guidao|noslijian|lijian|jujian|nosjujian|zhiheng|mingce|yongsi|fenxun|gongqi|" ..
 						"yinling|jilve|qingcheng|neoluoyi|diyyicong|" ..
+						"daoshe|huiyin|ranhui|diaoou|suiwa|" ..
 						"yuanqi|kuaiqing|maoyou|molian|liuyue|julang|youdao|yuanshe|shimian|suozhen|wanchu|nianli"
 	sgs.need_equip_skill =      "shensu|mingce|jujian|beige|yuanhu|huyuan|gongqi|nosgongqi|yanzheng|qingcheng|neoluoyi|shuijian|"..
 							"yuanqi|wanchu"
 	sgs.judge_reason =      "bazhen|EightDiagram|Blade|wuhun|supply_shortage|tuntian|nosqianxi|nosmiji|indulgence|lightning|baonue"..
 							"|nosleiji|leiji|caizhaoji_hujia|tieji|luoshen|ganglie|neoganglie|vsganglie|kofkuanggu|"..
-							"jiahu|xingchen|diaofeng|qiji|mianxian|shuzui|feidao|huoyun|huaying|yuni"
+							"xingchen|yuzhu|suiwa|diaofeng|jiahu|mianxian|shuzui|feidao|huoyun|huaying|yuni"
 	sgs.no_intention_damage = "nuhuo|pohuai|zhuonong|meiling"
 	sgs.attackRange_skill = "bingpu|herong"
 	-- 东方启灵阁新增 回合内发动/生效技能
@@ -335,7 +359,6 @@ function sgs.getValue(player)
 end
 
 --东方启灵阁相关
---【红白】
 function sgs.getDefense(player, gameProcess)
 	local room = player:getRoom()
 	if not player then return 0 end
@@ -370,6 +393,7 @@ function sgs.getDefense(player, gameProcess)
 
 	if player:hasSkills("tuntian+zaoxian") then defense = defense + player:getHandcardNum() * 0.4 end
 	if player:hasSkill("aocai") and player:getPhase() == sgs.Player_NotActive then defense = defense + 0.3 end
+	if player:hasSkill("wosui") and player:isKongcheng() and not (player:getArmor() and player:getArmor():isKindOf("EightDiagram")) and player:getPile("wooden_ox"):isEmpty() then defense = defense - 4 end
 	if player:hasSkill("anyun") then defense = defense + 0.8 end
 	if attacker or gameProcess then
 		local m = sgs.masochism_skill:split("|")
@@ -411,13 +435,22 @@ function sgs.getDefense(player, gameProcess)
 		if sgs.isLordInDanger() then defense = defense - 0.7 end
 	end
 
-	if not gameProcess and (sgs.ai_chaofeng[player:getGeneralName()] or 0) >= 3 then
-		defense = defense - math.max(6, (sgs.ai_chaofeng[player:getGeneralName()] or 0)) * 0.035
+	-- TouhouKeireikaku: remove condition chaofeng >= 3, remove maximum chaofeng that effects the reduction to defense, change coefficient from 0.035 to 0.3
+	if not gameProcess then
+		defense = defense - (sgs.ai_chaofeng[player:getGeneralName()] or 0) * 0.3
 	end
 
 	if not player:faceUp() then defense = defense - 0.35 end
 	if player:containsTrick("indulgence") and not player:containsTrick("YanxiaoCard") then defense = defense - 0.15 end
 	if player:containsTrick("supply_shortage") and not player:containsTrick("YanxiaoCard") then defense = defense - 0.15 end
+
+	if player:hasFlag("ZhangqiFlag") then
+		defense = defense - 7 + math.min(6.5, player:getHandcardNum() * 0.5)
+	end
+
+	if player:getMark("@philosopher") > 0 and player:getMark("@fire") * player:getMark("@water") * player:getMark("@wood") * player:getMark("@gold") * player:getMark("@earth") > 0 then
+		defense = defense - 10
+	end
 	
 	if player:hasSkill("maoyou") then
 		local n = 0
@@ -984,6 +1017,13 @@ sgs.ai_compare_funcs = {
 	chaofeng = function(a, b)
 		local c1 = sgs.ai_chaofeng[a:getGeneralName()]  or 0
 		local c2 = sgs.ai_chaofeng[b:getGeneralName()] or 0
+
+		if a:hasFlag("ZhangqiFlag") then
+			c1 = c1 + 3.2
+		end
+		if b:hasFlag("ZhangqiFlag") then
+			c2 = c2 + 3.2
+		end
 
 		if c1 == c2 then
 			return sgs.ai_compare_funcs.value(a, b)
@@ -3950,7 +3990,7 @@ end
 --self:touhouDamage
 function SmartAI:hasHeavySlashDamage(from, slash, to, getValue)
 	from = from or self.room:getCurrent()
-	--slash = slash or self:getCard("Slash", from)--东方函数不能用 问题因该是这里，，，--已读
+	--slash = slash or self:getCard("Slash", from)--东方函数不能用 问题因该是这里，，，
 	slash = slash or sgs.Sanguosha:cloneCard("slash", sgs.Card_NoSuit, 0)
 	to = to or self.player
 	if not from or not to then self.room:writeToConsole(debug.traceback()) return false end
@@ -4807,38 +4847,13 @@ function SmartAI:hasLeastHandcards(player)
 	return true
 end
 
---重新定义一下东方杀里的weak概念
---东方杀相关
---【渴血】【具现】【不灭】【神德】【幻梦】主旨是队友不要傻傻的为这几个人留桃
---【禁果】则相反
+--东方启灵阁相关
 function SmartAI:isWeak(player)
 	player = player or self.player
 	local hcard = player:getHandcardNum()
-	if player:hasSkill("juxian") and player:faceUp() then return false end
-	if player:hasSkill("skltkexue") then
-		if self:isEnemy(player) then
-			for _,p in pairs(self.enemies) do
-				if p:getHp()>=2 then
-					return false
-				end
-			end
-		end
-		if self:isFriend(player) then
-			for _,p in pairs(self.friends) do
-				if p:getHp()>=2 then
-					return false
-				end
-			end
-		end
-	end
+
 	if player:hasSkill("maoyou") and self:canMaoyouSelf(player) then return false end
 	if player:hasSkill("chongsheng") and self:hasLeastHandcards(player) and player:getMark("chongsheng") == 0 then return false end
-	if player:hasSkill("bumie") then return false end
-	if player:hasSkill("huanmeng") then return false end
-	if player:hasSkill("shende") and player:getPile("shende"):length()>=4 then return false end
-	if player:hasSkill("jinguo") and player:getMark("@kinki")>=4 then return true end
-	if hasBuquEffect(player) then return false end
-	if player:hasSkill("hualong") and player:getMark("hualong") == 0 then return false end
 
 	local n = 0
 	for _, id in sgs.qlist(player:getShownHandcards()) do
@@ -4878,7 +4893,6 @@ function SmartAI:hasWizard(players,onlyharm)
 end
 
 --东方启灵阁相关
---【命运】【绯想】
 function SmartAI:canRetrial(player, to_retrial, reason)
 	player = player or self.player
 	to_retrial = to_retrial or self.player
@@ -4900,9 +4914,6 @@ function SmartAI:canRetrial(player, to_retrial, reason)
 			end
 		end
 	end
-	if player:hasSkills("mingyun|feixiang|fengshui") then return true end
-	--博丽的改判略微妙
-	--if player:hasLordSkill("boli") then return true end
 	return
 end
 
@@ -4990,14 +5001,11 @@ end
 -- @param judge The JudgeStruct that contains the judge information
 -- @return True if it is needed to retrial
 --东方启灵阁相关
---【红白】【静电】【冰魄】
 function SmartAI:needRetrial(judge)
 	local reason = judge.reason
 	local lord = getLord(self.player)
 	local who = judge.who
 	if reason == "lightning" then
-		if who:hasSkills("wuyan|hongyan|bingpo") then return false end
-
 		if lord and (who:isLord() or (who:isChained() and lord:isChained())) and self:objectiveLevel(lord) <= 3 then
 			if lord:hasArmorEffect("SilverLion") and lord:getHp() >= 2 and self:isGoodChainTarget(lord, self.player, sgs.DamageStruct_Thunder) then return false end
 			return self:damageIsEffective(lord, sgs.DamageStruct_Thunder) and not judge:isGood()
@@ -6995,8 +7003,68 @@ function SmartAI:needToLoseHp(to, from, isSlash, passive, recover)
 			end
 		end
 	end
+
+	if to:hasSkill("suiwa") then
+		local peaches = 0
+		local flag = string.format("%s_%s_%s", "visible", self.player:objectName(), to:objectName())
+		for _, c in sgs.qlist(to:getHandcards()) do
+			if (c:hasFlag("visible") or c:hasFlag(flag)) and (c:isKindOf("Peach") or c:isKindOf("Analeptic")) then
+				peaches = peaches + 1
+			end
+		end
+
+		if to:getHp() + peaches <= 1 then return false end
+		for _, p in sgs.qlist(self.room:getOtherPlayers(to)) do
+			if p:getArmor() and p:getArmor():isKindOf("SilverLion") then
+				if not to:getArmor() then
+					return true
+				end
+			end
+		end
+		if to:getArmor() and to:getArmor():isKindOf("SilverLion") then
+			for _, p in sgs.qlist(self.room:getOtherPlayers(to)) do
+				if self:isFriend(to, p) and not p:getArmor() then
+					return true
+				end
+			end
+		end
+		
+		if self:isVeryWeak(to) and peaches <= 1 then return false end
+
+		if self:isWeak(to) then
+			for _, p in sgs.qlist(self.room:getOtherPlayers(to)) do
+				if p:getArmor() and not to:getArmor() and (self:isWeakerThan(to, p) or not self:isFriend(to, p)) then
+					return true
+				end
+			end
+		end
+
+		for _, p in sgs.qlist(self.room:getOtherPlayers(to)) do
+			if self:isFriend(to, p) then continue end
+			local key_equips = self:getKeyEquips(p)
+			for _, ke in ipairs(key_equips) do
+				local equip_id = -1
+				if ke:isKindOf("Weapon") then
+					equip_id = 0
+				elseif ke:isKindOf("Armor") then
+					equip_id = 1
+				elseif ke:isKindOf("DefensiveHorse") then
+					equip_id = 2
+				elseif ke:isKindOf("OffensiveHorse") then
+					equip_id = 3
+				elseif ke:isKindOf("Treasure") then
+					equip_id = 4
+				end
+				for _, p2 in sgs.qlist(self.room:getOtherPlayers(p)) do
+					if self:isFriend(to, p2) and not p2:getEquip(equip_id) then
+						return true
+					end
+				end
+			end
+		end
+	end
 	
-	if to:hasSkill("zhouyuan") and (self:isFriend(to, from) or from:isKongcheng()) then
+	if to:hasSkill("zhouyuan") and (self:isFriend(from, to) or from:isKongcheng()) then
 		return true
 	end
 
@@ -7493,6 +7561,9 @@ function SmartAI:touhouDamageNature(card,from,to)
 	if nature == sgs.DamageStruct_Normal and from and from:hasSkill("cizhang") then
 		nature = sgs.DamageStruct_Thunder
 	end
+	if to and to:hasFlag("ZhangqiFlag") then
+		nature = sgs.DamageStruct_Fire
+	end
 
 	return nature
 end
@@ -7550,7 +7621,6 @@ function SmartAI:touhouConfirmDamage(damage,from,to)
 	end
 	if to:hasFlag("ZhangqiFlag") then
 		damage.damage = damage.damage + 1
-		damage.nature = sgs.DamageStruct_Fire
 	end
 	if damage.nature == sgs.DamageStruct_Thunder and to:hasSkill("cizhang") then
 		damage.damage = 0
@@ -8508,7 +8578,17 @@ function SmartAI:cantbeHurt(player, from, damageNum)
 	end
 	if player:hasSkill("diaoou") and not player:isKongcheng() and player:getHp() + x > damageNum then
 		for _, p in sgs.qlist(self.room:getAlivePlayers()) do
-			if p:getMark("@ningyou") > 0 and not self:needToLoseHp(p) and self:isVeryWeak(p) and self:isFriend(from, p) then
+			if p:getMark("@ningyou") > 0 and not self:needToLoseHp(p) and (self:isWeak(p) or self:isWeakerThan(p, player)) and self:isFriend(from, p) then
+				return true
+			end
+		end
+	end
+	if player:hasSkill("suiwa") and player:getHp() + x > damageNum then
+		for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+			if p:getArmor() and p:getArmor():isKindOf("SilverLion") then
+				return true
+			end
+			if p:getArmor() and p:objectName() ~= player:objectName() and player:getArmor() == nil then
 				return true
 			end
 		end
@@ -8525,19 +8605,6 @@ function SmartAI:cantbeHurt(player, from, damageNum)
 			if peaches < 3 - from:getHp() then
 				return true
 			end
-		end
-	end
-	if player:hasSkill("xinyan") and not (player:isLord() and player:getHp() > 1)
-			and (from:getHp() == 1 or (from:getHp() <= 2 and from:getHandcardNum() <= 3)) then
-		local others = false
-		for _, p in sgs.qlist(self.room:getOtherPlayers(from)) do
-			if not self:isFriend(player, p) and not p:isKongcheng() then
-				others = true
-				break
-			end
-		end
-		if others then
-			return true
 		end
 	end
 	if player:hasSkill("feixiang") then
@@ -8574,17 +8641,6 @@ function SmartAI:cantbeHurt(player, from, damageNum)
 			return true
 		end
 	end
-	--[[if player:hasSkill("tianxiang") and getKnownCard(player, from, "diamond", false) + getKnownCard(player, from, "club", false) < player:getHandcardNum() then
-		local peach_num = self.player:objectName() == from:objectName() and self:getCardsNum("Peach") or getCardsNum("Peach", from, self.player)
-		for _, friend in ipairs(self:getFriends(from)) do
-			if friend:getHp() < 2 and peach_num then
-				dyingfriend = dyingfriend + 1
-			end
-		end
-		if dyingfriend > 0 and player:getHandcardNum() > 0 then
-			return true
-		end
-	end]]
 	return false
 end
 
@@ -8642,7 +8698,7 @@ function SmartAI:doNotSave(player)
 		return true
 	end
 	if player:hasFlag("AI_doNotSave") then return true end
-	if player:hasSkill("chongsheng") then
+	if player:hasSkill("chongsheng") and player:getMark("chongsheng") == 0 then
 		for _, p in sgs.qlist(self.room:getOtherPlayers(player)) do
 			if p:getHandcardNum() < player:getHandcardNum() then
 				return false

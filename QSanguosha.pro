@@ -194,6 +194,7 @@ HEADERS += \
     src/util/socket.h \
     src/util/downloadmanager.h \
     src/util/textprogressbar.h \
+    src/util/encryptor.h \
     src/ui/choosetriggerorderbox.h \
     src/ui/graphicsbox.h \
     src/ui/lightboxanimation.h \
@@ -229,8 +230,6 @@ macx{
 
 
 LIBS += -L.
-LIBS += -L"C:/OpenSSL-Win32/lib" -llibcrypto
-LIBS += -L"C:/OpenSSL-Win32/lib" -llibssl
 win32-msvc*{
     DEFINES += _CRT_SECURE_NO_WARNINGS
     !contains(QMAKE_HOST.arch, x86_64) {
