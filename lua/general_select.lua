@@ -157,10 +157,7 @@ selectFirst = function(player, candidates) -- string
 		"alice",
 		"koishi",
 		"mystia",
-		"yamame",
 		"minoriko",
-		"tewi",
-		"iku"
 	}
 	
 	local seat_place

@@ -116,7 +116,7 @@ return{
 	["illustrator:nitori"] = "bon",
 	["scene:nitori"] = "mountain",
 	["linshang"] = "粼殇",
-	[":linshang"] = "摸牌阶段，你可以少摸至少一张牌，然后若你本阶段摸了：一张牌以上，你弃置一名其他角色一张牌；零张牌，你视为使用一张基本牌。",
+	[":linshang"] = "摸牌阶段，你可以少摸至少一张牌，然后若你本阶段摸了：一张牌以上，你令一名其他角色弃置一张手牌；零张牌，你视为使用一张基本牌。",
 	["@linshang-target"] = "由于“粼殇”的效果，请选择弃置牌的角色",
 	["@linshang-discard"] = "%src 发动了“粼殇”，请弃置一张手牌",
 	["@linshang-use"] = "请选择此【%src】的目标",
@@ -197,7 +197,7 @@ return{
 	["#letty"] = "寒冬之神",
 	["designer:letty"] = "Kouchya",
 	["illustrator:letty"] = "粟",
-	["scene:letty"] = "lake"
+	["scene:letty"] = "lake",
 	["xuebeng"] = "雪崩",
 	[":xuebeng"] = "当你受到一点伤害时，你可以摸一张牌，然后将牌堆顶一张牌置于你的武将牌上，称为“雪”。结束阶段，若你的武将牌上有“雪”，你将其中一张收入手牌。",
 	["snow"] = "雪",
