@@ -3482,7 +3482,7 @@ class Zhangqi : public TriggerSkill
 public:
 	Zhangqi() : TriggerSkill("zhangqi")
 	{
-		events << DamageCaused << EventPhaseChanging;
+		events << DamageCaused << ConfirmDamage << EventPhaseChanging;
 	}
 
 	void record(TriggerEvent event, Room *room, QVariant &data) const
@@ -3490,8 +3490,8 @@ public:
 		if (event == EventPhaseChanging) {
 			PhaseChangeStruct change = data.value<PhaseChangeStruct>();
 			ServerPlayer *yamame = change.player;
-			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && change.to == Player::RoundStart) {
-				foreach (ServerPlayer *p, room->getOtherPlayers(yamame)) {
+			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && change.to == Player::Start) {
+				foreach (ServerPlayer *p, room->getAlivePlayers()) {
 					room->setPlayerFlag(p, "-ZhangqiFlag");
 				}
 			}
@@ -3502,15 +3502,20 @@ public:
 	{
 		if (event == DamageCaused) {
 			DamageStruct damage = data.value<DamageStruct>();
-			ServerPlayer *yamame = room->findPlayerBySkillName(objectName());
+			ServerPlayer *yamame = damage.from;
 			ServerPlayer *to = damage.to;
-			if (yamame && yamame->isAlive() && to && to->isAlive()) {
-				if (damage.from && yamame == damage.from && !to->hasFlag("ZhangqiFlag")) {
-					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, yamame, yamame, NULL, false, to);
-				} else if (to->hasFlag("ZhangqiFlag")) {
+			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && to && to->isAlive() && !to->hasFlag("ZhangqiFlag")) {
+				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, yamame, yamame, NULL, false, to);
+			}
+		} else if (event == ConfirmDamage) {
+			DamageStruct damage = data.value<DamageStruct>();
+			ServerPlayer *to = damage.to;
+			ServerPlayer *yamame = room->findPlayerBySkillName(objectName());
+			if (yamame && to && to->isAlive()) {
+				if (to->hasFlag("ZhangqiFlag")) {
 					qDebug() << "Target has Zhangqi flag!";
 					return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, yamame, yamame, NULL, true, to);
-				} else if (yamame != damage.from && !to->hasFlag("ZhangqiFlag")) {
+				} else {
 					qDebug() << "Target does not have Zhangqi flag!";
 				}
 			}
@@ -3522,10 +3527,7 @@ public:
 	{
 		ServerPlayer *yamame = invoke->invoker;
 		if (event == DamageCaused) {
-			ServerPlayer *to = invoke->preferredTarget;
-			if (!to->hasFlag("ZhangqiFlag")) {
-				return room->askForSkillInvoke(yamame, objectName(), data);
-			}
+			return room->askForSkillInvoke(yamame, objectName(), data);
 		}
 		return true;
 	}
@@ -3535,19 +3537,17 @@ public:
 		ServerPlayer *yamame = invoke->invoker;
 		ServerPlayer *to = invoke->preferredTarget;
 		if (event == DamageCaused) {
-			if (!to->hasFlag("ZhangqiFlag")) {
-				if (to->getMark("@spell") > 0)
-					room->removePlayerMark(to, "@spell", 1);
-				room->setPlayerFlag(to, "ZhangqiFlag");
-				return true;
-			} else {
-				DamageStruct damage = data.value<DamageStruct>();
-				damage.damage++;
-				damage.nature = DamageStruct::Fire;
-				data = QVariant::fromValue(damage);
-				room->touhouLogmessage("#ZhangqiDamage", yamame, objectName(), QList<ServerPlayer *>() << to, QString::number(damage.damage));
-			}
-		} 
+			if (to->getMark("@spell") > 0)
+				room->removePlayerMark(to, "@spell", 1);
+			room->setPlayerFlag(to, "ZhangqiFlag");
+			return true;
+		} else if (event == ConfirmDamage) {
+			DamageStruct damage = data.value<DamageStruct>();
+			damage.damage++;
+			damage.nature = DamageStruct::Fire;
+			data = QVariant::fromValue(damage);
+			room->touhouLogmessage("#ZhangqiDamage", yamame, objectName(), QList<ServerPlayer *>() << to, QString::number(damage.damage));
+		}
 		return false;
 	}
 };
