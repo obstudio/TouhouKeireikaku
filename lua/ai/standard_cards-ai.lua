@@ -427,7 +427,7 @@ function sgs.getDefenseSlash(player, self)
 		defense = defense - math.max(6, (sgs.ai_chaofeng[player:getGeneralName()] or 0)) * 0.035
 	end
 
-	if player:hasFlag("ZhangqiFlag") then
+	if player:getMark("@miasma") > 0 then
 		defense = defense - 2.6
 		if self and self:isWeak(player) then
 			defense = defense - 2
