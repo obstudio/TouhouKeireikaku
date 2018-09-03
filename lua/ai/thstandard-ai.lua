@@ -1732,7 +1732,9 @@ sgs.ai_skill_use["@@kaihai"] = function(self, prompt)
 			player = p
 		end
 	end
-	if player == nil then
+	if player ~= nil then
+		sgs.updateIntention(self.player, player, 80)
+	else
 		local max_delta = 0
 		for _, p in ipairs(self.friends) do
 			if p:getHp() >= p:getHandcardNum() then continue end
@@ -1743,9 +1745,11 @@ sgs.ai_skill_use["@@kaihai"] = function(self, prompt)
 				player = p
 			end
 		end
+		if player ~= nil then
+			sgs.updateIntention(self.player, player, -60)
+		end
 	end
 	if player ~= nil then
-		sgs.updateIntention(self.player, player, 80)
 		return ("@KaihaiCard=.->%s"):format(player:objectName())
 	end
 	return "."
