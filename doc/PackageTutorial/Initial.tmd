@@ -1,0 +1,95 @@
+# 东方启灵阁 扩展包开发教程
+
+**本文档属于东方启灵阁扩展包开发教程系列。不参与源代码开发的用户可以忽略这部分内容。教程要求用户有一定的C++面向对象编程基础。**
+
+## 〇 创建自己的武将扩展包
+
+东方启灵阁中，武将用扩展包的方式进行管理，每一个武将都隶属于一个扩展包。一个扩展包由一对cpp-h文件决定，存放于src/package文件夹下。cpp文件和头文件的文件名必须相同，一般而言以该扩展包的英文名命名。
+
+教程接下来的部分假设扩展包英文名为tutor。读者可以根据自己的需要采用别的名字。
+
+### 头文件声明
+
+在src/package文件夹下创建tutor.h。作为常规操作，为了避免声明冲突，我们添加宏定义：
+
+	#ifndef \_tutor\_H
+	#define \_tutor\_H
+
+当然，在文件最后别忘了加上`#endif`。
+
+扩展包文件需要引入package包：
+
+	#include "package.h"
+
+它负责管理扩展包的抽象类`Package`。接下来我们就可以将`Tutor`这个具体的扩展包定义为`Package`的子类了：
+
+	class TutorPackage : public Package
+	{
+		Q_OBJECT
+
+	public:
+		TutorPackage();
+	};
+
+扩展包的类名要求为包名首字母大写+Package的格式。
+
+我们看到，与一般的定义一个类的操作相比，上述`TutorPackage`类的定义略有不同，体现在它在声明公共属性前多了一行`Q_OBJECT`。这是Qt自带的一个宏，表明	Qt会将这个类的实例认作一个QObject，从而其将继承QObject的属性和方法。详细的技术细节我们并不需要在这里赘述。
+
+至此，一个扩展包头文件就已经初步定义好了。到目前为止的全部tutor.h代码[点击这里查看|./tutor-0.h]。接下来我们要做的是创建一个tutor.cpp文件，并向这个文件中添加tutor扩展包所拥有的武将。
+
+### 向扩展包内添加武将
+
+我们在src/package中创建tutor.cpp以向`Tutor`扩展包内添加自定义武将。必不可少地，我们需要引入两个包，一个是我们刚刚自定义的tutor.h，另一个是管理武将抽象类的general.h。
+
+	#include "tutor.h"
+	#include "general.h"
+
+添加武将是在`TutorPackage`类的构造函数中实现的。为了写这个构造函数，我们需要知道它的父类`Package`的构造函数有哪些参数。这在src/package/package.h中可以找到。
+
+? Package::Package(**const** QString &*name*, Type *pack_type* = GeneralPack)
+  参数解释：
+  - *name*：扩展包名，一个QString，即Qt自带的一种字符串格式，可以用与普通字符串一样的双引号形式声明。
+  - *pack_type*：枚举Type类型，有四种枚举值：
+  	- GeneralPack：武将包
+  	- CardPack：游戏牌包
+  	- MixedPack：混合包
+  	- SpecialPack：其他类型的扩展包
+  	该参数的缺省值为GeneralPack，即武将包。这显然也是本教程中将长期采用的值，因此在我们的几乎所有例子中，这个参数可以省略从而采用默认值。
+
+综上所述，`TutorPackage`的构造函数显然应该长成这样：
+
+	TutorPackage::TutorPackage() : Package("tutor")
+	{
+		// some code...
+	}
+
+现在我们需要在构造函数中添加武将。一个武将(General)也是一个对象，它是`General`类的一个实例。在src/core/general.h中找到General类的构造函数如下：
+
+? General::General(Package \**package*, **const** QString &*name*, **const** QString &*kingdom*, int *max_hp* = 4, bool *male* = true, bool *hidden* = false, bool *never_shown* = false)
+  参数解释：
+  - *package*：Package类型，武将所属的扩展包。
+  - *name*：QString字符串，武将的英文名。
+  - *kingdom*：QString字符串，武将所属的势力。
+  - *max_hp*：整型，体力上限。
+  - *male*：布尔，是否为男性角色。
+  - *hidden*：布尔，初始是否为暗将，本教程用不到，采用默认值false。
+  - *never_shown*：布尔，是否不能亮将，本教程用不到，采用默认值false。
+
+这里我们看到，我们需要给这个武将起一个英文名称。这里我们以Fate/Grand Order中的玛修·基列莱特为例（实际为东方启灵阁作开发时势必为东方Project系列的角色，但教程中我们刻意避开这些角色）。其英文名沿袭东方启灵阁采用全小写字母命名的惯例，定为mash。其势力为了简便易记起见，定为其职阶shielder，也是全小写。于是我们会写出这样的代码：
+
+	General \*mash = new General(**_this_**, "mash", "shielder", 4, false);
+
+部分解释：
+- this：我们在TutorPackage的构造函数里定义mash这个武将，故this指代构造的TutorPackage实例。
+- 4：我们把mash的体力上限设为4。实际开发时当然是视情况而定。
+- false：mash在FGO中是女性角色，我们当然不希望她在三国杀体系里性转……
+
+武将创建完成后，我们进行最后一步，将TutorPackage这个包添加到游戏里。这里我们采用东方启灵阁已经写好的宏`ADD_PACKAGE`。我们在构造函数外面、整个tutor.cpp文件的最后添加这么一行：
+
+	ADD_PACKAGE(Tutor)
+
+注意这里的写法：作为一个宏函数，`ADD_PACKAGE`的参数是我们添加的自定义Package的类名去掉Package后的部分。如果你的扩展包类名叫`FleaPackage`，那么这里就写`ADD_PACKAGE(Flea)`；同理，`YetAnotherPackage`对应`ADD_PACKAGE(YetAnother)`，`ZzyVpLMaPackage`对应`ADD_PACKAGE(ZzyVpLMa)`。
+
+本节我们创建了一个新扩展包，并向其中置入了一个新武将，但这个武将还只是白板，没有任何技能。从下一节开始，我们将分类介绍各种技能代码，并涉及一些常用API的用法。
+
+截至目前的tutor.cpp代码[点击这里查看|./tutor-0.cpp]。

@@ -54,6 +54,10 @@ public:
     bool canPause(ServerPlayer *p) const;
     void tryPause();
 
+    QString post(QString url, QString cont);
+    QString uploadBP(QString username, int bp);
+    int downloadBP(QString username);
+
     int getLack() const;
     QString getMode() const;
     const Scenario *getScenario() const;

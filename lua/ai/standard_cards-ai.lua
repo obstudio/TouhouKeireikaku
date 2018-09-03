@@ -41,7 +41,7 @@ end
 --½ç¶¨ÂôÑª£¿
 --¶«·½ÆôÁé¸óÏà¹Ø
 function sgs.isGoodTarget(player, targets, self, isSlash)
-	local arr = {"jieming", "yiji", "guixin", "fangzhu", "neoganglie", "nosmiji", "xuehen", "xueji", "xuebeng", "huanni"}
+	local arr = {"jieming", "yiji", "guixin", "fangzhu", "neoganglie", "nosmiji", "xuehen", "xueji", "diaoou", "xuebeng", "kaihai", "suiwa", "huanni"}
 	local m_skill = false
 	local attacker = global_room:getCurrent()
 
@@ -63,7 +63,77 @@ function sgs.isGoodTarget(player, targets, self, isSlash)
 			elseif masochism == "xueji" and player:isWounded() then m_skill = false
 			elseif masochism == "jieming" and self and self:getJiemingChaofeng(player) > -4 then m_skill = false
 			elseif masochism == "yiji" and self and not self:findFriendsByType(sgs.Friend_Draw, player) then m_skill = false
+			elseif masochism == "diaoou" and self then
+				if player:isNude() then
+					m_skill = false
+				else
+					local has_ningyou = false
+					for _, p in sgs.qlist(self.room:getOtherPlayers(player)) do
+						if p:getMark("@ningyou") > 0 then
+							has_ningyou = true
+							break
+						end
+					end
+					if not has_ningyou then
+						m_skill = false
+					end
+				end
 			elseif masochism == "xuebeng" and (player:getPile("snow"):length() >= 2 or (self and self:isVeryWeak(player))) then m_skill = false
+			elseif masochism == "kaihai" and self then
+				for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+					if not self:isFriend(player, p) and p:getHandcardNum() > p:getHp() * 1.5 then
+						m_skill = true
+						break
+					end
+				end
+				for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+					if self:isFriend(player, p) and p:getHandcardNum() > p:getHp() and p:getHp() < p:getLostHp() and (p:getHandcardNum() < p:getLostHp() or (p:getHandcardNum() == p:getLostHp() and p:getHandcardNum() > 2)) then
+						m_skill = true
+						break
+					end
+				end
+
+				local first_step = true
+				for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+					if not self:isFriend(player, p) and p:getHandcardNum() > p:getHp() then
+						first_step = true
+						break
+					end
+				end
+				if not first_step then
+					m_skill = false
+				end
+				for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+					if self:isFriend(player, p) and p:getHandcardNum() < p:getLostHp() then
+						m_skill = true
+						break
+					end
+				end
+
+				for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+					if self:isFriend(player, p) and p:getHandcardNum() > p:getHp() then
+						local y = p:getHandcardNum() - p:getHp()
+						for _, p2 in sgs.qlist(self.room:getOtherPlayers(p)) do
+							if self:isFriend(player, p2) and p2:getHandcardNum() < p2:getLostHp() and self:isWeakerThan(p2, p) and not self:isVeryWeak(p) and p:getHandcardNum() - p:getHp() < p2:getLostHp() - p2:getHandcardNum() then
+								m_skill = true
+								break
+							end
+						end
+					end
+				end
+				if m_skill then break end
+			elseif masochism == "suiwa" and self then
+				for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+					if p:getArmor() and p:getArmor():isKindOf("SilverLion") then
+						m_skill = true
+						break
+					end
+					if p:getArmor() and p:objectName() ~= player:objectName() and player:getArmor() == nil then
+						m_skill = true
+						break
+					end
+				end
+				if m_skill then break end
 			elseif masochism == "huanni" and player:isKongcheng() then m_skill = false
 			elseif masochism == "feixiang" and self then
 				local flag = false
@@ -357,6 +427,48 @@ function sgs.getDefenseSlash(player, self)
 		defense = defense - math.max(6, (sgs.ai_chaofeng[player:getGeneralName()] or 0)) * 0.035
 	end
 
+	if player:getMark("@miasma") > 0 then
+		defense = defense - 2.6
+		if self and self:isWeak(player) then
+			defense = defense - 2
+		end
+		if knownJink == 0 and not hasEightDiagram then
+			defense = defense - 4
+		end
+	end
+
+	if player:getMark("@philosopher") > 0 and player:getMark("@fire") * player:getMark("@water") * player:getMark("@wood") * player:getMark("@gold") * player:getMark("@earth") > 0 then
+		defense = defense - 10
+	end
+
+	if player:hasSkill("suiwa") and self then
+		local stop = false
+		for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+			if p:getArmor() and p:getArmor():isKindOf("SilverLion") then
+				defense = defense + 20
+				stop = true
+				break
+			end
+		end
+		if not stop then
+			for _, p in sgs.qlist(self.room:getAlivePlayers()) do
+				if p:getArmor() and p:objectName() ~= player:objectName() and player:getArmor() == nil then
+					defense = defense + 10
+					stop = true
+					break
+				end
+			end
+		end
+	end
+
+	if player:hasSkill("shiling") and not player:faceUp() then
+		if player:getHandcardNum() >= 2 then
+			defense = defense + 10
+		elseif player:getHandcardNum() == 1 then
+			defense = defense + player:getHp() * 3 - 5
+		end
+	end
+
 	if not player:faceUp() then defense = defense - 0.35 end
 
 	if player:containsTrick("indulgence") and not player:containsTrick("YanxiaoCard") then defense = defense - 0.15 end
@@ -377,7 +489,6 @@ function sgs.getDefenseSlash(player, self)
 		if player:hasSkill("xiliang") and knownJink == 0 then defense = defense - 2 end
 		--if player:hasSkill("shouye") then defense = defense - 2 end
 		if player:hasSkill("herong") then defense = defense - 1.5 end
-		if player:hasSkill("shengqiang") and player:hasSkill("shengxue") then defense = defense - 2 end
 	end
 
 

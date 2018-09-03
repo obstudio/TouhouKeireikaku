@@ -15,6 +15,7 @@
 #include "structs.h"
 #include "miniscenarios.h"
 #include "audio.h"
+#include "encryptor.h"
 
 #include <QStringList>
 #include <QMessageBox>
@@ -546,14 +547,23 @@ void Room::gameOver(const QString &winner)
 
     //QHostInfo vHostInfo = QHostInfo::fromName(QHostInfo::localHostName());
     //QList<QHostAddress> vAddressList = vHostInfo.addresses();
-    if (Config.HostAddress == "140.143.132.93") {
+    if (Config.HostAddress == "142.93.20.189") {
         QHostInfo host = QHostInfo::fromName("www.baidu.com");
         if (host.error() == QHostInfo::NoError) {
             qDebug() << "Connected to the Internet." << endl;
             QList<ServerPlayer *> real_players;
+            QStringList ips;
             foreach (ServerPlayer *p, m_players) {
                 if (p->getState() == "online" || p->getState() == "trust") {
-                    real_players << p;
+                    int same_ips = 0;
+                    foreach (ServerPlayer *p2, m_players) {
+                        if (p2->getState() != "robot" && p->getIp() == p2->getIp()) {
+                            same_ips++;
+                        }
+                    }
+                    if (same_ips <= 1) {
+                        real_players << p;
+                    }
                 }
             }
             if (real_players.length() > 1) {
@@ -687,6 +697,7 @@ void Room::gameOver(const QString &winner)
                     }
 
                     p->addBP(reward);
+                    setPlayerProperty(p, "bonus_point", (int)(p->getBP() + 0.50));
 
                     // upload BP for username: player->screenName()
                     /*char *bp_key = (char *)EncryptKey::BP_KEY;
@@ -722,23 +733,7 @@ void Room::gameOver(const QString &winner)
                     QByteArray rawunarray = rawunstring.toLatin1();
                     QString unhash = QCryptographicHash::hash(rawunarray, QCryptographicHash::Sha256).toHex();*/
 
-                    QNetworkRequest request(QString("https://87ed293f-76a9-47bb-b9ad-c087c92f9447.coding.io/upload_bp.php"));
-                    QString cont = QString("username=%1&bp=%2").arg(p->screenName()).arg(QString::number((int)(p->getBP() + 0.50)));
-                    QByteArray contArray = cont.toLatin1();
-                    char *contChar = contArray.data();
-                    QNetworkAccessManager *manager = new QNetworkAccessManager(nullptr);
-                    QNetworkReply *reply = manager->post(request, contChar);
-                    QEventLoop eventLoop;
-                    connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
-                    eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
-                    QByteArray replyData = reply->readAll();
-                    QString replyString(replyData);
-                    reply->deleteLater();
-                    reply = nullptr;
-
-                    qDebug() << "Reply: \n" << replyString << endl;
-
-                    //QMessageBox::warning(main_window, "Warning", replyString + "\nQt BP Base64: " + bpcode);
+                    uploadBP(p->screenName(), (int)(p->getBP() + 0.50));
                 }
             } else {
                 qDebug() << "Too few real players!" << endl;
@@ -2402,6 +2397,44 @@ void Room::tryPause() {
     QMutexLocker locker(&m_mutex);
     while (game_paused)
         m_waitCond.wait(locker.mutex());
+}
+
+QString Room::post(QString url, QString cont) {
+    QString replyString;
+    QHostInfo host = QHostInfo::fromName("www.baidu.com");
+    if (host.error() == QHostInfo::NoError) {
+        QNetworkRequest request(url);
+        QByteArray contArray = cont.toLatin1();
+        char *contChar = contArray.data();
+        QNetworkAccessManager *manager = new QNetworkAccessManager(nullptr);
+        QNetworkReply *reply = manager->post(request, contChar);
+        QEventLoop eventLoop;
+        connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+        eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
+        QByteArray replyData = reply->readAll();
+        replyString = QString(replyData);
+        reply->deleteLater();
+        reply = nullptr;
+    } else {
+        replyString = "Connection timeout.";
+    }
+    qDebug() << replyString << endl;
+    return replyString;
+}
+
+QString Room::uploadBP(QString username, int bp) {
+    QString url("https://thkrk.ob-studio.cn/upload_bp");
+    QString cont = QString("username=%1&bp=%2&password=%3").arg(username).arg(QString::number(bp)).arg(Encryptor_PHP_Password);
+    return post(url, cont);
+}
+
+int Room::downloadBP(QString username) {
+    QString url("https://thkrk.ob-studio.cn/download_bp");
+    QString cont = QString("username=%1&password=%2").arg(username).arg(Encryptor_PHP_Password);
+    QString replyString = post(url, cont);
+    bool bp_valid;
+    int bp = replyString.toInt(&bp_valid);
+    return bp_valid ? bp : -1;
 }
 
 int Room::getLack() const
@@ -5297,16 +5330,23 @@ void Room::askForLuckCard()
 {
     tryPause();
 
-    QList<ServerPlayer *> players;
-    foreach (ServerPlayer *player, m_players) {
-        if (!player->getAI()) {
-            player->m_commandArgs = QVariant();
-            players << player;
-        }
-    }
-
     int n = 0;
     while (n < Config.LuckCardLimitation) {
+        QList<ServerPlayer *> players;
+        foreach (ServerPlayer *player, m_players) {
+            if (!player->getAI()) {
+                // judge whether player has enough BP to use luck card
+                if (Config.HostAddress == "142.93.20.189") {
+                    int bp = downloadBP(player->screenName());
+                    //int bp = 10000;
+                    if (bp < 3) continue;
+                }
+                
+                player->m_commandArgs = QVariant();
+                players << player;
+            }
+        }
+
         if (players.isEmpty())
             return;
 
@@ -5324,6 +5364,14 @@ void Room::askForLuckCard()
             const QVariant &clientReply = player->getClientReply();
             if (!player->m_isClientResponseReady || !JsonUtils::isBool(clientReply) || !clientReply.toBool())
                 continue;
+            if (Config.HostAddress == "142.93.20.189") {
+                QString bp_cost_info = uploadBP(player->screenName(), -3);
+                if (bp_cost_info != "Successfully uploaded.") {
+                    qDebug() << player->screenName() + " failed to use luck card." << endl;
+                    continue;
+                }
+            }
+
             used << player;
         }
         if (used.isEmpty())

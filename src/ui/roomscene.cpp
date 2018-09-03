@@ -3691,7 +3691,7 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         table->setItem(i, 3, item);
 
         item = new QTableWidgetItem;
-        QString text = player == Self ? QString::number((unsigned int)(player->getBP() + 0.5)) : "";
+        QString text = player == Self ? QString::number(player->property("bonus_point").toInt()) : "";
         item->setText(text);
         table->setItem(i, 4, item);
 
@@ -5185,7 +5185,7 @@ void RoomScene::setLordBackdrop(QString lord)
     if (lord_name == NULL)
         lord_name = Self->getGeneralName();
     if (changeBackdrop)
-        image_path = "backdrop/" + lord_name + ".jpg";
+        image_path = "backdrop/" + Sanguosha->translate("scene:" + lord_name) + ".jpg";
 
     if ((image_path != NULL) && QFile::exists(image_path))
         changeTableBg(image_path);

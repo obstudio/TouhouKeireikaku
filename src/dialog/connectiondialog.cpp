@@ -96,13 +96,25 @@ void ConnectionDialog::on_connectButton_clicked()
         return;
     }
 
-    // verify username and password here
+    QStringList hex_digits = {
+        "0", "1", "2", "3",
+        "4", "5", "6", "7",
+        "8", "9", "a", "b",
+        "c", "d", "e", "f"
+    };
+    qsrand(QTime(0, 0, 0).msecsTo(QTime::currentTime()));
+    QString client_token = "";
+    for (int i = 0; i < 32; i++) {
+        client_token += hex_digits.at(qrand() % 16);
+    }
+
+    // verify username, password and client token here
     QNetworkRequest request;
 
-    QString url = QString("https://id.ob-studio.cn/assets/data/user_login.php");
+    QString url = QString("https://id.ob-studio.cn/api/auth");
     request.setUrl(url);
     QString cont;
-    cont = QString("username=%1&password_hash=%2").arg(username).arg(password_hash);
+    cont = QString("username=%1&password_hash=%2&client_token=%3").arg(username).arg(password_hash).arg(client_token);
     QByteArray contArray = cont.toLatin1();
     char *contChar = contArray.data();
     m_Reply = manager->post(request, contChar);
@@ -159,27 +171,24 @@ void ConnectionDialog::on_detectLANButton_clicked()
 
 void ConnectionDialog::finishedSlot(QNetworkReply *)
 {
-    m_Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    m_Reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-
-    bool flag = false;
-
-    if (m_Reply->error() == QNetworkReply::NoError) {
-        QByteArray contentArray = m_Reply->readAll();
-        QString content = QString::fromUtf8(contentArray);
-        qDebug() << content;
-        if (content != QString("0")) {
-            QMessageBox::warning(this, tr("Warning"), QString(tr("Username or password is incorrect!\nValidate code: %1")).arg(content));
-            flag = true;
-        }
-    } else {
+    if (m_Reply->error() != QNetworkReply::NoError) {
         QMessageBox::warning(this, tr("Warning"), QString(tr("Fatal error occurred during request!\n%1")).arg(m_Reply->errorString()));
-        flag = true;
+        return;
+    }
+
+    QVariant statusCode = m_Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (!statusCode.isValid()) {
+        QMessageBox::warning(this, tr("Warning"), QString(tr("Invalid status code!")));
+        return;
+    }
+    int status = statusCode.toInt();
+    if (status != 200) {
+        QString reason = m_Reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
+        QMessageBox::warning(this, tr("Warning"), QString(tr("Authentication failed!\nError code: %1")).arg(status));
+        return;
     }
 
     m_Reply->deleteLater();
-
-    if (flag) return;
 
     Config.setValue("UserName", Config.UserName);
     Config.setValue("HostAddress", Config.HostAddress);

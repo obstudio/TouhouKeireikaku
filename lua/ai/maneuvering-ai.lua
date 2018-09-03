@@ -318,13 +318,6 @@ end
 function SmartAI:useCardSupplyShortage(card, use)
 	local enemies = self:exclude(self.enemies, card)
 
-	--�о�
-	for _, e in pairs(enemies) do
-		if e:hasSkill("songjing") then
-			return
-		end
-	end
-
 	local zhanghe = self.room:findPlayerBySkillName("qiaobian")
 	local zhanghe_seat = zhanghe and zhanghe:faceUp() and not zhanghe:isKongcheng() and not self:isFriend(zhanghe) and zhanghe:getSeat() or 0
 
@@ -333,16 +326,7 @@ function SmartAI:useCardSupplyShortage(card, use)
 					(getKnownCard(sb_daqiao, self.player, "diamond", nil, "hes") > 0
 					or sb_daqiao:getHandcardNum() + self:ImitateResult_DrawNCards(sb_daqiao, sb_daqiao:getVisibleSkillList()) > 3
 					or sb_daqiao:containsTrick("YanxiaoCard"))
-	--����ɱ�������A�Ľ�ɫ
-	local mouko = self.room:findPlayerBySkillName("sidou")
-	local mouko_seat = mouko and mouko:faceUp() and not self:isFriend(mouko) and mouko:getSeat() or 0
-	local tiger = self.room:findPlayerBySkillName("jinghua")
-	local tiger_seat = tiger and tiger:faceUp()  and not self:isFriend(tiger) and tiger:getSeat() or 0
-	local marisa = self.room:findPlayerBySkillName("jiezou")
-	local marisa_seat = marisa and card:getSuit()==sgs.Card_Spade and marisa:faceUp()  and not self:isFriend(marisa) and marisa:getSeat() or 0
-
-
-
+	
 	local getvalue = function(enemy)
 		if enemy:containsTrick("supply_shortage") or enemy:containsTrick("YanxiaoCard") then return -100 end
 		if self:touhouDelayTrickBadTarget(card, enemy, self.player) then return -100 end
@@ -350,14 +334,6 @@ function SmartAI:useCardSupplyShortage(card, use)
 		if enemy:hasSkill("qiaobian") and not enemy:containsTrick("supply_shortage") and not enemy:containsTrick("indulgence") then return -100 end
 		if zhanghe_seat > 0 and (self:playerGetRound(zhanghe) <= self:playerGetRound(enemy) and self:enemiesContainsTrick() <= 1 or not enemy:faceUp()) then
 			return - 100 end
-		if mouko_seat > 0 and (self:playerGetRound(mouko) <= self:playerGetRound(enemy) and self:enemiesContainsTrick() <= 1 or not enemy:faceUp()) then
-			return - 100 end
-		if tiger_seat > 0 and (self:playerGetRound(tiger) <= self:playerGetRound(enemy) and self:enemiesContainsTrick() <= 1 or not enemy:faceUp()) then
-			return - 100 end
-		if marisa_seat > 0 and (self:playerGetRound(marisa) < self:playerGetRound(enemy) and self:enemiesContainsTrick() <= 1 or not enemy:faceUp()) then
-			return - 100 end
-		if yanxiao and (self:playerGetRound(sb_daqiao) <= self:playerGetRound(enemy) and self:enemiesContainsTrick(true) <= 1 or not enemy:faceUp()) then
-			return -100 end
 
 		local value = 0 - enemy:getHandcardNum()
 
@@ -372,7 +348,6 @@ function SmartAI:useCardSupplyShortage(card, use)
 		if enemy:hasSkill("zishou") then value = value + enemy:getLostHp() end
 		if self:isWeak(enemy) then value = value + 5 end
 		if enemy:isLord() then value = value + 3 end
-		--��һ�����ν⡣�����Ҹ������������ڵ�objectivelevel��������
 		if self:objectiveLevel(enemy) < 3 then value = value - 10 end
 		if not enemy:faceUp() then value = value - 10 end
 		if self:hasSkills("keji|shensu|qingyi", enemy) then value = value - enemy:getHandcardNum() end
@@ -380,6 +355,16 @@ function SmartAI:useCardSupplyShortage(card, use)
 		if not sgs.isGoodTarget(enemy, self.enemies, self) then value = value - 1 end
 		if self:needKongcheng(enemy) then value = value - 1 end
 		if enemy:getMark("@kuiwei") > 0 then value = value - 2 end
+
+		--东方启灵阁
+		if enemy:hasSkill("jiexun") then value = value - 2 end
+		if enemy:hasSkill("bingpu") then value = value + 3 end
+		for _, p in sgs.qlist(self.room:getOtherPlayers(enemy)) do
+			if p:hasSkill("bingpu") and p:inMyAttackRange(enemy) and self:isFriend(p, enemy) and not p:isKongcheng() then
+				value = value - 10
+				break
+			end
+		end
 		return value
 	end
 
