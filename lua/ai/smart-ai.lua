@@ -444,7 +444,7 @@ function sgs.getDefense(player, gameProcess)
 	if player:containsTrick("indulgence") and not player:containsTrick("YanxiaoCard") then defense = defense - 0.15 end
 	if player:containsTrick("supply_shortage") and not player:containsTrick("YanxiaoCard") then defense = defense - 0.15 end
 
-	if player:hasFlag("ZhangqiFlag") then
+	if player:getMark("@miasma") > 0 then
 		defense = defense - 7 + math.min(6.5, player:getHandcardNum() * 0.5)
 	end
 
@@ -1018,10 +1018,10 @@ sgs.ai_compare_funcs = {
 		local c1 = sgs.ai_chaofeng[a:getGeneralName()]  or 0
 		local c2 = sgs.ai_chaofeng[b:getGeneralName()] or 0
 
-		if a:hasFlag("ZhangqiFlag") then
+		if a:getMark("@miasma") > 0 then
 			c1 = c1 + 3.2
 		end
-		if b:hasFlag("ZhangqiFlag") then
+		if b:getMark("@miasma") > 0 then
 			c2 = c2 + 3.2
 		end
 
@@ -7561,7 +7561,7 @@ function SmartAI:touhouDamageNature(card,from,to)
 	if nature == sgs.DamageStruct_Normal and from and from:hasSkill("cizhang") then
 		nature = sgs.DamageStruct_Thunder
 	end
-	if to and to:hasFlag("ZhangqiFlag") then
+	if to and to:getMark("@miasma") > 0 then
 		nature = sgs.DamageStruct_Fire
 	end
 
@@ -7619,7 +7619,7 @@ function SmartAI:touhouConfirmDamage(damage,from,to)
 			damage.damage=damage.damage+1
 		end
 	end
-	if to:hasFlag("ZhangqiFlag") then
+	if to:getMark("@miasma") > 0 then
 		damage.damage = damage.damage + 1
 	end
 	if damage.nature == sgs.DamageStruct_Thunder and to:hasSkill("cizhang") then

@@ -157,10 +157,7 @@ selectFirst = function(player, candidates) -- string
 		"alice",
 		"koishi",
 		"mystia",
-		"yamame",
 		"minoriko",
-		"tewi",
-		"iku"
 	}
 	
 	local seat_place
@@ -174,6 +171,10 @@ selectFirst = function(player, candidates) -- string
 
 	for _, candidate in ipairs(candidates) do
 		local value = 5.0
+		if candidate == "aya" then value = value * 0.88 end
+		if candidate == "pachouli" then value = value * 1.09 end
+		if candidate == "remilia" then value = value * 1.06 end
+		if candidate == "nitori" then value = value * 1.05 end
 		local general = sgs.Sanguosha:getGeneral(candidate)
 		if role == "loyalist" and ((general:getKingdom() == lord:getKingdom() and not lord:hasLordSkill("qiji$")) or general:getKingdom() == "god") then
 			value = value * 1.04

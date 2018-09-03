@@ -6,3 +6,4 @@ reimu		yamame		-0.1
 marisa		reimu		0.2
 aya			kyouko		0.3
 cirno		nitori		0.2
+pachouli	mystia		0.1

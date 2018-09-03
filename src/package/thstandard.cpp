@@ -3490,9 +3490,9 @@ public:
 		if (event == EventPhaseChanging) {
 			PhaseChangeStruct change = data.value<PhaseChangeStruct>();
 			ServerPlayer *yamame = change.player;
-			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && change.to == Player::RoundStart) {
-				foreach (ServerPlayer *p, room->getOtherPlayers(yamame)) {
-					room->setPlayerFlag(p, "-ZhangqiFlag");
+			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && change.to == Player::Start) {
+				foreach (ServerPlayer *p, room->getAlivePlayers()) {
+					room->setPlayerMark(p, "@miasma", 0);
 				}
 			}
 		}
@@ -3504,15 +3504,16 @@ public:
 			DamageStruct damage = data.value<DamageStruct>();
 			ServerPlayer *yamame = damage.from;
 			ServerPlayer *to = damage.to;
-			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && to && to->isAlive() && !to->hasFlag("ZhangqiFlag")) {
+			if (yamame && yamame->isAlive() && yamame->hasSkill(this) && to && to->isAlive() && to->getMark("@miasma") == 0) {
 				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, yamame, yamame, NULL, false, to);
 			}
 		} else if (event == ConfirmDamage) {
 			DamageStruct damage = data.value<DamageStruct>();
-			ServerPlayer *yamame = room->findPlayerBySkillName(objectName());
 			ServerPlayer *to = damage.to;
-			if (yamame && yamame->isAlive() && to && to->isAlive() && to->hasFlag("ZhangqiFlag"))
+			ServerPlayer *yamame = room->findPlayerBySkillName(objectName());
+			if (yamame && to && to->isAlive() && to->getMark("@miasma") > 0) {
 				return QList<SkillInvokeDetail>() << SkillInvokeDetail(this, yamame, yamame, NULL, true, to);
+			}
 		}
 		return QList<SkillInvokeDetail>();
 	}
@@ -3520,8 +3521,9 @@ public:
 	bool cost(TriggerEvent event, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
 	{
 		ServerPlayer *yamame = invoke->invoker;
-		if (event == DamageCaused)
+		if (event == DamageCaused) {
 			return room->askForSkillInvoke(yamame, objectName(), data);
+		}
 		return true;
 	}
 	
@@ -3532,7 +3534,7 @@ public:
 		if (event == DamageCaused) {
 			if (to->getMark("@spell") > 0)
 				room->removePlayerMark(to, "@spell", 1);
-			room->setPlayerFlag(to, "ZhangqiFlag");
+			room->addPlayerMark(to, "@miasma", 1);
 			return true;
 		} else if (event == ConfirmDamage) {
 			DamageStruct damage = data.value<DamageStruct>();

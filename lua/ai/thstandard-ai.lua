@@ -506,7 +506,18 @@ sgs.ai_skill_cardask["@bingpu"] = function(self)
 		else
 			for _, c2 in sgs.qlist(current:getCards("e")) do
 				if c2:isKindOf("SilverLion") and current:isWounded() then
-					return "$" .. c2:getEffectiveId()
+					local has_other_armor = false
+					for _, c in ipairs(cards) do
+						if c:isKindOf("Armor") then
+							has_other_armor = true
+							break
+						end
+					end
+					for _, c in ipairs(cards) do
+						if self:getUseValue(c) < 8 and not c:isKindOf("Peach") and (not (c:isKindOf("Analeptic") and self:isVeryWeak()) or has_other_armor) then
+							return "$" .. c:getEffectiveId()
+						end
+					end
 				end
 			end
 		end
@@ -1071,6 +1082,19 @@ end
 
 sgs.ai_skill_invoke.jiexun = true
 
+function SmartAI:prepareForXianshi()
+	local player = self.player
+	if player:getMark("@philosopher") == 0 then return false end
+	local marks = {"@fire", "@water", "@wood", "@gold", "@earth"}
+	local mark_types = 0
+	for _, mark in ipairs(marks) do
+		if player:getMark(mark) > 0 then
+			mark_types = mark_types + 1
+		end
+	end
+	return mark_types >= 4
+end
+
 sgs.ai_skill_choice.shengyao = function(self, choices)
 	
 	function shuffle(t)
@@ -1110,6 +1134,7 @@ sgs.ai_skill_choice.shengyao = function(self, choices)
 end
 
 sgs.ai_skill_use["@@ranhui"] = function(self, prompt)
+	if self:prepareForXianshi() and self.player:getMark("@fire") == 1 then return "." end
 	local target = self.room:getCurrent()
 	local cards = sgs.QList2Table(self.player:getCards("he"))
 	self:sortByKeepValue(cards)
@@ -1165,6 +1190,7 @@ sgs.ai_skill_use["@@ranhui"] = function(self, prompt)
 end
 
 sgs.ai_skill_invoke.huzang = function(self, data)
+	if self:prepareForXianshi() and self.player:getMark("@water") == 1 then return false end
 	local damage = data:toDamage()
 	if self:isFriend(damage.to) and damage.to:isWounded() and damage.to:getArmor() and damage.to:getArmor():isKindOf("SilverLion") then
 		return true
@@ -1181,6 +1207,7 @@ sgs.ai_skill_invoke.huzang = function(self, data)
 end
 
 sgs.ai_skill_invoke.jiaodi = function(self, data)
+	if self:prepareForXianshi() and self.player:getMark("@wood") == 1 then return false end
 	local target = self.player:getTag("JiaodiTarget"):toPlayer()
 	if not self:isFriend(target) then return false end
 	if target:getHp() == 1 or self:isVeryWeak(target) then return true end
@@ -1192,6 +1219,7 @@ end
 local dianjin_skill = {name = "dianjin"}
 table.insert(sgs.ai_skills, dianjin_skill)
 dianjin_skill.getTurnUseCard = function(self)
+	if self:prepareForXianshi() and self.player:getMark("@gold") == 1 then return nil end
 	if self.player:isKongcheng() then return nil end
 
 	local card
@@ -1238,6 +1266,7 @@ sgs.ai_use_priority.DianjinCard = 8.7
 sgs.dynamic_value.benefit.DianjinCard = true
 
 sgs.ai_skill_cardask["@zhenlei-discard"] = function(self, data)
+	if self:prepareForXianshi() and self.player:getMark("@earth") == 1 then return "." end
 	local cards = sgs.QList2Table(self.player:getHandcards())
 	self:sortByKeepValue(cards)
 	local lord = self.room:getLord()
@@ -1705,6 +1734,22 @@ sgs.ai_skill_use["@@kaihai"] = function(self, prompt)
 	end
 	if player ~= nil then
 		sgs.updateIntention(self.player, player, 80)
+	else
+		local max_delta = 0
+		for _, p in ipairs(self.friends) do
+			if p:getHp() >= p:getHandcardNum() then continue end
+			if p:getHandcardNum() > p:getLostHp() then continue end
+			local delta = p:getLostHp() - p:getHandcardNum()
+			if delta >= max_delta then
+				max_delta = delta
+				player = p
+			end
+		end
+		if player ~= nil then
+			sgs.updateIntention(self.player, player, -60)
+		end
+	end
+	if player ~= nil then
 		return ("@KaihaiCard=.->%s"):format(player:objectName())
 	end
 	return "."
