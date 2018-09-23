@@ -1277,7 +1277,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
             // Relation between all other players and player
             foreach (ServerPlayer *p, all_players) {
                 if (p != player) {
-                    AI::Relation rel = AI::GetRelation(player, p);
+                    AI::Relation rel = AI::GetEvalRelation(player, p);
                     if (rel == AI::Friend) {
                         input += "1 ";
                     } else if (rel == AI::Enemy) {
@@ -1322,7 +1322,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
             // Attacking cards num of friends who can slash target
             int slash_count = 0, duel_count = 0, savage_count = 0, fire_count = 0, archery_count = 0;
             foreach (ServerPlayer *p, all_players) {
-                if (AI::GetRelation(player, p) == AI::Friend) {
+                if (AI::GetEvalRelation(player, p) == AI::Friend) {
                     QString flag = QString("visible_%1_%2").arg(player->objectName()).arg(p->objectName());
                     QList<const Card *> cards = p->getHandcards();
                     foreach (int id, p->getPile("wooden_ox")) {
@@ -1400,9 +1400,9 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
                 foreach (const Card *card, cards) {
                     if (card->hasFlag("visible") || card->hasFlag(flag)) {
                         if (card->isKindOf("Nullification")) {
-                            if (AI::GetRelation(player, p) == AI::Friend) {
+                            if (AI::GetEvalRelation(player, p) == AI::Friend) {
                                 f_null++;
-                            } else if (AI::GetRelation(player, p) == AI::Enemy) {
+                            } else if (AI::GetEvalRelation(player, p) == AI::Enemy) {
                                 e_null++;
                             }
                         }
