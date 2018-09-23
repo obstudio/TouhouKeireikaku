@@ -1263,7 +1263,8 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
 
             QFile inputs("zhangqi_inputs.txt");
             inputs.open(QIODevice::Append | QIODevice::Text);
-            QString input = "";
+            QString current_date_time = QDateTime::currentDateTime().toString("yyyy/MM/dd/hh:mm:ss");
+            QString input = QString("%1  %2  ").arg(current_date_time).arg(player->getIp());
 
             // HP of all players
             foreach (ServerPlayer *p, all_players) {
