@@ -28,6 +28,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <ctime>
+#include <cstdlib>
 #include <QHostInfo>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
@@ -1243,6 +1244,204 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
             QVariant clientReply = player->getClientReply();
             if (clientReply.canConvert(QVariant::Bool))
                 invoked = clientReply.toBool();
+        }
+
+        if (skill_name == "zhangqi") {
+            DamageStruct damage = data.value<DamageStruct>();
+            ServerPlayer *target = damage.to;
+
+            QList<ServerPlayer *> count_players = m_alivePlayers;
+            ServerPlayer *starter = player;
+            int index = count_players.indexOf(starter);
+            QList<ServerPlayer *> all_players;
+            for (int i = index; i < count_players.length(); i++) {
+                all_players << count_players[i];
+            }
+            for (int i = 0; i < index; i++) {
+                all_players << count_players[i];
+            }
+
+            QFile inputs("zhangqi_inputs.txt");
+            inputs.open(QIODevice::Append | QIODevice::Text);
+            QString current_date_time = QDateTime::currentDateTime().toString("yyyy/MM/dd/hh:mm:ss");
+            QString input = QString("%1  %2  ").arg(current_date_time).arg(player->getIp());
+
+            // HP of all players
+            foreach (ServerPlayer *p, all_players) {
+                input += QString::number(p->getHp()) + " ";
+            }
+            for (int i = 0; i < 10 - all_players.length(); i++) {
+                input += "-1 ";
+            }
+
+            // Relation between all other players and player
+            foreach (ServerPlayer *p, all_players) {
+                if (p != player) {
+                    AI::Relation rel = AI::GetRelation(player, p);
+                    if (rel == AI::Friend) {
+                        input += "1 ";
+                    } else if (rel == AI::Enemy) {
+                        input += "-1 ";
+                    } else {
+                        input += "0 ";
+                    }
+                }
+            }
+            for (int i = 0; i < 10 - all_players.length(); i++) {
+                input += "0 ";
+            }
+
+            // Chain states of all players
+            foreach (ServerPlayer *p, all_players) {
+                if (p->isChained()) {
+                    input += "1 ";
+                } else {
+                    input += "0 ";
+                }
+            }
+            for (int i = 0; i < 10 - all_players.length(); i++) {
+                input += "0 ";
+            }
+
+            // Usable cards num of all players
+            foreach (ServerPlayer *p, all_players) {
+                int n = p->getHandcardNum() + p->getPile("wooden_ox").length();
+                input += QString::number(n) + " ";
+            }
+            for (int i = 0; i < 10 - all_players.length(); i++) {
+                input += "0 ";
+            }
+
+            // Self face up
+            if (player->faceUp()) {
+                input += "1 ";
+            } else {
+                input += "0 ";
+            }
+
+            // Attacking cards num of friends who can slash target
+            int slash_count = 0, duel_count = 0, savage_count = 0, fire_count = 0, archery_count = 0;
+            foreach (ServerPlayer *p, all_players) {
+                if (AI::GetRelation(player, p) == AI::Friend) {
+                    QString flag = QString("visible_%1_%2").arg(player->objectName()).arg(p->objectName());
+                    QList<const Card *> cards = p->getHandcards();
+                    foreach (int id, p->getPile("wooden_ox")) {
+                        cards << Sanguosha->getCard(id);
+                    }
+                    foreach (const Card *card, cards) {
+                        if (card->hasFlag("visible") || card->hasFlag(flag)) {
+                            if (card->isKindOf("Slash") && Slash::IsAvailable(p) && card->targetFilter(QList<const Player *>(), p, target) && !isProhibited(p, target, card)) {
+                                slash_count++;
+                            } else if (card->isKindOf("SavageAssault") && !isProhibited(p, target, card)) {
+                                savage_count++;
+                            } else if (card->isKindOf("Duel") && card->targetFilter(QList<const Player *>(), p, target) && !isProhibited(p, target, card)) {
+                                duel_count++;
+                            } else if (card->isKindOf("FireAttack") && card->targetFilter(QList<const Player *>(), p, target) && !isProhibited(p, target, card)) {
+                                fire_count++;
+                            } else if (card->isKindOf("ArcheryAttack") && !isProhibited(p, target, card)) {
+                                archery_count++;
+                            }
+                        }
+                    }
+                }
+            }
+            input += QString("%1 %2 %3 %4 %5 ").arg(slash_count).arg(savage_count).arg(duel_count).arg(fire_count).arg(archery_count);
+
+            // Jinks num of all players
+            foreach (ServerPlayer *p, all_players) {
+                int jink_count = 0;
+                QString flag = QString("visible_%1_%2").arg(player->objectName()).arg(p->objectName());
+                QList<const Card *> cards = p->getHandcards();
+                foreach (int id, p->getPile("wooden_ox")) {
+                    cards << Sanguosha->getCard(id);
+                }
+                foreach (const Card *card, cards) {
+                    if (card->hasFlag("visible") || card->hasFlag(flag)) {
+                        if (card->isKindOf("Jink")) {
+                            jink_count++;
+                        }
+                    }
+                }
+                input += QString("%1 ").arg(jink_count);
+            }
+            for (int i = 0; i < 10 - all_players.length(); i++) {
+                input += "0 ";
+            }
+
+            // Slash num of all players
+            foreach (ServerPlayer *p, all_players) {
+                int s_count = 0;
+                QString flag = QString("visible_%1_%2").arg(player->objectName()).arg(p->objectName());
+                QList<const Card *> cards = p->getHandcards();
+                foreach (int id, p->getPile("wooden_ox")) {
+                    cards << Sanguosha->getCard(id);
+                }
+                foreach (const Card *card, cards) {
+                    if (card->hasFlag("visible") || card->hasFlag(flag)) {
+                        if (card->isKindOf("Slash")) {
+                            s_count++;
+                        }
+                    }
+                }
+                input += QString("%1 ").arg(s_count);
+            }
+            for (int i = 0; i < 10 - all_players.length(); i++) {
+                input += "0 ";
+            }
+
+            // Nullification num of friends and enemies
+            int f_null = 0, e_null = 0;
+            foreach (ServerPlayer *p, all_players) {
+                QString flag = QString("visible_%1_%2").arg(player->objectName()).arg(p->objectName());
+                QList<const Card *> cards = p->getHandcards();
+                foreach (int id, p->getPile("wooden_ox")) {
+                    cards << Sanguosha->getCard(id);
+                }
+                foreach (const Card *card, cards) {
+                    if (card->hasFlag("visible") || card->hasFlag(flag)) {
+                        if (card->isKindOf("Nullification")) {
+                            if (AI::GetRelation(player, p) == AI::Friend) {
+                                f_null++;
+                            } else if (AI::GetRelation(player, p) == AI::Enemy) {
+                                e_null++;
+                            }
+                        }
+                    }
+                }
+            }
+            input += QString("%1 %2 ").arg(f_null).arg(e_null);
+
+            // Target armor type
+            const Card *armor = target->getArmor();
+            if (armor == NULL) {
+                input += "0 ";
+            } else if (armor->isKindOf("EightDiagram")) {
+                input += "1 ";
+            } else if (armor->isKindOf("RenwangShield")) {
+                input += "2 ";
+            } else if (armor->isKindOf("SilverLion")) {
+                input += "3 ";
+            } else if (armor->isKindOf("Vine")) {
+                input += "4 ";
+            } else {
+                input += "5 ";
+            }
+
+            input += "\n";
+            inputs.write(input.toLatin1().data());
+            inputs.close();
+
+            QFile outputs("zhangqi_outputs.txt");
+            outputs.open(QIODevice::Append | QIODevice::Text);
+            QString output = "";
+            if (invoked) {
+                output += "1 ";
+            } else {
+                output += "0 ";
+            }
+            output += "\n";
+            outputs.write(output.toLatin1().data());
+            outputs.close();
         }
     }
 
