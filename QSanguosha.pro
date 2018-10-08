@@ -44,6 +44,9 @@ SOURCES += \
     src/dialog/mainwindow.cpp \
     src/dialog/playercarddialog.cpp \
     src/dialog/roleassigndialog.cpp \
+    src/dialog/logindialog.cpp \
+    src/dialog/userinfodialog.cpp \
+    src/dialog/rewardoverview.cpp \
     src/package/exppattern.cpp \
     src/package/maneuvering.cpp \
     src/package/package.cpp \
@@ -138,6 +141,9 @@ HEADERS += \
     src/dialog/mainwindow.h \
     src/dialog/playercarddialog.h \
     src/dialog/roleassigndialog.h \
+    src/dialog/logindialog.h \
+    src/dialog/userinfodialog.h \
+    src/dialog/rewardoverview.h \
     src/package/exppattern.h \
     src/package/maneuvering.h \
     src/package/package.h \
@@ -203,10 +209,13 @@ HEADERS += \
 
 FORMS += \
     src/dialog/cardoverview.ui \
+    src/dialog/logindialog.ui \
     src/dialog/configdialog.ui \
+    src/dialog/userinfodialog.ui \
     src/dialog/connectiondialog.ui \
     src/dialog/generaloverview.ui \
-    src/dialog/mainwindow.ui
+    src/dialog/mainwindow.ui \
+    src/dialog/rewardoverview.ui
 
 INCLUDEPATH += include
 INCLUDEPATH += src/client

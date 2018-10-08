@@ -2,7 +2,9 @@
 #define _MAIN_WINDOW_H
 
 #include "engine.h"
+#include "logindialog.h"
 #include "connectiondialog.h"
+#include "userinfodialog.h"
 #include "configdialog.h"
 
 #include <QMainWindow>
@@ -62,7 +64,9 @@ private:
     FitView *view;
     QGraphicsScene *scene;
     Ui::MainWindow *ui;
+    LoginDialog *login_dialog;
     ConnectionDialog *connection_dialog;
+    UserInfoDialog *user_info_dialog;
     ConfigDialog *config_dialog;
     QSystemTrayIcon *systray;
 
@@ -76,6 +80,7 @@ private slots:
     void on_actionAbout_Lua_triggered();
     void on_actionAbout_fmod_triggered();
     void on_actionReplay_file_convert_triggered();
+    void on_actionBack_triggered();
     void on_actionPC_Console_Start_triggered();
     void on_actionRecord_analysis_triggered();
     void on_actionAcknowledgement_triggered();
@@ -91,6 +96,7 @@ private slots:
     void on_actionNever_nullify_my_trick_toggled(bool);
     void on_actionCard_Overview_triggered();
     void on_actionGeneral_Overview_triggered();
+    void on_actionReward_Overview_triggered();
     void on_actionStart_Server_triggered();
     void on_actionExit_triggered();
 
@@ -99,6 +105,7 @@ private slots:
     void enterRoom();
     void gotoScene(QGraphicsScene *scene);
     void gotoStartScene();
+    void gotoMainScene();
     void startGameInAnotherInstance();
     void changeBackground();
     void changeTableBg();

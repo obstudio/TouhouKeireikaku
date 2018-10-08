@@ -3716,7 +3716,7 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         table->setItem(i, 9, item);
 
         item = new QTableWidgetItem;
-        item->setText(rec->m_designation.join(", "));
+        item->setText(player->property("designations").toStringList().join(", "));
         table->setItem(i, 10, item);
 
         item = new QTableWidgetItem;
