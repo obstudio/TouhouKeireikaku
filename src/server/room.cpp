@@ -2714,7 +2714,7 @@ QString Room::uploadRewards(QString username, QString reward_str)
 
 QString Room::uploadRewards(QString username, QStringList rewards)
 {
-    QString reward_str = rewards.join("+");
+    QString reward_str = rewards.join(",");
     return uploadRewards(username, reward_str);
 }
 
@@ -2725,10 +2725,10 @@ QStringList Room::downloadRewards(QString username)
     QString replyString = post(url, cont);
     if (replyString.startsWith(":::")) {
         replyString = replyString.right(replyString.length() - 3);
-        qDebug() << replyString.contains("+") << endl;
+        qDebug() << replyString.contains(",") << endl;
         if (replyString.isEmpty())
             return QStringList("None");
-        return replyString.split("+");
+        return replyString.split(",");
     }
     return QStringList();
 }
