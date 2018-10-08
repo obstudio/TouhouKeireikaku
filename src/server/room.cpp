@@ -2736,7 +2736,7 @@ QString Room::uploadGameAppendices(QString username, int bp, QStringList rewards
 {
     QString reward_str = rewards.join("+");
     QString url("https://thkrk.ob-studio.cn/upload_game_appendices");
-    QString cont = QString("username=%1&bp=%2&rewards=%3&password=%3").arg(username).arg(QString::number(bp)).arg(reward_str).arg(Encryptor_PHP_Password);
+    QString cont = QString("username=%1&bp=%2&rewards=%3&password=%4").arg(username).arg(QString::number(bp)).arg(reward_str).arg(Encryptor_PHP_Password);
     return post(url, cont);
 }
 
