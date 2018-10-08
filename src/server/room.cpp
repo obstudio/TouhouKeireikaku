@@ -2714,7 +2714,7 @@ QString Room::uploadRewards(QString username, QString reward_str)
 
 QString Room::uploadRewards(QString username, QStringList rewards)
 {
-    QString reward_str = rewards.join(",");
+    QString reward_str = rewards.join("0");
     return uploadRewards(username, reward_str);
 }
 
@@ -2725,17 +2725,17 @@ QStringList Room::downloadRewards(QString username)
     QString replyString = post(url, cont);
     if (replyString.startsWith(":::")) {
         replyString = replyString.right(replyString.length() - 3);
-        qDebug() << replyString.contains(",") << endl;
+        qDebug() << replyString.contains("0") << endl;
         if (replyString.isEmpty())
             return QStringList("None");
-        return replyString.split(",");
+        return replyString.split("0");
     }
     return QStringList();
 }
 
 QString Room::uploadGameAppendices(QString username, int bp, QStringList rewards)
 {
-    QString reward_str = rewards.join("+");
+    QString reward_str = rewards.join("0");
     QString url("https://thkrk.ob-studio.cn/upload_game_appendices");
     QString cont = QString("username=%1&bp=%2&rewards=%3&password=%4").arg(username).arg(QString::number(bp)).arg(reward_str).arg(Encryptor_PHP_Password);
     return post(url, cont);
