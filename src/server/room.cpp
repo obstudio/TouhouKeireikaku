@@ -2725,6 +2725,7 @@ QStringList Room::downloadRewards(QString username)
     QString replyString = post(url, cont);
     if (replyString.startsWith(":::")) {
         replyString = replyString.right(replyString.length() - 3);
+        qDebug() << replyString.contains("+") << endl;
         if (replyString.isEmpty())
             return QStringList("None");
         return replyString.split("+");
