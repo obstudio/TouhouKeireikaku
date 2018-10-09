@@ -1643,7 +1643,7 @@ sgs.ai_skill_choice.anji = function(self, choices)
 	if #self.enemies == 0 then return "KeepCard" end
 	self:sort(self.enemies, "defense")
 	for _, p in ipairs(self.enemies) do
-		if self.player:inMyAttackRange(p) and not self:hasVine(p) and not self:isWeak() and self.player:getHandcardNum() > 1 then
+		if self.player:inMyAttackRange(p) and not self:hasVine(p) and not p:hasArmorEffect("RenwangShield") and not self:isWeak() and self.player:getHandcardNum() > 1 then
 			return "UseSlash"
 		end
 	end

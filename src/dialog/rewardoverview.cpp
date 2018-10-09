@@ -50,7 +50,7 @@ QStringList downloadRewards(QString username)
         replyString = replyString.right(replyString.length() - 3);
         if (replyString.isEmpty())
             return QStringList("None");
-        return replyString.split("+");
+        return replyString.split("0");
     }
     return QStringList();
 }
