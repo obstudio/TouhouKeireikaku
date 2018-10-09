@@ -796,11 +796,9 @@ void Room::gameOver(const QString &winner)
 
                     uploadGameAppendices(p->screenName(), (int)(p->getBP() + 0.50), rewards);
 
-                    QStringList designations;
-                    foreach (QString des, rewards) {
-                        designations << Sanguosha->translate(des);
-                    }
-                    setPlayerProperty(p, "designations", designations);
+                    setPlayerProperty(p, "designations", rewards.join(", "));
+                    qDebug() << p->screenName() << endl;
+                    qDebug() << p->property("designations") << endl;
                 }
             } else {
                 qDebug() << "Too few real players!" << endl;
