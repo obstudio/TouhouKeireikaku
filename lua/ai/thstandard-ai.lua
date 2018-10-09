@@ -623,6 +623,7 @@ sgs.ai_skill_invoke.shiling = function(self, data)
 end
 
 sgs.ai_skill_cardask["@shiling-discard"] = function(self, data)
+	if self.player:isKongcheng() then return "." end
 	local use = data:toCardUse()
 	local card = use.card
 	local cards = sgs.QList2Table(self.player:getHandcards())
