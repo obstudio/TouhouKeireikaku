@@ -569,8 +569,14 @@ void Room::gameOver(const QString &winner)
             }
             if (real_players.length() > 1) {
                 qDebug() << "Real players num valid!" << endl;
+                QStringList all_des = Sanguosha->getDesignations();
                 foreach (ServerPlayer *p, real_players) {
                     qDebug() << "Uploading BP for " + p->getGeneral()->objectName() + "..." << endl;
+
+                    QStringList rewards;
+                    QStringList curr_rewards = downloadRewards(p->screenName());
+                    QString reward;
+
                     p->addBP(p->getMark("Global_TurnCount") * 2.78 + 5.00);
                     p->addBP((p->getHandcardNum() + p->getPile("wooden_ox").length()) * 2.06 + p->getEquips().length() * 2.88);
 
@@ -587,9 +593,21 @@ void Room::gameOver(const QString &winner)
                             coef += 0.60;
                         }
                         p->addBP(p->getBP() * coef);
+
+                        reward = all_des.at(7);
+                        if (!curr_rewards.contains(reward)) {
+                            rewards << reward;
+                            p->addBP(10.00);
+                        }
                     }
 
-                    double reward = 0;
+                    reward = all_des.at(8);
+                    if (!curr_rewards.contains(reward)) {
+                        rewards << reward;
+                        p->addBP(5.00);
+                    }
+
+                    double bonus = 0;
                     bool max_damage = true, max_damaged = true, max_kill = true, max_recover = true;
                     foreach (ServerPlayer *p2, getOtherPlayers(p)) {
                         if (p2->getMark("Global_Damage") > p->getMark("Global_Damage")) {
@@ -610,37 +628,55 @@ void Room::gameOver(const QString &winner)
 
                     if (max_damage) {
                         if (p->getMark("Global_Damage") > 0 && p->getMark("Global_Damage") <= 9) {
-                            reward += 3.69;
+                            bonus += 3.69;
                         } else if (p->getMark("Global_Damage") >= 10 && p->getMark("Global_Damage") <= 14) {
-                            reward += 4.82;
+                            bonus += 4.82;
                         } else if (p->getMark("Global_Damage") >= 15 && p->getMark("Global_Damage") <= 19) {
-                            reward += 7.01;
+                            bonus += 7.01;
                         } else if (p->getMark("Global_Damage") >= 20) {
-                            reward += 12.25;
+                            bonus += 12.25;
+                        }
+
+                        reward = all_des.at(4);
+                        if (p->getMark("Global_Damage") >= 15 && !curr_rewards.contains(reward)) {
+                            rewards << reward;
+                            bonus += 10.00;
                         }
                     }
 
                     if (max_kill && p->getMark("Global_Kill") >= 2) {
-                        reward += 10.27;
+                        bonus += 10.27;
                     }
 
                     if (max_recover) {
                         if (p->getMark("Global_Recover") >= 5 && p->getMark("Global_Recover") <= 9) {
-                            reward += 3.03;
+                            bonus += 3.03;
                         } else if (p->getMark("Global_Recover") >= 10) {
-                            reward += 5.42;
+                            bonus += 5.42;
+
+                            reward = all_des.at(5);
+                            if (!curr_rewards.contains(reward)) {
+                                rewards << reward;
+                                bonus += 10.00;
+                            }
                         }
                     }
 
                     if (max_damaged) {
                         if (p->getMark("Global_Damaged") >= 10 && p->isAlive()) {
                             if (!winners.contains(p->getRole()))
-                                reward += 0.85;
+                                bonus += 0.85;
                             else
-                                reward += 6.73;
+                                bonus += 6.73;
                         }
                         if (p->getMark("Global_Damaged") >= 15) {
-                            reward += 1.32;
+                            bonus += 1.32;
+
+                            reward = all_des.at(6);
+                            if (!curr_rewards.contains(reward)) {
+                                rewards << reward;
+                                bonus += 10.00;
+                            }
                         }
                     }
 
@@ -653,19 +689,37 @@ void Room::gameOver(const QString &winner)
                     }
 
                     if (only_role && (p->getRole() == "loyalist" || p->getRole() == "rebel")) {
-                        reward += 8.54;
+                        bonus += 8.54;
                     }
 
                     if (p->getMark("Global_TurnCount") == 0 && !p->isAlive()) {
-                        reward += 5.00;
+                        bonus += 5.00;
+
+                        reward = all_des.at(0);
+                        if (!curr_rewards.contains(reward)) {
+                            rewards << reward;
+                            bonus += 15.00;
+                        }
                     }
 
                     if (p->getMark("Global_Damage") == 0 && p->getMark("Global_Damaged") == 0 && p->getMark("Global_Recover") == 0 && p->getMark("Global_Kill") == 0 && p->isAlive()) {
-                        reward += 6.67;
+                        bonus += 6.67;
+
+                        reward = all_des.at(3);
+                        if (!curr_rewards.contains(reward)) {
+                            rewards << reward;
+                            bonus += 10.00;
+                        }
                     }
 
-                    if (p->getMark("Global_TurnCount") == 1 && p->isAlive() && winners.contains(p->getRole())) {
-                        reward += 10.55;
+                    if (p->getMark("Global_TurnCount") == 1 && p->isAlive() && winners.contains(p->getRole()) && getCurrent() == p) {
+                        bonus += 10.55;
+
+                        reward = all_des.at(1);
+                        if (!curr_rewards.contains(reward)) {
+                            rewards << reward;
+                            bonus += 15.00;
+                        }
                     } else if (p->getRole() == "rebel" && winners.contains("rebel") && p->getMark("Global_Kill") == 1 && !getLord()->isAlive()) {
                         bool break_point = true;
                         foreach (ServerPlayer *p2, getOtherPlayers(getLord())) {
@@ -675,7 +729,7 @@ void Room::gameOver(const QString &winner)
                             }
                         }
                         if (break_point)
-                            reward += 7.43;
+                            bonus += 7.43;
                     }
 
                     bool min_damage = true;
@@ -686,18 +740,24 @@ void Room::gameOver(const QString &winner)
                         }
                     }
                     if (min_damage && max_kill) {
-                        reward += 9.25;
+                        bonus += 9.25;
                     }
 
                     if (p->getRole() == "renegade" && winners.contains("renegade") && p->isAlive() && p->getMark("Global_Damaged") == 0) {
-                        reward += 13.07;
+                        bonus += 13.07;
                     }
 
                     if (max_damage && max_recover && max_kill && p->getMark("Global_Damage") >= 10 && p->getMark("Global_Recover") >= 10 && p->isAlive() && winners.contains(p->getRole())) {
-                        reward += 16.85;
+                        bonus += 16.85;
+
+                        reward = all_des.at(2);
+                        if (!curr_rewards.contains(reward)) {
+                            rewards << reward;
+                            bonus += 20.00;
+                        }
                     }
 
-                    p->addBP(reward);
+                    p->addBP(bonus);
                     setPlayerProperty(p, "bonus_point", (int)(p->getBP() + 0.50));
 
                     // upload BP for username: player->screenName()
@@ -734,7 +794,11 @@ void Room::gameOver(const QString &winner)
                     QByteArray rawunarray = rawunstring.toLatin1();
                     QString unhash = QCryptographicHash::hash(rawunarray, QCryptographicHash::Sha256).toHex();*/
 
-                    uploadBP(p->screenName(), (int)(p->getBP() + 0.50));
+                    uploadGameAppendices(p->screenName(), (int)(p->getBP() + 0.50), rewards);
+
+                    setPlayerProperty(p, "designations", rewards.join(", "));
+                    qDebug() << p->screenName() << endl;
+                    qDebug() << p->property("designations") << endl;
                 }
             } else {
                 qDebug() << "Too few real players!" << endl;
@@ -1277,7 +1341,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
             // Relation between all other players and player
             foreach (ServerPlayer *p, all_players) {
                 if (p != player) {
-                    AI::Relation rel = AI::GetRelation(player, p);
+                    AI::Relation rel = AI::GetEvalRelation(player, p);
                     if (rel == AI::Friend) {
                         input += "1 ";
                     } else if (rel == AI::Enemy) {
@@ -1322,7 +1386,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
             // Attacking cards num of friends who can slash target
             int slash_count = 0, duel_count = 0, savage_count = 0, fire_count = 0, archery_count = 0;
             foreach (ServerPlayer *p, all_players) {
-                if (AI::GetRelation(player, p) == AI::Friend) {
+                if (AI::GetEvalRelation(player, p) == AI::Friend) {
                     QString flag = QString("visible_%1_%2").arg(player->objectName()).arg(p->objectName());
                     QList<const Card *> cards = p->getHandcards();
                     foreach (int id, p->getPile("wooden_ox")) {
@@ -1400,9 +1464,9 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
                 foreach (const Card *card, cards) {
                     if (card->hasFlag("visible") || card->hasFlag(flag)) {
                         if (card->isKindOf("Nullification")) {
-                            if (AI::GetRelation(player, p) == AI::Friend) {
+                            if (AI::GetEvalRelation(player, p) == AI::Friend) {
                                 f_null++;
-                            } else if (AI::GetRelation(player, p) == AI::Enemy) {
+                            } else if (AI::GetEvalRelation(player, p) == AI::Enemy) {
                                 e_null++;
                             }
                         }
@@ -2598,7 +2662,8 @@ void Room::tryPause() {
         m_waitCond.wait(locker.mutex());
 }
 
-QString Room::post(QString url, QString cont) {
+QString Room::post(QString url, QString cont)
+{
     QString replyString;
     QHostInfo host = QHostInfo::fromName("www.baidu.com");
     if (host.error() == QHostInfo::NoError) {
@@ -2621,19 +2686,57 @@ QString Room::post(QString url, QString cont) {
     return replyString;
 }
 
-QString Room::uploadBP(QString username, int bp) {
+QString Room::uploadBP(QString username, int bp)
+{
     QString url("https://thkrk.ob-studio.cn/upload_bp");
     QString cont = QString("username=%1&bp=%2&password=%3").arg(username).arg(QString::number(bp)).arg(Encryptor_PHP_Password);
     return post(url, cont);
 }
 
-int Room::downloadBP(QString username) {
+int Room::downloadBP(QString username)
+{
     QString url("https://thkrk.ob-studio.cn/download_bp");
     QString cont = QString("username=%1&password=%2").arg(username).arg(Encryptor_PHP_Password);
     QString replyString = post(url, cont);
     bool bp_valid;
     int bp = replyString.toInt(&bp_valid);
     return bp_valid ? bp : -1;
+}
+
+QString Room::uploadRewards(QString username, QString reward_str)
+{
+    QString url("https://thkrk.ob-studio.cn/upload_reward");
+    QString cont = QString("username=%1&rewards=%2&password=%3").arg(username).arg(reward_str).arg(Encryptor_PHP_Password);
+    return post(url, cont);
+}
+
+QString Room::uploadRewards(QString username, QStringList rewards)
+{
+    QString reward_str = rewards.join("0");
+    return uploadRewards(username, reward_str);
+}
+
+QStringList Room::downloadRewards(QString username)
+{
+    QString url("https://thkrk.ob-studio.cn/download_rewards");
+    QString cont = QString("username=%1&password=%2").arg(username).arg(Encryptor_PHP_Password);
+    QString replyString = post(url, cont);
+    if (replyString.startsWith(":::")) {
+        replyString = replyString.right(replyString.length() - 3);
+        qDebug() << replyString.contains("0") << endl;
+        if (replyString.isEmpty())
+            return QStringList("None");
+        return replyString.split("0");
+    }
+    return QStringList();
+}
+
+QString Room::uploadGameAppendices(QString username, int bp, QStringList rewards)
+{
+    QString reward_str = rewards.join("0");
+    QString url("https://thkrk.ob-studio.cn/upload_game_appendices");
+    QString cont = QString("username=%1&bp=%2&rewards=%3&password=%4").arg(username).arg(QString::number(bp)).arg(reward_str).arg(Encryptor_PHP_Password);
+    return post(url, cont);
 }
 
 int Room::getLack() const

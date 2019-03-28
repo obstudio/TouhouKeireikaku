@@ -105,3 +105,5 @@ src/util/testaes.*
 src/util/encryptor.*
 /serverinfo.txt
 /*.xlsx
+/*_inputs.txt
+/*_outputs.txt

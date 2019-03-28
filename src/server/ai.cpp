@@ -103,6 +103,87 @@ AI::Relation AI::GetRelation(const ServerPlayer *a, const ServerPlayer *b)
         return map.get(roleA, roleB);
 }
 
+AI::Relation AI::GetEvalRelation(const ServerPlayer *a, const ServerPlayer *b)
+{
+    if (a == b) return Friend;
+    static RoleMapping map, map_good, map_bad;
+    if (map.isEmpty()) {
+        map.set("lord", "lord", Friend);
+        map.set("lord", "rebel", Enemy);
+        map.set("lord", "loyalist", Friend);
+        map.set("lord", "renegade", Neutrality);
+        map.set("lord", "neutral", Neutrality);
+
+        map.set("loyalist", "loyalist", Friend);
+        map.set("loyalist", "lord", Friend);
+        map.set("loyalist", "rebel", Enemy);
+        map.set("loyalist", "renegade", Neutrality);
+        map.set("loyalist", "neutral", Neutrality);
+
+        map.set("rebel", "rebel", Friend);
+        map.set("rebel", "lord", Enemy);
+        map.set("rebel", "loyalist", Enemy);
+        map.set("rebel", "renegade", Neutrality);
+        map.set("rebel", "neutral", Neutrality);
+
+        map.set("renegade", "lord", Friend);
+        map.set("renegade", "loyalist", Neutrality);
+        map.set("renegade", "rebel", Neutrality);
+        map.set("renegade", "renegade", Neutrality);
+        map.set("renegade", "neutral", Neutrality);
+
+        map.set("neutral", "lord", Neutrality);
+        map.set("neutral", "loyalist", Neutrality);
+        map.set("neutral", "rebel", Neutrality);
+        map.set("neutral", "renegade", Neutrality);
+        map.set("neutral", "neutral", Neutrality);
+
+        map_good = map;
+        map_good.set("renegade", "loyalist", Enemy, false);
+        map_good.set("renegade", "lord", Neutrality, true);
+        map_good.set("renegade", "rebel", Friend, false);
+
+        map_bad = map;
+        map_bad.set("renegade", "loyalist", Neutrality, true);
+        map_bad.set("renegade", "rebel", Enemy, true);
+    }
+
+    if (a->aliveCount() == 2) {
+        return Enemy;
+    }
+
+    Room *room = a->getRoom();
+
+    QString roleA = a->getRole();
+
+    lua_State *L = room->getLuaState();
+    lua_getglobal(L, "sgs");
+    lua_pushstring(L, "ai_role");
+    lua_gettable(L, -2);
+    lua_pushstring(L, b->objectName().toLatin1().data());
+    lua_gettable(L, -2);
+    QString roleB = QString(lua_tostring(L, -1));
+    lua_pop(L, 1);
+
+    int good = 0, bad = 0;
+    QList<ServerPlayer *> players = room->getAlivePlayers();
+    foreach (ServerPlayer *player, players) {
+        switch (player->getRoleEnum()) {
+        case Player::Lord:
+        case Player::Loyalist: good++; break;
+        case Player::Rebel: bad++; break;
+        case Player::Renegade: good++; break;
+        }
+    }
+
+    if (bad > good)
+        return map_bad.get(roleA, roleB);
+    else if (good > bad)
+        return map_good.get(roleA, roleB);
+    else
+        return map.get(roleA, roleB);
+}
+
 AI::Relation AI::relationTo(const ServerPlayer *other) const
 {
     if (self == other)

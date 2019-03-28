@@ -852,6 +852,19 @@ int Engine::getCardCount() const
     return cards.length();
 }
 
+QStringList Engine::getDesignations() const
+{
+    return QStringList() << "Soy"
+                        << "FirstRoundWinner"
+                        << "MVP"
+                        << "UselessAlive"
+                        << "WrathWarlord"
+                        << "Peaceful"
+                        << "FireTarget"
+                        << "FirstWin"
+                        << "FirstGame";
+}
+
 QStringList Engine::getLords(bool contain_banned) const
 {
     QStringList lords;

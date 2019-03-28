@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         new QApplication(argc, argv);
         QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() + "/plugins");
 
-        QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        /* QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
         QStringList skins;
         skins << "compactSkin.image.json" << "compactSkin.layout.json" << "compactSkinAlt.layout.json"
             << "defaultSkin.animation.json" << "defaultSkin.audio.json" << "defaultSkin.image.json"
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-        }
+        } */
     }
 
 #ifdef Q_OS_MAC
