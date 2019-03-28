@@ -3716,7 +3716,12 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         table->setItem(i, 9, item);
 
         item = new QTableWidgetItem;
-        item->setText(rec->m_designation.join(", "));
+        QStringList raw_designations = player->property("designations").toString().split(", ");
+        QStringList designations;
+        foreach (QString des, raw_designations) {
+            designations << Sanguosha->translate(des);
+        }
+        item->setText(designations.join(", "));
         table->setItem(i, 10, item);
 
         item = new QTableWidgetItem;

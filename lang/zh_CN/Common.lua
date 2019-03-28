@@ -220,7 +220,7 @@ CommonTranslationTable = {
 	["CAPITAL(7)"] = "七",
 	["CAPITAL(8)"] = "八",
 	["CAPITAL(9)"] = "九",
-	["CAPITAL(10)"] = "十",
+	["CAPITAL(10)"] = "十"
 }
 
 return CommonTranslationTable

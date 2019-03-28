@@ -97,6 +97,9 @@ public:
     Card *getCard(int cardId);
     WrappedCard *getWrappedCard(int cardId);
 
+    QStringList getDesignations() const;
+    QStringList getRawDesignations() const;
+
     QStringList getLords(bool contain_banned = false) const;
     QStringList getRandomLords() const;
     void banRandomGods() const;

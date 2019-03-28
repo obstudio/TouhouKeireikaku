@@ -5,6 +5,8 @@
 #include "client.h"
 #include "generaloverview.h"
 #include "cardoverview.h"
+#include "rewardoverview.h"
+#include "userinfodialog.h"
 #include "ui_mainwindow.h"
 #include "window.h"
 #include "pixmapanimation.h"
@@ -76,6 +78,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     setWindowTitle(tr("TouhouSatsu") + "    " + Sanguosha->getVersionName() + "    " + Sanguosha->getVersionNumber());
 
+    login_dialog = new LoginDialog(this);
+    connect(ui->actionLogin, SIGNAL(triggered()), login_dialog, SLOT(exec()));
+    connect(login_dialog, SIGNAL(accepted()), this, SLOT(gotoMainScene()));
+
     connection_dialog = new ConnectionDialog(this);
     connect(ui->actionStart_Game, SIGNAL(triggered()), connection_dialog, SLOT(exec()));
     connect(connection_dialog, SIGNAL(accepted()), this, SLOT(startConnection()));
@@ -84,6 +90,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionConfigure, SIGNAL(triggered()), config_dialog, SLOT(show()));
     connect(config_dialog, SIGNAL(bg_changed()), this, SLOT(changeBackground()));
     connect(config_dialog, SIGNAL(tableBg_changed()), this, SLOT(changeTableBg()));
+
+    user_info_dialog = new UserInfoDialog(this);
+    connect(ui->actionUser_Info, SIGNAL(triggered()), user_info_dialog, SLOT(execWithBP()));
 
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(ui->actionAcknowledgement_2, SIGNAL(triggered()), this, SLOT(on_actionAcknowledgement_triggered()));
@@ -100,14 +109,12 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     QList<QAction *> actions;
-    actions << ui->actionStart_Game
+    actions << ui->actionLogin
             << ui->actionStart_Server
             << ui->actionPC_Console_Start
-            << ui->actionReplay
-            << ui->actionGeneral_Overview
-            << ui->actionCard_Overview
+            << ui->actionAbout_Us
             << ui->actionConfigure
-            << ui->actionAbout_Us;
+            << ui->actionExit;
 
     foreach(QAction *action, actions)
         start_scene->addButton(action);
@@ -336,7 +343,7 @@ void MainWindow::enterRoom()
     }
 
     connect(room_scene, SIGNAL(restart()), this, SLOT(startConnection()));
-    connect(room_scene, SIGNAL(return_to_start()), this, SLOT(gotoStartScene()));
+    connect(room_scene, SIGNAL(return_to_start()), this, SLOT(gotoMainScene()));
 
     gotoScene(room_scene);
 }
@@ -359,14 +366,12 @@ void MainWindow::gotoStartScene()
     StartScene *start_scene = new StartScene;
 
     QList<QAction *> actions;
-    actions << ui->actionStart_Game
+    actions << ui->actionLogin
             << ui->actionStart_Server
             << ui->actionPC_Console_Start
-            << ui->actionReplay
-            << ui->actionGeneral_Overview
-            << ui->actionCard_Overview
+            << ui->actionAbout_Us
             << ui->actionConfigure
-            << ui->actionAbout_Us;
+            << ui->actionExit;
 
     foreach(QAction *action, actions)
         start_scene->addButton(action);
@@ -396,6 +401,65 @@ void MainWindow::gotoStartScene()
     }
 }
 
+void MainWindow::gotoMainScene()
+{
+    //play BGM
+    if (Config.EnableBgMusic && !Audio::isBackgroundMusicPlaying()) {
+        Audio::stopBGM();
+        Audio::playBGM("audio/title/main.ogg", true, true);
+        Audio::setBGMVolume(Config.BGMVolume);
+    }
+    
+    ServerInfo.DuringGame = false;
+    QList<Server *> servers = findChildren<Server *>();
+    if (!servers.isEmpty())
+        servers.first()->deleteLater();
+
+    StartScene *main_scene = new StartScene;
+
+    QList<QAction *> actions;
+    actions << ui->actionStart_Game
+            << ui->actionReplay
+            << ui->actionUser_Info
+            << ui->actionGeneral_Overview
+            << ui->actionCard_Overview
+            << ui->actionReward_Overview
+            << ui->actionDocumentation
+            << ui->actionBack;
+
+    foreach(QAction *action, actions)
+        main_scene->addButton(action);
+
+    setCentralWidget(view);
+
+    ui->menuCheat->setEnabled(false);
+    ui->actionDeath_note->disconnect();
+    ui->actionDamage_maker->disconnect();
+    ui->actionRevive_wand->disconnect();
+    ui->actionSend_lowlevel_command->disconnect();
+    ui->actionExecute_script_at_server_side->disconnect();
+    gotoScene(main_scene);
+
+    addAction(ui->actionShow_Hide_Menu);
+    addAction(ui->actionFullscreen);
+
+    delete systray;
+    systray = NULL;
+    if (ClientInstance) {
+        if (Self) {
+            delete Self;
+            Self = NULL;
+        }
+        delete ClientInstance;
+        ClientInstance = NULL;
+    }
+}
+
+void MainWindow::on_actionBack_triggered()
+{
+    gotoStartScene();
+}
+
 void MainWindow::startGameInAnotherInstance()
 {
     QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
@@ -411,6 +475,13 @@ void MainWindow::on_actionGeneral_Overview_triggered()
 void MainWindow::on_actionCard_Overview_triggered()
 {
     CardOverview *overview = CardOverview::getInstance(this);
+    overview->loadFromAll();
+    overview->show();
+}
+
+void MainWindow::on_actionReward_Overview_triggered()
+{
+    RewardOverview *overview = RewardOverview::getInstance(this);
     overview->loadFromAll();
     overview->show();
 }

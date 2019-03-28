@@ -1287,8 +1287,11 @@ void Server::processRequest(const char *request)
         }
     }
 
-    if (current == NULL || current->isFull() || current->isFinished())
+    if (current == NULL || current->isFinished())
         createNewRoom();
+
+    if (current->isFull())
+        return;
 
     ServerPlayer *player = current->addSocket(socket);
     current->signup(player, screen_name, avatar, false);

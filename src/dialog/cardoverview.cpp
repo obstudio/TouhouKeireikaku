@@ -127,10 +127,11 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
     int row = ui->tableWidget->currentRow();
     int card_id = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toInt();
     const Card *card = Sanguosha->getEngineCard(card_id);
-    QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-    QString fileName = user_dir + QString("/mascot/diorite/sage/%1").arg(card->objectName());
+    //QString user_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    //QString fileName = user_dir + QString("/mascot/diorite/sage/%1").arg(card->objectName());
+    QString fileName = QString("image/big-card/%1.png").arg(card->objectName());
 
-    QPixmap pixmap;
+    /*QPixmap pixmap;
     QFile image_file(fileName);
     image_file.open(QIODevice::ReadOnly);
     //QByteArray val = image_file.readAll();
@@ -157,7 +158,7 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
             break;
         }
     }
-    image_file.close();
+    image_file.close();*/
 
     /*QString key("");
     for (int i = 0; i < fileName.section("/", -1, -1).length(); i++) {
@@ -167,7 +168,7 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
         //QMessageBox::about(NULL, "About", key + "\n" + fileName.section("/", -1, -1));
         return QPixmap(1, 1);
     }*/
-    if (fileName.contains("/mascot/")) {
+    /*if (fileName.contains("/mascot/")) {
         //QMessageBox::about(NULL, "About", fileName);
         QString key("");
         for (int i = 0; i < fileName.section("/", -1, -1).length(); i++) {
@@ -179,9 +180,9 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
         }
         buf.remove(0, 32);
     }
-    pixmap.loadFromData(buf);
+    pixmap.loadFromData(buf);*/
 
-    ui->cardLabel->setPixmap(pixmap);
+    ui->cardLabel->setPixmap(fileName);
 
     ui->cardDescriptionBox->setText(card->getDescription(false));
 

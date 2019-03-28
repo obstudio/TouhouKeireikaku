@@ -57,6 +57,10 @@ public:
     QString post(QString url, QString cont);
     QString uploadBP(QString username, int bp);
     int downloadBP(QString username);
+    QString uploadRewards(QString username, QString reward_str);
+    QString uploadRewards(QString username, QStringList rewards);
+    QStringList downloadRewards(QString username);
+    QString uploadGameAppendices(QString username, int bp, QStringList rewards);
 
     int getLack() const;
     QString getMode() const;
