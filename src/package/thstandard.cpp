@@ -187,7 +187,7 @@ public:
 	
 	bool effect(TriggerEvent, Room *room, QSharedPointer<SkillInvokeDetail> invoke, QVariant &data) const
 	{
-        ServerPlayer *reimu = invoke->owner;
+    ServerPlayer *reimu = invoke->owner;
 		ServerPlayer *player = invoke->invoker;
 		room->notifySkillInvoked(reimu, objectName());
 		QList<ServerPlayer *> to;

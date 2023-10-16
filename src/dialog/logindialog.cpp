@@ -73,25 +73,25 @@ LoginDialog::~LoginDialog()
 void LoginDialog::on_connectButton_clicked()
 {
     QString username = ui->nameLineEdit->text();
-    QString password = ui->passwordLineEdit->text();
+    //QString password = ui->passwordLineEdit->text();
 
-    QCryptographicHash hash(QCryptographicHash::Sha256);
+    /*QCryptographicHash hash(QCryptographicHash::Sha256);
     QByteArray pwarray = password.toLatin1();
     char *pwchar = pwarray.data();
     hash.addData(pwchar);
-    QString password_hash = hash.result().toHex();
+    QString password_hash = hash.result().toHex();*/
 
     if (username.isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("The user name can not be empty!"));
         return;
     }
 
-    if (password.isEmpty()) {
+    /*if (password.isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("Password cannot be empty!"));
         return;
-    }
+    }*/
 
-    QStringList hex_digits = {
+    /*QStringList hex_digits = {
         "0", "1", "2", "3",
         "4", "5", "6", "7",
         "8", "9", "a", "b",
@@ -112,9 +112,11 @@ void LoginDialog::on_connectButton_clicked()
     cont = QString("username=%1&password_hash=%2&client_token=%3").arg(username).arg(password_hash).arg(client_token);
     QByteArray contArray = cont.toLatin1();
     char *contChar = contArray.data();
-    m_Reply = manager->post(request, contChar);
+    m_Reply = manager->post(request, contChar);*/
 
     Config.UserName = username;
+    Config.setValue("UserName", Config.UserName); // comment this if password enabled
+    accept(); // comment this if password enabled
 }
 
 void LoginDialog::on_changeAvatarButton_clicked()
