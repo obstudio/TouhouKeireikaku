@@ -107,3 +107,4 @@ src/util/encryptor.*
 /*.xlsx
 /*_inputs.txt
 /*_outputs.txt
+image/
